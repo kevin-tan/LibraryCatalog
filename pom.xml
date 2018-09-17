@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.5.RELEASE</version>
+    </parent>
+
+    <artifactId>SOEN343</artifactId>
+    <packaging>pom</packaging>
+    <groupId>SOEN343-Project</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+        <soen343.version>1.0.0-SNAPSHOT</soen343.version>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>SOEN343</groupId>
+                <artifactId>service</artifactId>
+                <version>${soen343.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>SOEN343</groupId>
+                <artifactId>repository</artifactId>
+                <version>${soen343.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>SOEN343</groupId>
+                <artifactId>endpoint</artifactId>
+                <version>${soen343.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>service</module>
+        <module>endpoint</module>
+        <module>webapp</module>
+        <module>repository</module>
+    </modules>
+
+</project>
