@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>SOEN343</artifactId>
-        <groupId>SOEN343-Project</groupId>
+        <groupId>SOEN343</groupId>
+        <artifactId>LibraryCatalog</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
