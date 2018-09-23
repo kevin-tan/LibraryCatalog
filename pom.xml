@@ -45,6 +45,7 @@
         <module>endpoint</module>
         <module>webapp</module>
         <module>repository</module>
+        <module>database</module>
     </modules>
 
 </project>
