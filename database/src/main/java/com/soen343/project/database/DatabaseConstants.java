@@ -8,8 +8,6 @@ public final class DatabaseConstants {
 
     private DatabaseConstants() {}
 
-    public static final String SCRIPT_DIRECTORY =
-            "C:\\Users\\Kevin Tan\\Desktop\\Concordia\\Year 3\\Semester 7\\SOEN343\\Project\\Project343\\database\\src\\main\\resources";
-    public final static String DATABASE_PATH =
-            "C:\\Users\\Kevin Tan\\Desktop\\Concordia\\Year 3\\Semester 7\\SOEN343\\Project\\Project343\\data\\LibraryCatalog.db";
+    public static final String SCRIPT_DIRECTORY = "database/main/resources/create";
+    public final static String DATABASE_PATH = "data/LibraryCatalog.db";
 }
