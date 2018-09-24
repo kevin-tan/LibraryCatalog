@@ -25,7 +25,7 @@ public class CreateDatabase {
         this.createTable = createTable;
         File directory = new File(SCRIPT_DIRECTORY);
         for (File file : Objects.requireNonNull(directory.listFiles())) {
-            dbScripts.add(new ClassPathResource(file.getAbsolutePath()));
+            dbScripts.add(new ClassPathResource(file.getPath()));
         }
     }
 
