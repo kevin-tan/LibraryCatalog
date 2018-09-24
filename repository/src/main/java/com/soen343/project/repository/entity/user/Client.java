@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
  * Created by Kevin Tan 2018-09-23
  */
 
-@NoArgsConstructor
 @AllArgsConstructor
 public class Client extends User {
 
