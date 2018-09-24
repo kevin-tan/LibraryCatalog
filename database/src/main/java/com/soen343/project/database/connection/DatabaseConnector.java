@@ -1,9 +1,9 @@
 package com.soen343.project.database.connection;
 
-        import java.sql.Connection;
-        import java.sql.DriverManager;
-        import java.sql.SQLException;
-        import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Created by Kevin Tan 2018-09-23
@@ -17,7 +17,7 @@ public class DatabaseConnector {
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:LibraryCatalog.db")) {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
-            statement.executeQuery(query);
+            statement.executeUpdate(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
