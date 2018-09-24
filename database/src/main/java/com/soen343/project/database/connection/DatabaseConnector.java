@@ -17,7 +17,7 @@ public class DatabaseConnector {
         Class.forName("org.sqlite.JDBC");
 
         //try-with-resource
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + DatabaseConstants.DATABASE_PATH)) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_PATH)) {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
             statement.executeQuery(query);

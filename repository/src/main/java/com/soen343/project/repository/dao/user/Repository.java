@@ -1,9 +1,12 @@
 package com.soen343.project.repository.dao.user;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Created by Kevin Tan 2018-09-23
  */
 
+@Component
 public interface Repository<E> {
 
     void save(E entity);

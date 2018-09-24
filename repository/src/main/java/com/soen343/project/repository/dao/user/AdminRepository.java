@@ -10,7 +10,7 @@ public class AdminRepository implements Repository<Admin>{
 
     @Override
     public void save(Admin entity) {
-
+        //Code
     }
 
     @Override
