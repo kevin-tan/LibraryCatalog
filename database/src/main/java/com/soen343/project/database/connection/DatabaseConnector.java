@@ -6,8 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Created by Kevin Tan 2018-09-23
+ * Created by Sagar Patel 2018-09-23
  */
+
 public class DatabaseConnector {
 
     public static void executeQuery(String query) throws ClassNotFoundException {
@@ -16,7 +17,7 @@ public class DatabaseConnector {
         //try-with-resource
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:LibraryCatalog.db")) {
             Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);
+            statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
             statement.executeUpdate(query);
         } catch (SQLException e) {
             e.printStackTrace();
