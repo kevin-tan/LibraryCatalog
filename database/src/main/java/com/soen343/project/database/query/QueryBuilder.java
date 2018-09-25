@@ -24,6 +24,7 @@ public class QueryBuilder {
 
     private QueryBuilder() { }
 
+    //INSERT INTO User VALUES (‘Big’, ‘Boss’, ‘7582 Rue Concordia’, ‘bigboss@hotmail.com’, ‘514-895-9852’, ‘Admin’);
     public static String createSaveQuery(String table, String... values) {
         StringBuilder query = new StringBuilder(INSERT_INTO);
         query.append(table);

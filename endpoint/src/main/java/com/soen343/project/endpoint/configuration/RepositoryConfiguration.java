@@ -1,7 +1,6 @@
 package com.soen343.project.endpoint.configuration;
 
 import com.soen343.project.repository.dao.user.AdminRepository;
-import com.soen343.project.repository.dao.user.ClientRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
