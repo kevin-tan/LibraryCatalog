@@ -14,15 +14,19 @@ import java.sql.Statement;
 
 public class DatabaseConnector {
 
-    public static void executeDatabaseOperation(DatabaseOperation databaseOperation) {
+    static {
+        // Load JDBC driver when DatabaseConnector class is loaded
         try {
             Class.forName("org.sqlite.JDBC");
-            try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
-                databaseOperation.execute(connection);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void executeDatabaseOperation(DatabaseOperation databaseOperation) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+            databaseOperation.execute(connection);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -37,20 +41,13 @@ public class DatabaseConnector {
     }
 
     public static DatabaseEntity executeQuery(String query, DatabaseQueryOperation databaseQueryOperation) {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
-                Statement statement = connection.createStatement();
-                statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
-
-                return databaseQueryOperation.execute(statement.executeQuery(query));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
+            return databaseQueryOperation.execute(statement.executeQuery(query));
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        //Should never be reached
         return null;
     }
 }
