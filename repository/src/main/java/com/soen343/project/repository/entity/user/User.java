@@ -4,7 +4,7 @@ import com.soen343.project.database.base.DatabaseEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.soen343.project.repository.EntityConstants.*;
+import static com.soen343.project.repository.entity.EntityConstants.*;
 
 /**
  * Created by Kevin Tan 2018-09-23
@@ -22,7 +22,6 @@ public abstract class User implements DatabaseEntity {
     private String email;
     private String phoneNumber;
     String userType;
-
 
     User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
         this.id = id;

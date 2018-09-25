@@ -1,4 +1,4 @@
-package com.soen343.project.repository.dao.user;
+package com.soen343.project.repository.dao;
 
 /**
  * Created by Kevin Tan 2018-09-23
@@ -12,7 +12,7 @@ public interface Repository<E> {
 
     void delete(E entity);
 
-    E find(Long id);
+    E findById(Long id);
 
     void update(E entity);
 }

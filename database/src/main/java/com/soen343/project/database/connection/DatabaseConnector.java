@@ -29,7 +29,6 @@ public class DatabaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void executeUpdate(String update) {

@@ -1,4 +1,4 @@
-package com.soen343.project.repository;
+package com.soen343.project.repository.entity;
 
 public final class EntityConstants {
 

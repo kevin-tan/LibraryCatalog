@@ -26,7 +26,7 @@ public class ExampleController {
 
     @GetMapping("/test/getUser")
     public ResponseEntity<?> getUser() {
-        return new ResponseEntity<>(userRepository.find(1L), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.findById(1L), HttpStatus.OK);
     }
 
     /**
@@ -37,7 +37,7 @@ public class ExampleController {
         Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
                 .physicalAddress("888 Test").build();
         userRepository.save(admin);
-        return new ResponseEntity<>(userRepository.find(2L), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.findById(2L), HttpStatus.OK);
     }
 
     /**
@@ -45,11 +45,11 @@ public class ExampleController {
      */
     @GetMapping("/test/updateUser/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id) {
-        User oldAdmin = userRepository.find(id);
+        User oldAdmin = userRepository.findById(id);
         Admin admin = Admin.builder().firstName("Test First2").lastName("Test Last2").email("Tes2t@hotmail.com32").phoneNumber("51324-Tes32t")
                 .physicalAddress("88832 Test32").id(oldAdmin.getId()).build();
         userRepository.update(admin);
-        return new ResponseEntity<>(userRepository.find(oldAdmin.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.findById(oldAdmin.getId()), HttpStatus.OK);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ExampleController {
      */
     @GetMapping("/test/deleteUser/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        User admin = userRepository.find(id);
+        User admin = userRepository.findById(id);
         userRepository.delete(admin);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
