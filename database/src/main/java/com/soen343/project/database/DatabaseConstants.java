@@ -9,5 +9,5 @@ public final class DatabaseConstants {
     private DatabaseConstants() {}
 
     public static final String SCRIPT_DIRECTORY = "database/main/resources/create";
-    public final static String DATABASE_FILE = "jdbc:sqlite:data/LibraryCatalog.db";
+    public final static String DATABASE_URL = "jdbc:sqlite:data/LibraryCatalog.db";
 }

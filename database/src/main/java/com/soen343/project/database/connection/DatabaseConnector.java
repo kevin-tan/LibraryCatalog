@@ -13,16 +13,29 @@ import java.sql.Statement;
 
 public class DatabaseConnector {
 
-    public static void executeQuery(String query) throws ClassNotFoundException {
-        Class.forName("org.sqlite.JDBC");
+    public interface DatabaseOperation {
+        void execute(Connection connection) throws SQLException;
+    }
 
-        //try-with-resource
-        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_FILE)) {
+    public static void executeDatabaseOperation(DatabaseOperation databaseOperation) {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+                databaseOperation.execute(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void executeQuery(String query) {
+        executeDatabaseOperation(connection -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
             statement.executeQuery(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 }
