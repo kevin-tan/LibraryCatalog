@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.soen343.project.database.DatabaseConstants.SCRIPT_DIRECTORY;
+import static com.soen343.project.database.DatabaseConstants.*;
 
 /**
  * Created by Kevin Tan 2018-09-23
@@ -24,15 +24,20 @@ public class CreateDatabase {
 
     public CreateDatabase(boolean createTable) {
         this.createTable = createTable;
-        File directory = new File(SCRIPT_DIRECTORY);
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
-            dbScripts.add(new ClassPathResource(file.getPath()));
+        File create = new File(SCRIPT_CREATE_DIRECTORY);
+        File data = new File(SCRIPT_DATA_DIRECTORY);
+        for (File file : Objects.requireNonNull(create.listFiles())) {
+            dbScripts.add(new ClassPathResource(CREATE_DIRECTORY + file.getName()));
+        }
+        for (File file : Objects.requireNonNull(data.listFiles())) {
+            dbScripts.add(new ClassPathResource(DATA_DIRECTORY + file.getName()));
         }
     }
 
     @PostConstruct
     public void createTable() {
         if (createTable) {
+            System.err.println("Executing scripts...");
             DatabaseConnector.executeDatabaseOperation(
                     (connection) -> dbScripts.forEach(resource -> ScriptUtils.executeSqlScript(connection, resource)));
         }

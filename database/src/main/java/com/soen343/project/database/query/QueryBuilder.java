@@ -7,18 +7,18 @@ package com.soen343.project.database.query;
 
 public class QueryBuilder {
 
-    private final static String INSERT_INTO = "INSERT INTO";
-    private final static String SELECT = "SELECT";
-    private final static String ALL = "*";
-    private final static String FROM = "FROM";
-    private final static String VALUES = "VALUES";
-    private final static String WHERE = "WHERE";
-    private final static String ID = "id";
-    private final static String EQUAL = "EQUAL";
-    private final static String AND = "AND";
-    private final static String UPDATE = "UPDATE";
-    private final static String SET = "SET";
-    private final static String DELETE = "DELETE";
+    private final static String INSERT_INTO = "INSERT INTO ";
+    private final static String SELECT = " SELECT ";
+    private final static String ALL = " * ";
+    private final static String FROM = " FROM ";
+    private final static String VALUES = " VALUES ";
+    private final static String WHERE = " WHERE ";
+    private final static String ID = " id ";
+    private final static String EQUAL = " EQUAL ";
+    private final static String AND = " AND ";
+    private final static String UPDATE = " UPDATE ";
+    private final static String SET = " SET ";
+    private final static String DELETE = " DELETE ";
 
     private final static String END_QUERY = ";";
     private final static String COMMA = ",";

@@ -1,6 +1,7 @@
 package com.soen343.project.repository.entity.user;
 
 import com.soen343.project.database.base.DatabaseEntity;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static com.soen343.project.repository.EntityConstants.*;
@@ -9,6 +10,7 @@ import static com.soen343.project.repository.EntityConstants.*;
  * Created by Kevin Tan 2018-09-23
  */
 
+@Data
 @NoArgsConstructor
 public abstract class User implements DatabaseEntity {
 
