@@ -11,4 +11,6 @@ public interface DatabaseEntity {
     String sqlColumnValues();
 
     String toSQLValue();
+
+    Long getId();
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.soen343.project.database.connection.DatabaseConnector.*;
+import static com.soen343.project.database.connection.DatabaseConnector.executeQuery;
 import static com.soen343.project.database.query.QueryBuilder.*;
 
 /**
@@ -22,19 +22,18 @@ public class DatabaseDAO {
     }
 
     public void saveAll(DatabaseEntity... entities) {
-
+        //TODO Cleanup to execute single query instead of multiple
+        for (DatabaseEntity entity : entities) {
+            save(entity);
+        }
     }
 
     public void delete(DatabaseEntity entity) {
-
-    }
-
-    public void deleteAll() {
-
+        executeQuery(createDeleteQuery(entity.getTable(), entity.getId()));
     }
 
     public void update(DatabaseEntity entity) {
-
+        executeQuery(createUpdateQuery(entity.getTable(), entity.sqlColumnValues(), entity.getId()));
     }
 
     public DatabaseEntity findById(Long id) {

@@ -35,7 +35,7 @@ public class DatabaseConnector {
         executeDatabaseOperation(connection -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
-            statement.executeQuery(query);
+            statement.executeUpdate(query);
         });
     }
 }

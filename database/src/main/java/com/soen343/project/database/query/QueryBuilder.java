@@ -18,6 +18,7 @@ public class QueryBuilder {
     private final static String AND = "AND";
     private final static String UPDATE = "UPDATE";
     private final static String SET = "SET";
+    private final static String DELETE = "DELETE";
 
     private final static String END_QUERY = ";";
     private final static String COMMA = ",";
@@ -47,5 +48,9 @@ public class QueryBuilder {
 
     public static String createUpdateQuery(String table, String updatedValues, Long id) {
         return UPDATE + table + SET + updatedValues + WHERE + ID + EQUAL + id + END_QUERY;
+    }
+
+    public static String createDeleteQuery(String table, Long id) {
+        return DELETE + FROM + table + WHERE + ID + EQUAL + id + END_QUERY;
     }
 }
