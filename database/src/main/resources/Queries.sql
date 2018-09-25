@@ -19,7 +19,11 @@ CREATE TABLE User;
 findByid(), findAll():
 SELECT *
 FROM User
-WHERE id = 1
+WHERE id = 1;
 
+update():
+UPDATE User
+SET firstName = 'Boss', lastName = 'Big', PhysicalAddress = '6589 Rue Concordia', email = 'bossbig@hotmail.com', phoneNumber = '514-265-9895', userType = 'Admin'
+WHERE id = 1;
 
 
