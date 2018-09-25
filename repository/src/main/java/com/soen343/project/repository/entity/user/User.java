@@ -1,6 +1,5 @@
 package com.soen343.project.repository.entity.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,16 +8,38 @@ import lombok.NoArgsConstructor;
  */
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public abstract class User {
 
-    private Long id;
+    protected Long id;
 
-    private String firstName;
-    private String lastName;
-    private String physAddress;
-    private String emailAddress;
-    private String phoneNumber;
+    protected String firstName;
+    protected String lastName;
+    protected String physicalAddress;
+    protected String email;
+    protected String phoneNumber;
+    protected String userType;
 
+    public User(String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.physicalAddress = physicalAddress;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String sqlColumnValues() {
+        String columnValues = "firstName = " + firstName + ",";
+        columnValues += "lastName = " + lastName + ",";
+        columnValues += "physicalAddress = " + physicalAddress + ",";
+        columnValues += "email = " + email + ",";
+        columnValues += "phoneNumber = " + phoneNumber;
+        return columnValues;
+    }
+
+    // toString in the format for SQL query of object type User
+    public String toSQLValue() {
+        return "(" + "'" + firstName + "'," + "'" + lastName + "'," + "'" + physicalAddress + "'," + "'" + email + "'," + "'" +
+               phoneNumber + "'," + "'" + userType + "')";
+    }
 }

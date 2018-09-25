@@ -2,6 +2,8 @@ package com.soen343.project.repository.dao.user;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by Kevin Tan 2018-09-23
  */
@@ -17,7 +19,10 @@ public interface Repository<E> {
 
     void deleteAll();
 
-    E find(Long id);
-
     void update(E entity);
+
+    E findById(Long id);
+
+    List<E> findAll();
+
 }

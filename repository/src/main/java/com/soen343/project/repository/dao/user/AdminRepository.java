@@ -2,6 +2,8 @@ package com.soen343.project.repository.dao.user;
 
 import com.soen343.project.repository.entity.user.Admin;
 
+import java.util.List;
+
 /**
  * Created by Kevin Tan 2018-09-23
  */
@@ -9,32 +11,37 @@ import com.soen343.project.repository.entity.user.Admin;
 public class AdminRepository implements Repository<Admin>{
 
     @Override
-    public void save(Admin entity) {
+    public synchronized void save(Admin entity) {
         //Code
     }
 
     @Override
-    public void saveAll(Admin... entities) {
+    public synchronized void saveAll(Admin... entities) {
 
     }
 
     @Override
-    public void delete(Admin entity) {
+    public synchronized void delete(Admin entity) {
 
     }
 
     @Override
-    public void deleteAll() {
+    public synchronized void deleteAll() {
 
     }
 
     @Override
-    public Admin find(Long id) {
+    public synchronized void update(Admin entity) {
+
+    }
+
+    @Override
+    public Admin findById(Long id) {
         return null;
     }
 
     @Override
-    public void update(Admin entity) {
-
+    public List<Admin> findAll() {
+        return null;
     }
 }

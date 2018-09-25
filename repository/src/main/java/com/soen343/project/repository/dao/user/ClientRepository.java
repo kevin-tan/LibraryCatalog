@@ -2,6 +2,8 @@ package com.soen343.project.repository.dao.user;
 
 import com.soen343.project.repository.entity.user.Client;
 
+import java.util.List;
+
 /**
  * Created by Kevin Tan 2018-09-23
  */
@@ -9,32 +11,38 @@ import com.soen343.project.repository.entity.user.Client;
 public class ClientRepository implements Repository<Client> {
 
     @Override
-    public void save(Client entity) {
+    public synchronized void save(Client entity) {
 
     }
 
     @Override
-    public void saveAll(Client... entities) {
+    public synchronized void saveAll(Client... entities) {
 
     }
 
     @Override
-    public void delete(Client entity) {
+    public synchronized void delete(Client entity) {
 
     }
 
     @Override
-    public void deleteAll() {
+    public synchronized void deleteAll() {
 
     }
 
     @Override
-    public Client find(Long id) {
+    public synchronized void update(Client entity) {
+
+    }
+
+    @Override
+    public Client findById(Long id) {
         return null;
     }
 
     @Override
-    public void update(Client entity) {
-
+    public List<Client> findAll() {
+        return null;
     }
+
 }
