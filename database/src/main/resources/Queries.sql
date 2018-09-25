@@ -15,3 +15,11 @@ DROP TABLE User;
 
 CreateUserTable():
 CREATE TABLE User;
+
+findByid(), findAll():
+SELECT *
+FROM User
+WHERE id = 1
+
+
+
