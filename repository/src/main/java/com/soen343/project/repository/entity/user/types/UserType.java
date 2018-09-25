@@ -7,7 +7,7 @@ public final class UserType {
 
     private UserType(){}
 
-    public static String ADMIN = "ADMIN";
-    public static String CLIENT = "CLIENT";
+    public static String ADMIN = "Admin";
+    public static String CLIENT = "Client";
 
 }

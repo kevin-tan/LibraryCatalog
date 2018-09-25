@@ -8,6 +8,8 @@ public final class EntityConstants {
 
     //Tables
     public static final String USER_TABLE = "User";
+    public static final String USER_TABLE_WITH_COLUMNS =
+            USER_TABLE + "(firstName, lastName, physicalAddress, email, phoneNumber, userType)";
 
     //User
     public static final String FIRST_NAME = "firstName";

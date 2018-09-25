@@ -19,7 +19,7 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public synchronized void save(User entity) {
-        executeUpdate(createSaveQuery(USER_TABLE, entity.toSQLValue()));
+        executeUpdate(createSaveQuery(USER_TABLE_WITH_COLUMNS, entity.toSQLValue()));
     }
 
     @Override

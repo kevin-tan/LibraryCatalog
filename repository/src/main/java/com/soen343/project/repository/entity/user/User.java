@@ -35,11 +35,11 @@ public abstract class User implements DatabaseEntity {
 
     @Override
     public String sqlUpdateValues() {
-        String columnValues = FIRST_NAME + " = " + firstName + ",";
-        columnValues += LAST_NAME + " = " + lastName + ",";
-        columnValues += PHYSICAL_ADDRESS + " = " + physicalAddress + ",";
-        columnValues += EMAIL + " = " + email + ",";
-        columnValues += PHONE_NUMBER + " = " + phoneNumber;
+        String columnValues = FIRST_NAME + " = '" + firstName + "', ";
+        columnValues += LAST_NAME + " = '" + lastName + "', ";
+        columnValues += PHYSICAL_ADDRESS + " = '" + physicalAddress + "', ";
+        columnValues += EMAIL + " = '" + email + "', ";
+        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "'";
         return columnValues;
     }
 
