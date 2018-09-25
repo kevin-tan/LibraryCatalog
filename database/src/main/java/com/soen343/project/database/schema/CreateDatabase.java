@@ -1,5 +1,6 @@
 package com.soen343.project.database.schema;
 
+import com.soen343.project.database.connection.DatabaseConnector;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -10,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.soen343.project.database.DatabaseConstants.*;
+import static com.soen343.project.database.DatabaseConstants.SCRIPT_DIRECTORY;
 
 /**
  * Created by Kevin Tan 2018-09-23
@@ -31,9 +32,9 @@ public class CreateDatabase {
 
     @PostConstruct
     public void createTable() {
-        //Requires connection and Script for resource
         if (createTable) {
-            dbScripts.forEach(resource -> ScriptUtils.executeSqlScript(null, resource));
+            DatabaseConnector.executeDatabaseOperation(
+                    (connection) -> dbScripts.forEach(resource -> ScriptUtils.executeSqlScript(connection, resource)));
         }
     }
 
