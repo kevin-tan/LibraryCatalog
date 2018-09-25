@@ -8,7 +8,7 @@ FROM User
 WHERE userType =’Admin’ 
 
 registerUser(admin,user) : 
-INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType) VALUES (‘Big’, ‘Boss’, ‘7582 Rue Concordia’, ‘bigboss@hotmail.com’, ‘514-895-9852’, ‘Admin’);
+INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType) VALUES (‘Alex’, ‘Baker’, ‘7582 Rue Concordia’, ‘AlexBaker@hotmail.com’, ‘514-895-9852’, ‘Admin’);
 
 DeleteUserTable():
 DROP TABLE User;

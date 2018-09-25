@@ -2,6 +2,9 @@
 ## SQLite Script ##
 ###################
 
+
+DROP TABLE IF EXISTS User;
+
 #User Table
 CREATE TABLE User (
  id int NOT NULL AUTO_INCREMENT,
