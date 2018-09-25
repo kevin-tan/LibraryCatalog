@@ -1,4 +1,4 @@
-package com.soen343.project.repository.entity;
+package com.soen343.project.database.base;
 
 /**
  * Created by Kevin Tan 2018-09-24
@@ -6,9 +6,7 @@ package com.soen343.project.repository.entity;
 
 public interface DatabaseEntity {
 
-    String getTable();
-
-    String sqlColumnValues();
+    String sqlUpdateValues();
 
     String toSQLValue();
 

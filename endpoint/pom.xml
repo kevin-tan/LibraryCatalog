@@ -19,10 +19,6 @@
             <groupId>SOEN343</groupId>
             <artifactId>service</artifactId>
         </dependency>
-        <dependency>
-            <groupId>SOEN343</groupId>
-            <artifactId>repository</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

@@ -1,6 +1,6 @@
 package com.soen343.project.endpoint.configuration;
 
-import com.soen343.project.repository.dao.DatabaseDAO;
+import com.soen343.project.repository.dao.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 public class RepositoryConfiguration {
 
     /**
-     * AdminRepository DAO bean
+     * UserRepository DAO bean
      */
     @Bean
-    public DatabaseDAO adminRepository() {
-        return new DatabaseDAO();
+    public UserRepository userRepository() {
+        return new UserRepository();
     }
 
 

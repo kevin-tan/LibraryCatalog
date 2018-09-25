@@ -1,6 +1,7 @@
 package com.soen343.project.repository.entity.user;
 
 import com.soen343.project.repository.entity.user.types.UserType;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 /**
@@ -10,8 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Admin extends User {
 
-    public Admin(String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
-        super(firstName, lastName, physicalAddress, email, phoneNumber);
+    @Builder
+    public Admin(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
+        super(id, firstName, lastName, physicalAddress, email, phoneNumber);
         this.userType = UserType.ADMIN;
     }
 }

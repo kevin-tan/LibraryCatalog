@@ -1,6 +1,7 @@
 package com.soen343.project.database.connection;
 
 import com.soen343.project.database.DatabaseConstants;
+import com.soen343.project.database.base.DatabaseEntity;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,10 +13,6 @@ import java.sql.Statement;
  */
 
 public class DatabaseConnector {
-
-    public interface DatabaseOperation {
-        void execute(Connection connection) throws SQLException;
-    }
 
     public static void executeDatabaseOperation(DatabaseOperation databaseOperation) {
         try {
@@ -31,11 +28,29 @@ public class DatabaseConnector {
 
     }
 
-    public static void executeQuery(String query) {
+    public static void executeUpdate(String update) {
         executeDatabaseOperation(connection -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
-            statement.executeUpdate(query);
+            statement.executeUpdate(update);
         });
+    }
+
+    public static DatabaseEntity executeQuery(String query, DatabaseQueryOperation databaseQueryOperation) {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+                Statement statement = connection.createStatement();
+                statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
+
+                return databaseQueryOperation.execute(statement.executeQuery(query));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        //Should never be reached
+        return null;
     }
 }
