@@ -38,14 +38,14 @@ public class QueryBuilder {
     }
 
     public static String createFindAllQuery(String table) {
-        return SELECT + ALL + FROM + table;
+        return SELECT + ALL + FROM + table + END_QUERY;
     }
 
     public static String createFindByIdQuery(String table, Long id) {
-        return createFindAllQuery(table) + WHERE + ID + EQUAL + id;
+        return createFindAllQuery(table) + WHERE + ID + EQUAL + id + END_QUERY;
     }
 
     public static String createUpdateQuery(String table, String updatedValues, Long id) {
-        return UPDATE + table + SET + updatedValues + WHERE + ID + EQUAL + id;
+        return UPDATE + table + SET + updatedValues + WHERE + ID + EQUAL + id + END_QUERY;
     }
 }
