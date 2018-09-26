@@ -1,6 +1,6 @@
 package com.soen343.project.endpoint.controller;
 
-import com.soen343.project.repository.dao.database.RecordDatabase;
+import com.soen343.project.service.database.RecordDatabase;
 import com.soen343.project.repository.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
