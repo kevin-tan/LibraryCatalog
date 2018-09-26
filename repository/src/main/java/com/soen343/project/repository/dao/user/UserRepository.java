@@ -65,7 +65,7 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public List<User> findAll() {
-        return (List<User>) (Object) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), rs -> {
+        return (List<User>) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), rs -> {
             List<DatabaseEntity> list = new ArrayList<>();
             while (rs.next()) {
                 if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
