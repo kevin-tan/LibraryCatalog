@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Kevin Tan 2018-09-25
  */
 @Service
-public class RecordDatabase {
+public class  RecordDatabase {
 
     private final UserRepository userRepository;
 
@@ -20,9 +20,12 @@ public class RecordDatabase {
         this.userRepository = userRepository;
     }
 
-    //Define methods to access repositories
-    //TODO:This gets all users. We need login feature to view active users.
-    public List<User> viewActiveUserRegistry() {
+    public User findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
+
 }
