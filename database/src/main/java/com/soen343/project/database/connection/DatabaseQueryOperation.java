@@ -1,14 +1,11 @@
 package com.soen343.project.database.connection;
 
-
-import com.soen343.project.database.base.DatabaseEntity;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @FunctionalInterface
-public interface DatabaseQueryOperation {
+public interface DatabaseQueryOperation <T>{
 
-    DatabaseEntity execute(ResultSet rs) throws SQLException;
+    T execute(ResultSet rs) throws SQLException;
 
 }

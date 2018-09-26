@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * Created by Sagar Patel 2018-09-23
@@ -43,7 +44,18 @@ public class DatabaseConnector {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
-            return databaseQueryOperation.execute(statement.executeQuery(query));
+            return (DatabaseEntity) databaseQueryOperation.execute(statement.executeQuery(query));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<DatabaseEntity> executeQueryExpectMultiple(String query, DatabaseQueryOperation databaseQueryOperation) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
+            return (List<DatabaseEntity>) databaseQueryOperation.execute(statement.executeQuery(query));
         } catch (SQLException e) {
             e.printStackTrace();
         }
