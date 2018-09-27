@@ -1,9 +1,7 @@
 package com.soen343.project.service.registry;
 
-import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.instance.ActiveUser;
 import com.soen343.project.repository.entity.user.User;
-import com.soen343.project.repository.entity.user.types.UserType;
 import com.soen343.project.service.authenticate.AuthenticationService;
 import com.soen343.project.service.database.RecordDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ public class UserRegistry {
 
     //TODO:This gets all users for now. We need login feature to view active users.
     public List<ActiveUser> viewActiveUserRegistry(Long id) {
-        if (this.authenticationService.authenticateAdmin(id)){
+        if (this.authenticationService.authenticateAdmin(id)) {
             recordDatabase.findAllUsers().forEach(this::addActiveUser);
             return activeUsers;
         }
@@ -38,8 +36,8 @@ public class UserRegistry {
 
     private void addActiveUser(User user) {
 
-        for (ActiveUser activeUser: activeUsers) {
-            if (activeUser.getId().equals(user.getId())){
+        for (ActiveUser activeUser : activeUsers) {
+            if (activeUser.getId().equals(user.getId())) {
                 return;
             }
         }
