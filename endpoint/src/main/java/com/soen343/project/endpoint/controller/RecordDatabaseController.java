@@ -21,31 +21,13 @@ import java.util.List;
  */
 
 @Controller
-public class DatabaseRecordController {
+public class RecordDatabaseController {
 
     private final RecordDatabase recordDatabase;
-    private final UserRepository userRepository;
 
     @Autowired
-    public DatabaseRecordController(RecordDatabase recordDatabase, UserRepository userRepository) {
+    public RecordDatabaseController(RecordDatabase recordDatabase) {
         this.recordDatabase = recordDatabase;
-        this.userRepository = userRepository;
-    }
-
-    /**
-     * Use case: View active registry
-     */
-    //TODO: This returns all users. Login is needed to view active users.
-    @GetMapping("/admin/{id}")
-    public ResponseEntity<?> viewActiveUserRegistry(@PathVariable Long id) {
-        User user = userRepository.findById(id);
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (user.getUserType().equals(UserType.ADMIN)) {
-            return new ResponseEntity<>(recordDatabase.viewActiveUserRegistry(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
     }
 
     /**

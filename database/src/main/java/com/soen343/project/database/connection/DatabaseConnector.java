@@ -51,11 +51,11 @@ public class DatabaseConnector {
         return null;
     }
 
-    public static List<DatabaseEntity> executeQueryExpectMultiple(String query, DatabaseQueryOperation databaseQueryOperation) {
+    public static List<? extends DatabaseEntity> executeQueryExpectMultiple(String query, DatabaseQueryOperation databaseQueryOperation) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
-            return (List<DatabaseEntity>) databaseQueryOperation.execute(statement.executeQuery(query));
+            return (List<? extends DatabaseEntity>) databaseQueryOperation.execute(statement.executeQuery(query));
         } catch (SQLException e) {
             e.printStackTrace();
         }

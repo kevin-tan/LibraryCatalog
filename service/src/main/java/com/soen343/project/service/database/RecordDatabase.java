@@ -19,13 +19,11 @@ public class RecordDatabase {
         this.userRepository = userRepository;
     }
 
-    //Define methods to access repositories
-    //TODO:This gets all users. We need login feature to view active users.
-    public List<User> viewActiveUserRegistry() {
-        return userRepository.findAll();
+    public User findUserById(Long id) {
+        return userRepository.findById(id);
     }
 
-    public List<User> getAllUsers(){
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
