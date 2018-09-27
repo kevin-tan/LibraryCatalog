@@ -1,4 +1,4 @@
-package com.soen343.project.repository.entity.user;
+package com.soen343.project.repository.instance;
 
 import lombok.Data;
 

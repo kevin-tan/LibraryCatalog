@@ -1,8 +1,10 @@
-package com.soen343.project.service.database;
+package com.soen343.project.service.registry;
 
-import com.soen343.project.repository.entity.user.ActiveUser;
+import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.instance.ActiveUser;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.entity.user.types.UserType;
+import com.soen343.project.service.database.RecordDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +24,10 @@ public class UserRegistry {
     }
 
     //TODO:This gets all users for now. We need login feature to view active users.
-    public List<User> viewActiveUserRegistry(Long id) {
+    public List<ActiveUser> viewActiveUserRegistry(Long id) {
         if (authenticateAdmin(id)){
-            return recordDatabase.findAllUsers();
+            recordDatabase.findAllUsers().forEach(this::addActiveUser);
+            return activeUsers;
         }
         return null;
     }

@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * Created by Kevin Tan 2018-09-25
@@ -23,6 +25,11 @@ public class ExampleController {
     @Autowired
     public ExampleController(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @PostMapping("/test/create")
+    public ResponseEntity<?> create(@RequestBody User user) {
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/test/getUser")
@@ -61,8 +68,9 @@ public class ExampleController {
     @GetMapping("/test/updateUser/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id) {
         User oldAdmin = userRepository.findById(id);
-        Admin admin = Admin.builder().firstName("Test First2").lastName("Test Last2").email("Tes2t@hotmail.com32").phoneNumber("51324-Tes32t")
-                .physicalAddress("88832 Test32").id(oldAdmin.getId()).build();
+        Admin admin =
+                Admin.builder().firstName("Test First2").lastName("Test Last2").email("Tes2t@hotmail.com32").phoneNumber("51324-Tes32t")
+                        .physicalAddress("88832 Test32").id(oldAdmin.getId()).build();
         userRepository.update(admin);
         return new ResponseEntity<>(userRepository.findById(oldAdmin.getId()), HttpStatus.OK);
     }

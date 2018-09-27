@@ -9,14 +9,12 @@ import lombok.Builder;
 
 public class Admin extends User {
 
-    public Admin(){
-        this.userType = UserType.ADMIN;
+    public Admin() {
+        super(UserType.ADMIN);
     }
-
 
     @Builder
     public Admin(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
-        super(id, firstName, lastName, physicalAddress, email, phoneNumber);
-        this.userType = UserType.ADMIN;
+        super(id, firstName, lastName, physicalAddress, email, phoneNumber, UserType.ADMIN);
     }
 }
