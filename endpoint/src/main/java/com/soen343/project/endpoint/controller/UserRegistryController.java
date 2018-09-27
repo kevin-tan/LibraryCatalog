@@ -24,6 +24,6 @@ public class UserRegistryController {
     //TODO: This returns all users. Login is needed to view active users.
     @GetMapping("/admin/{id}/viewActiveUsers")
     public ResponseEntity<?> viewActiveUserRegistry(@PathVariable Long id) {
-        return new ResponseEntity<>(userRegisstry.viewActiveUserRegistry(id), HttpStatus.OK);
+        return new ResponseEntity<>(userRegistry.viewActiveUserRegistry(id), HttpStatus.OK);
     }
 }
