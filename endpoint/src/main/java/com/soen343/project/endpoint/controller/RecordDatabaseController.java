@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 
 @Controller
-public class DatabaseRecordController {
+public class RecordDatabaseController {
 
     private final RecordDatabase recordDatabase;
 
     @Autowired
-    public DatabaseRecordController(RecordDatabase recordDatabase) {
+    public RecordDatabaseController(RecordDatabase recordDatabase) {
         this.recordDatabase = recordDatabase;
     }
 
