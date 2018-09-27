@@ -31,11 +31,7 @@ public class UserRegistry {
 
     private boolean authenticateAdmin(Long id) {
         User user = recordDatabase.findUserById(id);
-        if (user == null || !user.getUserType().equals(UserType.ADMIN)) {
-            return false;
-        } else {
-            return true;
-        }
+        return user != null && user.getUserType().equals(UserType.ADMIN);
     }
 
     private void addActiveUser(User user) {
