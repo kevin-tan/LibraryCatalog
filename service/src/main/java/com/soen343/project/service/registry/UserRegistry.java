@@ -38,6 +38,13 @@ public class UserRegistry {
     }
 
     private void addActiveUser(User user) {
+
+        for (ActiveUser activeUser: activeUsers) {
+            if (activeUser.getId() == user.getId()){
+                return;
+            }
+        }
+
         ActiveUser activeUser = new ActiveUser(user.getId());
         activeUsers.add(activeUser);
     }
