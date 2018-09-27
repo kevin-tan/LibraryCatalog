@@ -15,6 +15,8 @@ import java.util.List;
 
 public class DatabaseConnector {
 
+    private DatabaseConnector(){}
+
     static {
         // Load JDBC driver when DatabaseConnector class is loaded
         try {
