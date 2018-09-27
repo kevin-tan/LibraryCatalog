@@ -1,5 +1,6 @@
 package com.soen343.project.repository.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.soen343.project.repository.entity.user.types.UserType;
 import lombok.Builder;
 
@@ -7,6 +8,7 @@ import lombok.Builder;
  * Created by Kevin Tan 2018-09-23
  */
 
+@JsonTypeName("Client")
 public class Client extends User {
 
     public Client(){

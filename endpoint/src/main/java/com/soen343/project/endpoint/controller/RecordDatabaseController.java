@@ -33,22 +33,8 @@ public class RecordDatabaseController {
     /**
      * Use case: Registration
      */
-    //Client Registration
-    @PostMapping("/admin/{id}")
-    public ResponseEntity<?> registerClient(@PathVariable Long id, @RequestBody Client client) {
-        User admin = userRepository.findById(id);
-        if (admin == null || client == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (admin.getUserType().equals(UserType.ADMIN)) {
-            List<User> usersList = recordDatabase.register(client);
-            if(usersList == null){
-                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-            }
-            return new ResponseEntity<>(usersList, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
+    @PostMapping("/admin/{id}/register")
+    public ResponseEntity<?> register(@PathVariable Long id, @RequestBody User user) {
+        return new ResponseEntity<>(recordDatabase.register(user), HttpStatus.OK);
     }
-
 }

@@ -1,5 +1,7 @@
 package com.soen343.project.repository.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,10 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
 @NoArgsConstructor
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonSubTypes({@JsonSubTypes.Type(value = Admin.class, name = "Admin"),
+        @JsonSubTypes.Type(value = Client.class, name = "Client")
+})
 public abstract class User implements DatabaseEntity {
 
     private Long id;
@@ -21,7 +27,6 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
-    //temporary
     public String userType = getClass().getName();
 
     User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
@@ -58,14 +63,6 @@ public abstract class User implements DatabaseEntity {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     public String getPhysicalAddress() {
