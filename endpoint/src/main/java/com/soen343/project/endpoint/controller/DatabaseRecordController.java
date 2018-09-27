@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * Created by Kevin Tan 2018-09-25
  */
@@ -50,7 +52,19 @@ public class DatabaseRecordController {
      */
     @PostMapping("/admin/{id}")
     public ResponseEntity<?> registerUser(@PathVariable Long id, @RequestBody User user) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        User admin = userRepository.findById(id);
+        if (admin == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (admin.getUserType().equals(UserType.ADMIN)) {
+            List<User> usersList = recordDatabase.register(user);
+            if(usersList == null){
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
+            return new ResponseEntity<>(usersList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
     }
 
 }

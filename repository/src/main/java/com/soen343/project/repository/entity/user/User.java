@@ -21,7 +21,8 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
-    String userType;
+    //temporary
+    public String userType = getClass().getName();
 
     User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
         this.id = id;
@@ -51,5 +52,31 @@ public abstract class User implements DatabaseEntity {
     @Override
     public Long getId() {
         return id;
+    }
+
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPhysicalAddress() {
+        return physicalAddress;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getUserType() {
+        return userType;
     }
 }
