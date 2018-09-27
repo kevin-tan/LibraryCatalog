@@ -2,7 +2,6 @@ package com.soen343.project.repository.entity.user;
 
 import com.soen343.project.database.base.DatabaseEntity;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -11,7 +10,6 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
  */
 
 @Data
-@NoArgsConstructor
 public abstract class User implements DatabaseEntity {
 
     private Long id;
@@ -21,15 +19,20 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
-    String userType;
+    private final String userType;
 
-    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
+    User(String userType) {
+        this.userType = userType;
+    }
+
+    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String userType) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.physicalAddress = physicalAddress;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.userType = userType;
     }
 
     @Override
