@@ -2,6 +2,7 @@ package com.soen343.project.endpoint.controller;
 
 import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.entity.user.Admin;
+import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,20 @@ public class ExampleController {
                 .physicalAddress("888 Test").build();
         userRepository.save(admin);
         return new ResponseEntity<>(userRepository.findById(2L), HttpStatus.OK);
+    }
+
+    /**
+     * Clear DB after this request
+     * For testing so more users can be added if needed
+     */
+    @GetMapping("/test/populateUsers")
+    public ResponseEntity<?> populateUsers() {
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").build();
+        Client client = Client.builder().firstName("John").lastName("Wick").email("john@wick.com").phoneNumber("1234567")
+                .physicalAddress("John Wicks House").build();
+        userRepository.saveAll(admin, client);
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
     /**

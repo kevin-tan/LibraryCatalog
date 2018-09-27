@@ -14,6 +14,6 @@ public class Client extends User {
     @Builder
     public Client(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
         super(id, firstName, lastName, physicalAddress, email, phoneNumber);
-        this.userType = UserType.ADMIN;
+        this.userType = UserType.CLIENT;
     }
 }
