@@ -1,6 +1,7 @@
 package com.soen343.project.endpoint.controller;
 
 import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.types.UserType;
 import com.soen343.project.service.database.RecordDatabase;
 import com.soen343.project.repository.entity.user.User;
@@ -50,13 +51,14 @@ public class DatabaseRecordController {
     /**
      * Use case: Registration
      */
+    //Client Registration
     @PostMapping("/admin/{id}")
-    public ResponseEntity<?> registerUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> registerClient(@PathVariable Long id, @RequestBody Client client) {
         User admin = userRepository.findById(id);
-        if (admin == null) {
+        if (admin == null || client == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else if (admin.getUserType().equals(UserType.ADMIN)) {
-            List<User> usersList = recordDatabase.register(user);
+            List<User> usersList = recordDatabase.register(client);
             if(usersList == null){
                 return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             }

@@ -38,9 +38,8 @@ public class RecordDatabase {
             if(iUser.getEmail().equals(regUser.getEmail())){
                 return null;
             }
-
             if((iUser.getFirstName().equals(regUser.getFirstName()) && iUser.getLastName().equals(regUser.getLastName()))
-                    && (iUser.getPhoneNumber().equals(regUser.getPhoneNumber()) || iUser.getPhysicalAddress().equals(regUser.getPhysicalAddress()))){
+                    || (iUser.getPhoneNumber().equals(regUser.getPhoneNumber()) || iUser.getPhysicalAddress().equals(regUser.getPhysicalAddress()))){
                 return null;
             }
         }
