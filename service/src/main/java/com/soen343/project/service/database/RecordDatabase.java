@@ -28,4 +28,15 @@ public class  RecordDatabase {
         return userRepository.findAll();
     }
 
+    public List<User> registerUser(User regUser){
+        List<User> users = findAllUsers();
+        //Checks if user's email, address, and phone is unique)
+        for(User iUser: users) {
+            if (iUser.getEmail().equals(regUser.getEmail()) || (iUser.getPhoneNumber().equals(regUser.getPhoneNumber()) || iUser.getPhysicalAddress().equals(regUser.getPhysicalAddress()))) {
+                return null;
+            }
+        }
+        userRepository.save(regUser);
+        return findAllUsers();
+    }
 }

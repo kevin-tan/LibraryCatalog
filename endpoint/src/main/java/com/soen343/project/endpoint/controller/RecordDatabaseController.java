@@ -30,9 +30,9 @@ public class RecordDatabaseController {
     /**
      * Use case: Registration
      */
-    @PostMapping("/admin/{id}")
+    @PostMapping("/admin/{id}/register")
     public ResponseEntity<?> registerUser(@PathVariable Long id, @RequestBody User user) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(recordDatabase.registerUser(user), HttpStatus.OK);
     }
 
 }
