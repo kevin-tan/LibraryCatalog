@@ -4,6 +4,7 @@ import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.instance.ActiveUser;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.entity.user.types.UserType;
+import com.soen343.project.service.authenticate.AuthenticationService;
 import com.soen343.project.service.database.RecordDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,32 +16,30 @@ import java.util.List;
 public class UserRegistry {
 
     private final RecordDatabase recordDatabase;
+    private final AuthenticationService authenticationService;
+
     private List<ActiveUser> activeUsers;
 
     @Autowired
-    public UserRegistry(RecordDatabase recordDatabase) {
+    public UserRegistry(RecordDatabase recordDatabase, AuthenticationService authenticationService) {
         this.recordDatabase = recordDatabase;
         this.activeUsers = new LinkedList<>();
+        this.authenticationService = authenticationService;
     }
 
     //TODO:This gets all users for now. We need login feature to view active users.
     public List<ActiveUser> viewActiveUserRegistry(Long id) {
-        if (authenticateAdmin(id)){
+        if (this.authenticationService.authenticateAdmin(id)){
             recordDatabase.findAllUsers().forEach(this::addActiveUser);
             return activeUsers;
         }
         return null;
     }
 
-    private boolean authenticateAdmin(Long id) {
-        User user = recordDatabase.findUserById(id);
-        return user != null && user.getUserType().equals(UserType.ADMIN);
-    }
-
     private void addActiveUser(User user) {
 
         for (ActiveUser activeUser: activeUsers) {
-            if (activeUser.getId() == user.getId()){
+            if (activeUser.getId().equals(user.getId())){
                 return;
             }
         }
