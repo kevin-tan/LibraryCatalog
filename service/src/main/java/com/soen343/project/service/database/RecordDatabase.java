@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Kevin Tan 2018-09-25
  */
 @Service
-public class  RecordDatabase {
+public class RecordDatabase {
 
     private final UserRepository userRepository;
 
@@ -28,15 +28,16 @@ public class  RecordDatabase {
         return userRepository.findAll();
     }
 
-    public List<User> registerUser(User regUser){
-        List<User> users = findAllUsers();
-        //Checks if user's email, address, and phone is unique)
-        for(User iUser: users) {
-            if (iUser.getEmail().equals(regUser.getEmail()) || (iUser.getPhoneNumber().equals(regUser.getPhoneNumber()) || iUser.getPhysicalAddress().equals(regUser.getPhysicalAddress()))) {
+    public List<User> registerUser(User userToRegister) {
+        List<User> registeredUsers = findAllUsers();
+        // Checks if user's email and phone is unique
+        for (User registeredUser : registeredUsers) {
+            if (userToRegister.getEmail().equals(registeredUser.getEmail()) || userToRegister.getPhoneNumber().equals(registeredUser.getPhoneNumber())) {
                 return null;
             }
         }
-        userRepository.save(regUser);
+
+        userRepository.save(userToRegister);
         return findAllUsers();
     }
 }
