@@ -61,20 +61,4 @@ public abstract class User implements DatabaseEntity {
     public Long getId() {
         return id;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhysicalAddress() {
-        return physicalAddress;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
 }
