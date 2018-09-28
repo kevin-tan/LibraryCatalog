@@ -1,6 +1,7 @@
 package com.soen343.project.repository.entity.user;
 
 import com.soen343.project.database.base.DatabaseEntity;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;

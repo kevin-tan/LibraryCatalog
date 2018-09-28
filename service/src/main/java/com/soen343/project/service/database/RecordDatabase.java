@@ -34,7 +34,7 @@ public class RecordDatabase {
     }
 
     public ResponseEntity<?> registerUser(Long id, User userToRegister) {
-        if (this.authenticationService.authenticateAdmin(id)) {
+        if (!this.authenticationService.authenticateAdmin(id)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
