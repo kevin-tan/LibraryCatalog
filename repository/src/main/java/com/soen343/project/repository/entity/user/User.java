@@ -2,6 +2,7 @@ package com.soen343.project.repository.entity.user;
 
 import com.soen343.project.database.base.DatabaseEntity;
 import lombok.Data;
+import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -25,6 +26,8 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
+
+    @Setter(AccessLevel.NONE)
     private final String userType;
 
     User(String userType) {
