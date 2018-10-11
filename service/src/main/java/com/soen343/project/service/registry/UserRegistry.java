@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class UserRegistry implements Observer {
+public class UserRegistry implements Observer<User> {
 
     private final RecordDatabase recordDatabase;
     private final AuthenticationService authenticationService;
@@ -68,11 +68,11 @@ public class UserRegistry implements Observer {
     }
 
     @Override
-    public void update(Object data) {
-        if (isActiveUser((User) data)) {
-            removeActiveUser((User) data);
+    public void update(User data) {
+        if (isActiveUser(data)) {
+            removeActiveUser(data);
         } else {
-            addActiveUser((User) data);
+            addActiveUser(data);
         }
     }
 }

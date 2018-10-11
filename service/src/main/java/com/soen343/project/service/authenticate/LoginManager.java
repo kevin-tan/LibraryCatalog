@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class LoginManager implements Subject {
+public class LoginManager implements Subject<User> {
 
     private RecordDatabase recordDatabase;
     private List<Observer> observers;
@@ -49,7 +49,7 @@ public class LoginManager implements Subject {
     }
 
     @Override
-    public void notifyObservers(Object data) {
+    public void notifyObservers(User data) {
         for (Observer observer: observers) {
             observer.update(data);
         }
