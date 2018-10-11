@@ -46,6 +46,11 @@
                 <version>${soen343.version}</version>
             </dependency>
             <dependency>
+                <groupId>SOEN343</groupId>
+                <artifactId>ui</artifactId>
+                <version>${soen343.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.xerial</groupId>
                 <artifactId>sqlite-jdbc</artifactId>
                 <version>${xerial.version}</version>
@@ -75,6 +80,7 @@
         <module>webapp</module>
         <module>repository</module>
         <module>database</module>
+        <module>ui</module>
     </modules>
 
 </project>

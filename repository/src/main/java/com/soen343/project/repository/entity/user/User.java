@@ -1,11 +1,9 @@
 package com.soen343.project.repository.entity.user;
 
-import com.soen343.project.database.base.DatabaseEntity;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.soen343.project.database.base.DatabaseEntity;
+import lombok.Data;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -15,9 +13,7 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
-@JsonSubTypes({@JsonSubTypes.Type(value = Admin.class, name = "Admin"),
-        @JsonSubTypes.Type(value = Client.class, name = "Client")
-})
+@JsonSubTypes({@JsonSubTypes.Type(value = Admin.class, name = "Admin"), @JsonSubTypes.Type(value = Client.class, name = "Client")})
 public abstract class User implements DatabaseEntity {
 
     private Long id;
@@ -28,21 +24,15 @@ public abstract class User implements DatabaseEntity {
     private String email;
     private String phoneNumber;
 
-    @Setter(AccessLevel.NONE)
-    private final String userType;
+    User() {}
 
-    User(String userType) {
-        this.userType = userType;
-    }
-
-    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String userType) {
+    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.physicalAddress = physicalAddress;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.userType = userType;
     }
 
     @Override
@@ -57,12 +47,16 @@ public abstract class User implements DatabaseEntity {
 
     @Override
     public String toSQLValue() {
-        return "(" + "'" + firstName + "'," + "'" + lastName + "'," + "'" + physicalAddress + "'," + "'" + email + "'," + "'" +
-               phoneNumber + "'," + "'" + userType + "')";
+        return "('" + firstName + "','" + lastName + "','" + physicalAddress + "','" + email + "','" +
+               phoneNumber + "','" + getClass().getSimpleName() + "')";
     }
 
     @Override
     public Long getId() {
         return id;
+    }
+
+    public String getUserType() {
+        return getClass().getSimpleName();
     }
 }
