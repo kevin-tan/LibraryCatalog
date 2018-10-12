@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
 import lombok.Data;
 
+import java.util.List;
+
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 /**
@@ -64,5 +66,11 @@ public abstract class User implements DatabaseEntity {
 
     public String getUserType() {
         return getClass().getSimpleName();
+    }
+
+    public boolean isUniqueFrom(List<User> users) {
+        return users.stream().noneMatch(userInList ->
+                email.equals(userInList.email) || phoneNumber.equals(userInList.phoneNumber)
+        );
     }
 }
