@@ -20,10 +20,22 @@ import javax.sql.DataSource;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     private final BasicAuthEntryPoint basicAuthEntryPoint;
+    private final SimpleUrlAuthenticationFailureHandler myFailureHandler;
+    private final MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler;
 
     @Autowired
     public WebSecurityConfiguration(BasicAuthEntryPoint basicAuthEntryPoint) {
         this.basicAuthEntryPoint = basicAuthEntryPoint;
+    }
+    
+    @Autowired
+    public WebSecurityConfiguration(SimpleUrlAuthenticationFailureHandler myFailureHandlerB) {
+        this.SimpleUrlAuthenticationFailureHandler = myFailureHandler;
+    }
+
+    @Autowired
+    public WebSecurityConfiguration(MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler) {
+        this.MySavedRequestAwareAuthenticationSuccessHandler = mySuccessHandler;
     }
 
     @Override
@@ -50,23 +62,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
     public void configAuthentication(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .usersByUsernameQuery("SELECT username, password, true from User where username=?")
-                .authoritiesByUsernameQuery("SELECT username, userType as role from User where username=?");
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public SimpleUrlAuthenticationFailureHandler myFailureHandler() {
-        return new SimpleUrlAuthenticationFailureHandler();
-    }
-
-    @Bean
-    public MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler() {
-        return new MySavedRequestAwareAuthenticationSuccessHandler();
+                .usersByUsernameQuery("SELECT email, password, true from User where email=?")
+                .authoritiesByUsernameQuery("SELECT email, userType as role from User where email=?");
     }
 
 }
