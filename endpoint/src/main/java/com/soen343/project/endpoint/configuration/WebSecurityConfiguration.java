@@ -48,7 +48,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
 
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource).usersByUsernameQuery("SELECT username, password, true from User where username=?")
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery("SELECT username, password, true from User where username=?")
                 .authoritiesByUsernameQuery("SELECT username, userType as role from User where username=?");
     }
 
