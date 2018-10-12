@@ -11,7 +11,7 @@ public class Admin extends User {
     public Admin(){}
 
     @Builder
-    public Admin(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String username, String password) {
-        super(id, firstName, lastName, physicalAddress, email, phoneNumber, username, password);
+    public Admin(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String password) {
+        super(id, firstName, lastName, physicalAddress, email, phoneNumber, password);
     }
 }

@@ -7,6 +7,5 @@ CREATE TABLE User (
  email varchar(255) NOT NULL UNIQUE,
  phoneNumber varchar(255) NOT NULL UNIQUE,
  userType varchar(6),
- username varchar(255),
  password varchar(255)
 );
