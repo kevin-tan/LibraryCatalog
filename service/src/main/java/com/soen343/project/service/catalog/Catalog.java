@@ -1,5 +1,6 @@
 package com.soen343.project.service.catalog;
 
+import com.soen343.project.repository.entity.catalog.Item;
 import com.soen343.project.repository.entity.catalog.ItemSpecification;
 import com.soen343.project.service.database.RecordDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +18,22 @@ public class Catalog {
         this.recordDatabase = recordDatabase;
     }
 
-    public List editItem(long itemID, ItemSpecification itemSpec){
+    public List<Item> editItem(long itemID, ItemSpecification itemSpec){
         recordDatabase.updateItem(itemID, itemSpec);
         return getAllItem();
     }
 
-    public List deleteCatalogItem(long itemID){
+    public List<Item> deleteCatalogItem(long itemID){
         recordDatabase.removeItem(itemID);
         return getAllItem();
     }
 
-    public List addCatalogItem(ItemSpecification itemSpec){
+    public List<Item> addCatalogItem(ItemSpecification itemSpec){
         recordDatabase.insertCatalogItem(itemSpec);
         return getAllItem();
     }
 
-    public List getAllItem(){
+    public List<Item> getAllItem(){
         return recordDatabase.findAllItem();
     }
 }

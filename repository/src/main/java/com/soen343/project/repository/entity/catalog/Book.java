@@ -2,7 +2,9 @@ package com.soen343.project.repository.entity.catalog;
 
 import lombok.Builder;
 
-public class Book extends PrintedItem{
+import java.util.Objects;
+
+public class Book extends PrintedItem {
 
     private String author;
     private String format;
@@ -17,7 +19,14 @@ public class Book extends PrintedItem{
         this.pages = pages;
     }
 
-    public boolean isEqual(Book book) {
-        return super.isEqual(book) && author.equals(book.author) && format.equals(book.format) && pages == book.pages;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        if (!super.equals(o)) return false;
+        Book book = (Book) o;
+        return pages == book.pages &&
+                Objects.equals(author, book.author) &&
+                Objects.equals(format, book.format);
     }
 }

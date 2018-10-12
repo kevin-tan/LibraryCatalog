@@ -12,10 +12,10 @@ public class CatalogRepository {
 
     private static int itemIDs = 1;
     private static int itemSpecIDs = 1;
-    private ArrayList<Item> items = new ArrayList<>();
-    private ArrayList<ItemSpecification> itemSpecs = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
+    private List<ItemSpecification> itemSpecs = new ArrayList<>();
 
-    public List findAll(){
+    public List<Item> findAll(){
         return items;
     }
 

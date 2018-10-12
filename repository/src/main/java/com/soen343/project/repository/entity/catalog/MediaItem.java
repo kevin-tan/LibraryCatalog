@@ -1,16 +1,24 @@
 package com.soen343.project.repository.entity.catalog;
 
-public abstract class MediaItem extends ItemSpecification{
+import java.time.ZonedDateTime;
+import java.util.Objects;
+
+public abstract class MediaItem extends ItemSpecification {
 
     //In the form 'Oct. 20 2009'
-    private String releaseDate;
+    private ZonedDateTime releaseDate;
 
-    public MediaItem(long id, String title, String releaseDate){
+    public MediaItem(long id, String title, ZonedDateTime releaseDate){
         super(id, title);
         this.releaseDate = releaseDate;
     }
 
-    public boolean isEqual(MediaItem mediaItem){
-        return super.isEqual(mediaItem) && releaseDate.equals(mediaItem.releaseDate);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MediaItem)) return false;
+        if (!super.equals(o)) return false;
+        MediaItem mediaItem = (MediaItem) o;
+        return Objects.equals(releaseDate, mediaItem.releaseDate);
     }
 }

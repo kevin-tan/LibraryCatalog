@@ -68,7 +68,7 @@ public class RecordDatabase {
         return catalogRepository.findItem(itemID);
     }
 
-    public List findAllItem(){
+    public List<Item> findAllItem(){
         return catalogRepository.findAll();
     }
 }

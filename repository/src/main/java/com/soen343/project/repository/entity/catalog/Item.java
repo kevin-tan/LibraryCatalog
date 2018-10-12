@@ -1,5 +1,8 @@
 package com.soen343.project.repository.entity.catalog;
 
+import lombok.Data;
+
+@Data
 public class Item {
     private long id;
     private ItemSpecification spec;
@@ -7,17 +10,5 @@ public class Item {
     public Item(long id, ItemSpecification spec){
         this.id = id;
         this.spec = spec;
-    }
-
-    public void setSpec(ItemSpecification spec) {
-        this.spec = spec;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public ItemSpecification getSpec() {
-        return spec;
     }
 }

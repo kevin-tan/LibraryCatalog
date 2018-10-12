@@ -1,5 +1,10 @@
 package com.soen343.project.repository.entity.catalog;
 
+import lombok.Data;
+
+import java.util.Objects;
+
+@Data
 public abstract class ItemSpecification {
     private long id;
     private String title;
@@ -9,15 +14,12 @@ public abstract class ItemSpecification {
         this.title = title;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public boolean isEqual(ItemSpecification spec){
-        return title.equals(spec.title);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ItemSpecification)) return false;
+        if (!super.equals(o)) return false;
+        ItemSpecification that = (ItemSpecification) o;
+        return Objects.equals(title, that.title);
     }
 }

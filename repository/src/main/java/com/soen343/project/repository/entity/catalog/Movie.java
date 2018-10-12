@@ -2,7 +2,10 @@ package com.soen343.project.repository.entity.catalog;
 
 import lombok.Builder;
 
-public class Movie extends MediaItem{
+import java.time.ZonedDateTime;
+import java.util.Objects;
+
+public class Movie extends MediaItem {
     private String director;
     private String producer;
     private String actor;
@@ -11,7 +14,7 @@ public class Movie extends MediaItem{
     private String runTime;
 
     @Builder
-    public Movie(long id, String title, String date, String director, String producer, String actor
+    public Movie(long id, String title, ZonedDateTime date, String director, String producer, String actor
             , String lang, String subtitles, String runTime){
         super(id, title, date);
         this.director = director;
@@ -22,9 +25,17 @@ public class Movie extends MediaItem{
         this.runTime = runTime;
     }
 
-    public boolean isEqual(Movie movie){
-        return super.isEqual(movie) && director.equals(movie.director) && producer.equals(movie.producer) &&
-                actor.equals(movie.actor) && lang.equals(movie.lang) && subtitles.equals(movie.subtitles) &&
-                runTime.equals(movie.runTime);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movie)) return false;
+        if (!super.equals(o)) return false;
+        Movie movie = (Movie) o;
+        return Objects.equals(director, movie.director) &&
+                Objects.equals(producer, movie.producer) &&
+                Objects.equals(actor, movie.actor) &&
+                Objects.equals(lang, movie.lang) &&
+                Objects.equals(subtitles, movie.subtitles) &&
+                Objects.equals(runTime, movie.runTime);
     }
 }

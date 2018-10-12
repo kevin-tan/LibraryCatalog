@@ -1,6 +1,8 @@
 package com.soen343.project.repository.entity.catalog;
 
-public abstract class PrintedItem extends ItemSpecification{
+import java.util.Objects;
+
+public abstract class PrintedItem extends ItemSpecification {
 
     private String publisher;
     private String pubDate;
@@ -18,8 +20,16 @@ public abstract class PrintedItem extends ItemSpecification{
         this.isbn13 = isbn13;
     }
 
-    public boolean isEqual(PrintedItem printedItem){
-        return super.isEqual(printedItem) && publisher.equals(printedItem.publisher) && pubDate.equals(printedItem.pubDate) &&
-                lang.equals(printedItem.lang) && isbn10.equals(printedItem.isbn10) && isbn13.equals(printedItem.isbn13);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PrintedItem)) return false;
+        if (!super.equals(o)) return false;
+        PrintedItem that = (PrintedItem) o;
+        return Objects.equals(publisher, that.publisher) &&
+                Objects.equals(pubDate, that.pubDate) &&
+                Objects.equals(lang, that.lang) &&
+                Objects.equals(isbn10, that.isbn10) &&
+                Objects.equals(isbn13, that.isbn13);
     }
 }
