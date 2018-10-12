@@ -13,4 +13,17 @@ export class RegisterService {
   register(user: User) {
     return this._http.post<any>(this._url, user);
   }
+
+
+  userModel = new User('jeff', 'jeff', 'Jeffrey','Li', 'jeffreyli16@hotmail.com', '5145829225', 'test');
+
+  constructor(private _registerService: RegisterService){}
+
+  onSubmit() {
+    this._registerService.register(this.userModel)
+      .subscribe(
+        data => console.log('Success!', data),
+        error => console.log('Error!', error)
+      )
+  }
 }
