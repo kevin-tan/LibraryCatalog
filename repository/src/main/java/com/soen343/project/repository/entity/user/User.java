@@ -19,24 +19,22 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public abstract class User implements DatabaseEntity {
 
     private Long id;
-
     private String firstName;
     private String lastName;
     private String physicalAddress;
     private String email;
     private String phoneNumber;
-    private String username;
     private String password;
+
     User() {}
 
-    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String username, String password) {
+    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.physicalAddress = physicalAddress;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.username=username;
         this.password=password;
     }
 
@@ -47,7 +45,6 @@ public abstract class User implements DatabaseEntity {
         columnValues += PHYSICAL_ADDRESS + " = '" + physicalAddress + "', ";
         columnValues += EMAIL + " = '" + email + "', ";
         columnValues += PHONE_NUMBER + " = '" + phoneNumber + "', ";
-        columnValues += USERNAME + " = '" + username + "', ";
         columnValues += PASSWORD + " = '" + password + "'";
 
         return columnValues;
@@ -56,7 +53,7 @@ public abstract class User implements DatabaseEntity {
     @Override
     public String toSQLValue() {
         return "('" + firstName + "','" + lastName + "','" + physicalAddress + "','" + email + "','" +
-               phoneNumber + "','" + getClass().getSimpleName() + "','" + username + "','" + password +"')";
+               phoneNumber + "','" + getClass().getSimpleName() + "','" + password +"')";
     }
 
     @Override
