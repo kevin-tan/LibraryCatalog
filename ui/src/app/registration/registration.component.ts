@@ -14,7 +14,7 @@ export class RegistrationComponent implements OnInit {
   ngOnInit() {
   }
 
-  userModel = new User('1','jeffreyli16@hotmail.com', 'jeff', 'Jeffrey','Li','5145829225', 'test');
+  userModel = new User(undefined,undefined,undefined,undefined,undefined,undefined,undefined);
 
   constructor(private _registerService: RegisterService){}
 
