@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
@@ -33,11 +34,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().exceptionHandling()
+        http.cors().and().csrf().disable().exceptionHandling()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("Admin")
-                .antMatchers("/admin/**").access("hasRole('Admin')")
+                .antMatchers("/admin/**").hasAuthority("Admin")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -58,6 +58,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
                 .usersByUsernameQuery("SELECT email as username, password, true from User where email=?")
                 .authoritiesByUsernameQuery("SELECT email as username, userType as role from User where email=?");
     }
+
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
+                .allowedHeaders("Authorization", "Cache-Control", "Content-Type");
+    }
+
 
 }
 
