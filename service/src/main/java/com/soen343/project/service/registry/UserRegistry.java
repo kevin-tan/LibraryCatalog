@@ -17,7 +17,7 @@ public class UserRegistry implements Observer<User> {
     private final RecordDatabase recordDatabase;
     private final AuthenticationService authenticationService;
 
-    private List<ActiveUser> activeUsers;
+    List<ActiveUser> activeUsers;
 
     @Autowired
     public UserRegistry(RecordDatabase recordDatabase, AuthenticationService authenticationService) {
