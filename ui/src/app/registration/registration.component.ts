@@ -10,8 +10,6 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class RegistrationComponent implements OnInit {
 
-  title = 'ui';
-
   ngOnInit() {
   }
 
