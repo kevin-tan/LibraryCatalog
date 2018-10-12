@@ -8,8 +8,6 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class LoginComponent implements OnInit {
 
-  title = 'ui';
-
   constructor(private http: HttpClient) {
   }
 

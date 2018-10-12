@@ -9,8 +9,6 @@ import { RegisterService } from './register.service';
 })
 export class RegistrationComponent implements OnInit {
 
-  title = 'ui';
-
   ngOnInit() {
   }
 
