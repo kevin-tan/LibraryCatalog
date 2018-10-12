@@ -50,9 +50,11 @@
 
         <p>Enter your admin credentials</p>
 
-        <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+        <form #registerForm="ngForm">
 
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="adminID" required name="adminID" ngModel></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="username" #username  username.value=''></p>
+          <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="password" #password  password.value=''></p>
+
           <br>
           <p>Enter credentials for the new user</p>
           <p><input class="w3-input w3-padding-16" type="text" placeholder="ID" required name="ID" [(ngModel)]="userModel.id"></p>
@@ -63,7 +65,7 @@
           <p><input class="w3-input w3-padding-16" type="text" placeholder="Phone number" required name="phoneNumber" [(ngModel)]="userModel.phoneNumber"></p>
           <p><input class="w3-input w3-padding-16" type="text" placeholder="Address" required name="address" [(ngModel)]="userModel.address"></p>
           <p>
-            <button class="w3-button w3-light-grey w3-padding-large" type="submit">
+            <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="register(username.value, password.value)">
               <i class="fa fa-paper-plane"></i> Register
             </button>
           </p>
