@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
+import { User } from "./user";
+import { RegisterService } from './register.service';
+
 
 @Component({
   selector: 'app-root',
@@ -8,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
 
   constructor(private http: HttpClient) { }
 
