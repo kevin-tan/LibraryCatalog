@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html>
-  <title>Library Catalog SOEN343</title>
+  <title>Library Catalog</title>
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -86,16 +86,16 @@
 
           <p>Enter your credentials to login</p>
 
-          <form action="/action_page.php" target="_blank">
-            <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="Email"></p>
-            <p><input class="w3-input w3-padding-16" type="text" placeholder="Password" required name="Password"></p>
+          <form>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="username" #username username.value=''></p>
+            <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="password" #password  password.value=''></p>
             <p>
-              <button class="w3-button w3-light-grey w3-padding-large" type="submit">
+              <button class="w3-button w3-light-grey w3-padding-large" type="button" (click)="login(username.value, password.value)">
                 <i class="fa fa-paper-plane"></i> Login
               </button>
             </p>
           </form>
-          <!-- End Login Section -->
+           End Login Section
         </div>
 
         <!-- Footer -->
