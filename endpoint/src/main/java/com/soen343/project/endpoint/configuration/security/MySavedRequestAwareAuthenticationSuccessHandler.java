@@ -20,24 +20,21 @@ public class MySavedRequestAwareAuthenticationSuccessHandler extends SimpleUrlAu
 
     private RequestCache requestCache = new HttpSessionRequestCache();
 
-
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request,
-                                        HttpServletResponse response, Authentication authentication)
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws ServletException, IOException {
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
         if (savedRequest == null) {
-            super.onAuthenticationSuccess(request, response, authentication);
-
+            clearAuthenticationAttributes(request);
             return;
         }
+
         String targetUrlParameter = getTargetUrlParameter();
-        if (isAlwaysUseDefaultTargetUrl()
-                || (targetUrlParameter != null && StringUtils.hasText(request
-                .getParameter(targetUrlParameter)))) {
+        if (isAlwaysUseDefaultTargetUrl() ||
+            (targetUrlParameter != null && StringUtils.hasText(request.getParameter(targetUrlParameter)))) {
             requestCache.removeRequest(request, response);
-            super.onAuthenticationSuccess(request, response, authentication);
+            clearAuthenticationAttributes(request);
 
             return;
         }

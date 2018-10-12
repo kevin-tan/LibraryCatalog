@@ -22,48 +22,48 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
     private final BasicAuthEntryPoint basicAuthEntryPoint;
 
     @Autowired
-    public WebSecurityConfiguration(BasicAuthEntryPoint basicAuthEntryPoint){
-        this.basicAuthEntryPoint=basicAuthEntryPoint;
+    public WebSecurityConfiguration(BasicAuthEntryPoint basicAuthEntryPoint) {
+        this.basicAuthEntryPoint = basicAuthEntryPoint;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable().exceptionHandling()
-                    .and()
+        http.csrf().disable().exceptionHandling()
+                .and()
                 .authorizeRequests()
-//                    .antMatchers("/admin/**").hasRole("ADMIN")
-//                    .antMatchers("/admin/**").access("hasRole('ADMIN')")
-                    .anyRequest().authenticated()
-                    .and()
-                .httpBasic()
-                .authenticationEntryPoint(basicAuthEntryPoint)
-                    .and()
+//              .antMatchers("/admin/**").hasRole("ADMIN")
+//              .antMatchers("/admin/**").access("hasRole('ADMIN')")
+                .anyRequest()
+                .authenticated()
+                .and()
                 .formLogin()
-                    .successHandler(mySuccessHandler())
-                    .failureHandler(myFailureHandler())
-                    .and()
+                .successHandler(mySuccessHandler())
+                .failureHandler(myFailureHandler())
+                .and()
                 .logout()
-                ;
+                .and()
+                .httpBasic()
+                .authenticationEntryPoint(basicAuthEntryPoint);
     }
 
     @Autowired
-    public void configAuthentication(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception{
-        auth.jdbcAuthentication().dataSource(dataSource).usersByUsernameQuery("SELECT username, password, true from User where username=?").authoritiesByUsernameQuery("SELECT username, userType as role from User where username=?");
+    public void configAuthentication(AuthenticationManagerBuilder auth, DataSource dataSource) throws Exception {
+        auth.jdbcAuthentication().dataSource(dataSource).usersByUsernameQuery("SELECT username, password, true from User where username=?")
+                .authoritiesByUsernameQuery("SELECT username, userType as role from User where username=?");
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SimpleUrlAuthenticationFailureHandler myFailureHandler(){
+    public SimpleUrlAuthenticationFailureHandler myFailureHandler() {
         return new SimpleUrlAuthenticationFailureHandler();
     }
 
     @Bean
-    public MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler(){
+    public MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler() {
         return new MySavedRequestAwareAuthenticationSuccessHandler();
     }
 
