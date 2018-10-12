@@ -27,7 +27,7 @@ public class ExampleController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/admin/getAll")
     public ResponseEntity<?> getAll(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
