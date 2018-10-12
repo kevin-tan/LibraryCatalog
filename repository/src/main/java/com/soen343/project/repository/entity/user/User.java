@@ -23,16 +23,19 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
-
+    private String username;
+    private String password;
     User() {}
 
-    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
+    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String username, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.physicalAddress = physicalAddress;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.username=username;
+        this.password=password;
     }
 
     @Override
@@ -41,14 +44,17 @@ public abstract class User implements DatabaseEntity {
         columnValues += LAST_NAME + " = '" + lastName + "', ";
         columnValues += PHYSICAL_ADDRESS + " = '" + physicalAddress + "', ";
         columnValues += EMAIL + " = '" + email + "', ";
-        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "'";
+        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "', ";
+        columnValues += USERNAME + " = '" + username + "', ";
+        columnValues += PASSWORD + " = '" + password + "'";
+
         return columnValues;
     }
 
     @Override
     public String toSQLValue() {
         return "('" + firstName + "','" + lastName + "','" + physicalAddress + "','" + email + "','" +
-               phoneNumber + "','" + getClass().getSimpleName() + "')";
+               phoneNumber + "','" + getClass().getSimpleName() + "','" + username + "','" + password +"')";
     }
 
     @Override
