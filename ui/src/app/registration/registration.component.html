@@ -1,29 +1,75 @@
 <html>
-  <!-- Register Section -->
-  <div class="w3-padding-64 w3-content w3-text-grey" id="Register">
-    <h2 class="w3-text-light-grey">Register</h2>
-    <hr style="width:200px" class="w3-opacity">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <p>Enter your admin credentials</p>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+  <body class="w3-black">
+    <div>
+      <!-- Side Bar -->
+      <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+        <a href="" class="w3-bar-item w3-button w3-padding-large w3-black">
+          <i class="fa fa-home w3-xxlarge"></i>
+          <p>HOME</p>
+        </a>
 
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="adminID" required name="adminID" ngModel></p>
-      <br>
-      <p>Enter credentials for the new user</p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="ID" required name="ID" [(ngModel)]="userModel.id"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="newUser" [(ngModel)]="userModel.email"></p>
-      <p><input class="w3-input w3-padding-16" type="password" Placeholder="Password" required name="newPassword" [(ngModel)]="userModel.password"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="First name" required name="firstName" [(ngModel)]="userModel.firstName"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Last name" required name="lastName" [(ngModel)]="userModel.lastName"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Phone number" required name="phoneNumber" [(ngModel)]="userModel.phoneNumber"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Address" required name="address" [(ngModel)]="userModel.address"></p>
-      <p>
-        <button class="w3-button w3-light-grey w3-padding-large" type="submit">
-          <i class="fa fa-paper-plane"></i> Register
-        </button>
-      </p>
-    </form>
-    <!-- End Register Section -->
-  </div>
+        <a href="login" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+          <i class="fa fa-sign-in w3-xxlarge"></i>
+          <p>Login</p>
+        </a>
+        <a href="register" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+          <i class="fa fa-sign-in w3-xxlarge"></i>
+          <p>Register</p>
+        </a>
+      </nav>
+    </div>
+    <!-- end of side bar -->
+
+    <!-- Navbar on small screens (Hidden on medium and large screens) -->
+    <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+      <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+        <a href="" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
+        <a href="login" class="w3-bar-item w3-button" style="width:25% !important">LOGIN</a>
+        <a href="register" class="w3-bar-item w3-button" style="width:25% !important">REGISTER</a>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="w3-padding-large" id="main">
+      <!-- Header/Home -->
+      <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+        <h1 class="w3-jumbo">Library Catalog</h1>
+        <p>Welcome to library catalog.</p>
+      </header>
+      <!-- Register Section -->
+      <div class="w3-padding-64 w3-content w3-text-grey" id="Register">
+        <h2 class="w3-text-light-grey">Register</h2>
+        <hr style="width:200px" class="w3-opacity">
+
+        <p>Enter your admin credentials</p>
+
+        <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="adminID" required name="adminID" ngModel></p>
+          <br>
+          <p>Enter credentials for the new user</p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="ID" required name="ID" [(ngModel)]="userModel.id"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="newUser" [(ngModel)]="userModel.email"></p>
+          <p><input class="w3-input w3-padding-16" type="password" Placeholder="Password" required name="newPassword" [(ngModel)]="userModel.password"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="First name" required name="firstName" [(ngModel)]="userModel.firstName"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Last name" required name="lastName" [(ngModel)]="userModel.lastName"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Phone number" required name="phoneNumber" [(ngModel)]="userModel.phoneNumber"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Address" required name="address" [(ngModel)]="userModel.address"></p>
+          <p>
+            <button class="w3-button w3-light-grey w3-padding-large" type="submit">
+              <i class="fa fa-paper-plane"></i> Register
+            </button>
+          </p>
+        </form>
+        <!-- End Register Section -->
+      </div>
+    </div>
+  </body>
 </html>
