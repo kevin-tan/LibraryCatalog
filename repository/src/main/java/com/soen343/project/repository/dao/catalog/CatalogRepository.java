@@ -30,7 +30,7 @@ public class CatalogRepository {
 
     public ItemSpecification findItemSpec(ItemSpecification itemSpec){
         for(int i = 0; i < itemSpecs.size(); i++){
-            if(itemSpecs.get(i).isEqual(itemSpec)){
+            if(itemSpecs.get(i).equals(itemSpec)){
                 return itemSpecs.get(i);
             }
         }
