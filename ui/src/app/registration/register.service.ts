@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {User} from "./user";
+import { HttpClient } from "@angular/common/http";
+import { User } from "./user";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
 
-  _url = 'http://localhost:4020/';
+  _url = 'http://localhost:8080/app/v1/register';
   constructor(private _http: HttpClient) { }
 
   register(user: User) {
