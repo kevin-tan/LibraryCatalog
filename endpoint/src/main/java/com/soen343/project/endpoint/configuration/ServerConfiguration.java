@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  * Created by Kevin Tan 2018-09-17
@@ -30,5 +31,14 @@ public class ServerConfiguration {
     public CreateDatabase createDatabase() {
         return new CreateDatabase(dropCreateDatabase);
     }
+
+    @Bean
+    public DriverManagerDataSource dataSource() {
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        driverManagerDataSource.setDriverClassName("org.sqlite.JDBC");
+        driverManagerDataSource.setUrl("jdbc:sqlite:data/LibraryCatalog.db");
+        return driverManagerDataSource;
+    }
+
 
 }

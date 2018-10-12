@@ -11,7 +11,7 @@ public class Client extends User {
     public Client(){}
 
     @Builder
-    public Client(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber) {
-        super(id, firstName, lastName, physicalAddress, email, phoneNumber);
+    public Client(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String username, String password) {
+        super(id, firstName, lastName, physicalAddress, email, phoneNumber, username, password);
     }
 }
