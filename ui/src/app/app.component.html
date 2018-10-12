@@ -1,20 +1,114 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<!DOCTYPE html>
+
+<html>
+  <title>Library Catalog SOEN343</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <body class="w3-black">
+
+    <div>
+      <!-- Icon Bar (Sidebar - hidden on small screens) -->
+      <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+        <!--&lt;!&ndash; Avatar image in top left corner &ndash;&gt;-->
+        <!--<img src="" style="width:100%">-->
+        <a href="#" class="w3-bar-item w3-button w3-padding-large w3-black">
+          <i class="fa fa-home w3-xxlarge"></i>
+          <p>HOME</p>
+        </a>
+
+        <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+          <i class="fa fa-sign-in w3-xxlarge"></i>
+          <p>Login</p>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Navbar on small screens (Hidden on medium and large screens) -->
+    <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+      <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+        <a href="#" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
+        <a href="#about" class="w3-bar-item w3-button" style="width:25% !important">ABOUT</a>
+        <a href="#photos" class="w3-bar-item w3-button" style="width:25% !important">PHOTOS</a>
+        <a href="#contact" class="w3-bar-item w3-button" style="width:25% !important">CONTACT</a>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="w3-padding-large" id="main">
+      <!-- Header/Home -->
+      <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+        <h1 class="w3-jumbo">Library Catalog</h1>
+        <p>Welcome to library catalog.</p>
+      </header>
+
+      <!-- About Catalog Section -->
+      <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+        <h2 class="w3-text-light-grey">Catalog</h2>
+        <hr style="width:200px" class="w3-opacity">
+        <p>catalog catalog catalog catalog catalog catalog catalog catalog catalog catalog
+        </p>
+
+        <!-- Library Catalog Items -->
+        <h3 class="w3-padding-16 w3-text-light-grey">Catalog Items</h3>
+        <div class="w3-row-padding" style="margin:0 -16px">
+          <div class="w3-half w3-margin-bottom">
+            <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
+              <li class="w3-dark-grey w3-xlarge w3-padding-32">Printed Items</li>
+              <li class="w3-padding-16">Magazines</li>
+              <li class="w3-padding-16">Books</li>
+              <li class="w3-light-grey w3-padding-24">
+                <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
+              </li>
+            </ul>
+          </div>
+
+          <div class="w3-half">
+            <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
+              <li class="w3-dark-grey w3-xlarge w3-padding-32">Media Items</li>
+              <li class="w3-padding-16">Music</li>
+              <li class="w3-padding-16">Movie</li>
+              <li class="w3-light-grey w3-padding-24">
+                <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
+              </li>
+            </ul>
+          </div>
+          <!-- End Library Catalog Items -->
+        </div>
+      </div>
+
+        <!-- Login Section -->
+        <div class="w3-padding-64 w3-content w3-text-grey" id="contact">
+          <h2 class="w3-text-light-grey">Login</h2>
+          <hr style="width:200px" class="w3-opacity">
+
+          <p>Enter your credentials to login</p>
+
+          <form action="/action_page.php" target="_blank">
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="Email"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Password" required name="Password"></p>
+            <p>
+              <button class="w3-button w3-light-grey w3-padding-large" type="submit">
+                <i class="fa fa-paper-plane"></i> Login
+              </button>
+            </p>
+          </form>
+          <!-- End Login Section -->
+        </div>
+
+        <!-- Footer -->
+        <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+          <p class="w3-medium">Created by SOEN343 team#10</p>
+          <!-- End footer -->
+        </footer>
+
+        <!-- END PAGE CONTENT -->
+      </div>
+    </body>
+</html>
 
