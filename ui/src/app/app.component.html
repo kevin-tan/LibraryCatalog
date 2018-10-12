@@ -105,12 +105,22 @@
 
           <p>Enter your admin credentials</p>
 
-          <form action="/action_page.php" target="_blank">
-            <p><input class="w3-input w3-padding-16" type="text" placeholder="adminID" required name="adminID"></p>
+          <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+
+            {{ registerForm.value | json}}
+            <hr />
+            {{userModel | json}}
+
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="adminID" required name="adminID" ngModel></p>
             <br>
             <p>Enter credentials for the new user</p>
-            <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="newUser"></p>
-            <p><input class ="w3-input w3-padding-16" type="text" Placeholder="Password" required name="newPassword"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="newUser" [(ngModel)]="userModel.username"></p>
+            <p><input class ="w3-input w3-padding-16" type="password" Placeholder="Password" required name="newPassword" [(ngModel)]="userModel.password"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="First name" required name="firstName" [(ngModel)]="userModel.firstName"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Last name" required name="lastName" [(ngModel)]="userModel.lastName"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="email" [(ngModel)]="userModel.email"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Phone number" required name="phoneNumber" [(ngModel)]="userModel.phoneNumber"></p>
+            <p><input class="w3-input w3-padding-16" type="text" placeholder="Address" required name="address" [(ngModel)]="userModel.address"></p>
             <p>
               <button class="w3-button w3-light-grey w3-padding-large" type="submit">
                 <i class="fa fa-paper-plane"></i> Register
