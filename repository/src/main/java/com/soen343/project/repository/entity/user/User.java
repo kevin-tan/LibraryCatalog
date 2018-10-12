@@ -1,11 +1,11 @@
 package com.soen343.project.repository.entity.user;
 
-import com.soen343.project.database.base.DatabaseEntity;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.soen343.project.database.base.DatabaseEntity;
+import lombok.Data;
+
+import java.util.List;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -15,9 +15,7 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
-@JsonSubTypes({@JsonSubTypes.Type(value = Admin.class, name = "Admin"),
-        @JsonSubTypes.Type(value = Client.class, name = "Client")
-})
+@JsonSubTypes({@JsonSubTypes.Type(value = Admin.class, name = "Admin"), @JsonSubTypes.Type(value = Client.class, name = "Client")})
 public abstract class User implements DatabaseEntity {
 
     private Long id;
@@ -27,22 +25,19 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
+    private String username;
+    private String password;
+    User() {}
 
-    @Setter(AccessLevel.NONE)
-    private final String userType;
-
-    User(String userType) {
-        this.userType = userType;
-    }
-
-    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String userType) {
+    User(Long id, String firstName, String lastName, String physicalAddress, String email, String phoneNumber, String username, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.physicalAddress = physicalAddress;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.userType = userType;
+        this.username=username;
+        this.password=password;
     }
 
     @Override
@@ -51,18 +46,31 @@ public abstract class User implements DatabaseEntity {
         columnValues += LAST_NAME + " = '" + lastName + "', ";
         columnValues += PHYSICAL_ADDRESS + " = '" + physicalAddress + "', ";
         columnValues += EMAIL + " = '" + email + "', ";
-        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "'";
+        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "', ";
+        columnValues += USERNAME + " = '" + username + "', ";
+        columnValues += PASSWORD + " = '" + password + "'";
+
         return columnValues;
     }
 
     @Override
     public String toSQLValue() {
-        return "(" + "'" + firstName + "'," + "'" + lastName + "'," + "'" + physicalAddress + "'," + "'" + email + "'," + "'" +
-               phoneNumber + "'," + "'" + userType + "')";
+        return "('" + firstName + "','" + lastName + "','" + physicalAddress + "','" + email + "','" +
+               phoneNumber + "','" + getClass().getSimpleName() + "','" + username + "','" + password +"')";
     }
 
     @Override
     public Long getId() {
         return id;
+    }
+
+    public String getUserType() {
+        return getClass().getSimpleName();
+    }
+
+    public boolean isUniqueFrom(List<User> users) {
+        return users.stream().noneMatch(userInList ->
+                email.equals(userInList.email) || phoneNumber.equals(userInList.phoneNumber)
+        );
     }
 }

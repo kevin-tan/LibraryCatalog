@@ -28,9 +28,9 @@ public class RecordDatabaseController {
     /**
      * Use case: Registration
      */
-    @PostMapping("/admin/{id}/register")
-    public ResponseEntity<?> registerUser(@PathVariable Long id, @RequestBody User user) {
-        return recordDatabase.registerUser(id, user);
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        return new ResponseEntity<>(recordDatabase.register(user), HttpStatus.OK);
     }
 
 }

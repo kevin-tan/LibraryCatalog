@@ -64,6 +64,7 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<User> findAll() {
         return (List<User>) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), rs -> {
             List<DatabaseEntity> list = new ArrayList<>();
