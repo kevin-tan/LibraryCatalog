@@ -2,6 +2,9 @@ package com.soen343.project.database.connection;
 
 import com.soen343.project.database.DatabaseConstants;
 import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.database.connection.operation.DatabaseBatchOperation;
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
+import com.soen343.project.database.connection.operation.DatabaseScript;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +18,7 @@ import java.util.List;
 
 public class DatabaseConnector {
 
-    private DatabaseConnector(){}
+    private DatabaseConnector() {}
 
     static {
         // Load JDBC driver when DatabaseConnector class is loaded
@@ -26,16 +29,26 @@ public class DatabaseConnector {
         }
     }
 
-    public static void executeDatabaseOperation(DatabaseOperation databaseOperation) {
+    public static void executeDatabaseScript(DatabaseScript databaseScript) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
-            databaseOperation.execute(connection);
+            databaseScript.execute(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void executeBatchOperation(DatabaseBatchOperation databaseBatchOperation) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
+            databaseBatchOperation.execute(statement); // Execute batch statements
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static void executeUpdate(String update) {
-        executeDatabaseOperation(connection -> {
+        executeDatabaseScript(connection -> {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
             statement.executeUpdate(update);

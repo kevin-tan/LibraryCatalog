@@ -4,9 +4,11 @@ import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
+import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,14 +23,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ExampleController {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public ExampleController(UserRepository userRepository) {
+    public ExampleController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping("/admin/getAll")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() {
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
@@ -48,7 +52,7 @@ public class ExampleController {
     @GetMapping("/test/addNewUser")
     public ResponseEntity<?> addNewUser() {
         Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
-                .physicalAddress("888 Test").password("bigboss").build();
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         userRepository.save(admin);
         return new ResponseEntity<>(userRepository.findById(2L), HttpStatus.OK);
     }
@@ -88,5 +92,34 @@ public class ExampleController {
         User admin = userRepository.findById(id);
         userRepository.delete(admin);
         return new ResponseEntity<>(admin, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/test/batch")
+    public ResponseEntity<?> batch(){
+        UnitOfWork<User> uow = new UnitOfWork<>();
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin1 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test1@hotmail.com").phoneNumber("514-Test1")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        uow.registerCreate(admin);
+        uow.registerCreate(admin1);
+        uow.registerDelete(userRepository.findAll().get(0));
+        uow.commit();
+        return new ResponseEntity<>("It worked.", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveAll")
+    public ResponseEntity<?> saveAll(){
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin1 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test1@hotmail.com").phoneNumber("514-Test1")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin2 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test2@hotmail.com").phoneNumber("514-Test2")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin3 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test3@hotmail.com").phoneNumber("514-Test3")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        userRepository.saveAll(admin, admin1, admin2, admin3);
+        return new ResponseEntity<>("It worked.", HttpStatus.OK);
     }
 }

@@ -38,7 +38,7 @@ public class CreateDatabase {
     public void createTable() {
         if (createTable) {
             System.err.println("Executing scripts...");
-            DatabaseConnector.executeDatabaseOperation(
+            DatabaseConnector.executeDatabaseScript(
                     (connection) -> dbScripts.forEach(resource -> ScriptUtils.executeSqlScript(connection, resource)));
         }
     }
