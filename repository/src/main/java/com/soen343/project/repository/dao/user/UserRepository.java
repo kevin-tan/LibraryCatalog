@@ -5,6 +5,7 @@ import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
+import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,21 +27,22 @@ import static com.soen343.project.repository.entity.user.types.UserType.CLIENT;
 public class UserRepository implements Repository<User> {
 
     @Override
-    public synchronized void save(User entity) {
-        executeUpdate(createSaveQuery(USER_TABLE_WITH_COLUMNS, entity.toSQLValue()));
+    public void save(User entity) {
+        executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
     }
 
     @Override
-    public synchronized void saveAll(User... entities) {
-        //TODO Cleanup to execute single query instead of multiple
+    public void saveAll(User... entities) {
+        UnitOfWork<User> uow = new UnitOfWork<>();
         for (User entity : entities) {
-            save(entity);
+            uow.registerCreate(entity);
         }
+        uow.commit();
     }
 
     @Override
-    public synchronized void delete(User entity) {
-        executeUpdate(createDeleteQuery(USER_TABLE, entity.getId()));
+    public void delete(User entity) {
+        executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
     }
 
     @Override
@@ -85,7 +87,7 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public synchronized void update(User entity) {
-        executeUpdate(createUpdateQuery(USER_TABLE, entity.sqlUpdateValues(), entity.getId()));
+    public void update(User entity) {
+        executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
     }
 }

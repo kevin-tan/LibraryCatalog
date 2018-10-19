@@ -1,9 +1,12 @@
 package com.soen343.project.repository.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
+    @Getter(AccessLevel.NONE)
     private String password;
 
     User() {}
@@ -35,7 +39,7 @@ public abstract class User implements DatabaseEntity {
         this.physicalAddress = physicalAddress;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.password=password;
+        this.password = password;
     }
 
     @Override
@@ -51,9 +55,10 @@ public abstract class User implements DatabaseEntity {
     }
 
     @Override
+    @JsonIgnore
     public String toSQLValue() {
-        return "('" + firstName + "','" + lastName + "','" + physicalAddress + "','" + email + "','" +
-               phoneNumber + "','" + getClass().getSimpleName() + "','" + password +"')";
+        return "('" + firstName + "','" + lastName + "','" + physicalAddress + "','" + email + "','" + phoneNumber + "','" +
+               getClass().getSimpleName() + "','" + password + "')";
     }
 
     @Override
@@ -61,13 +66,23 @@ public abstract class User implements DatabaseEntity {
         return id;
     }
 
+    @Override
+    @JsonIgnore
+    public String getTable() {
+        return USER_TABLE;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getTableWithColumns(){
+        return USER_TABLE_WITH_COLUMNS;
+    }
+
     public String getUserType() {
         return getClass().getSimpleName();
     }
 
     public boolean isUniqueFrom(List<User> users) {
-        return users.stream().noneMatch(userInList ->
-                email.equals(userInList.email) || phoneNumber.equals(userInList.phoneNumber)
-        );
+        return users.stream().noneMatch(userInList -> email.equals(userInList.email) || phoneNumber.equals(userInList.phoneNumber));
     }
 }

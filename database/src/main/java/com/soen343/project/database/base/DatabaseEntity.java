@@ -11,4 +11,8 @@ public interface DatabaseEntity {
     String toSQLValue();
 
     Long getId();
+
+    String getTable();
+
+    String getTableWithColumns();
 }

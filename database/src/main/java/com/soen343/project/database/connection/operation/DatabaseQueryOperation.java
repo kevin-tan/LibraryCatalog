@@ -1,4 +1,4 @@
-package com.soen343.project.database.connection;
+package com.soen343.project.database.connection.operation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
