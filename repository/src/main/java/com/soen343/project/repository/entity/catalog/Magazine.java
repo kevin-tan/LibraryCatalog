@@ -1,7 +1,11 @@
 package com.soen343.project.repository.entity.catalog;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class Magazine extends PrintedItem {
 
     @Builder

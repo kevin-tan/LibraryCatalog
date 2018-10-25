@@ -1,7 +1,14 @@
 package com.soen343.project.repository.entity.catalog;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
+@Data
+@JsonSubTypes({@JsonSubTypes.Type(value = Book.class, name = "Book"), @JsonSubTypes.Type(value = Magazine.class, name = "Magazine")})
+@NoArgsConstructor
 public abstract class PrintedItem extends ItemSpecification {
 
     private String publisher;
