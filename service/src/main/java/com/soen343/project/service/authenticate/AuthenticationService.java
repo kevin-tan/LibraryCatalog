@@ -12,7 +12,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
 
     @Autowired
-    AuthenticationService(UserRepository userRepository) {
+    public AuthenticationService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
