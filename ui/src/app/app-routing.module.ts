@@ -4,11 +4,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
 import {CatalogComponent} from "./Catalog/catalog.component";
+import {LoginRedirectService} from "./login/login-redirect.service";
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalog', pathMatch: 'full'},
   { path: 'register', component: RegistrationComponent},
-  { path: 'login', component: LoginComponent},
+  { path: 'login', component: LoginComponent, canActivate: [LoginRedirectService]},
   { path: 'catalog', component: CatalogComponent}
 ];
 
