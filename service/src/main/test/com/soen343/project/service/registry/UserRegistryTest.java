@@ -11,11 +11,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRegistryTest {
@@ -55,7 +56,7 @@ public class UserRegistryTest {
 
     @Test
     public void testUpdate_activeUserRemoved() {
-        User user = new Client(1L, "", "", "", "", "", "", "");
+        User user = new Client(1L, "", "", "", "", "", "");
 
         expectedActiveUsers.remove(0);
         userRegistry.update(user);
@@ -64,7 +65,7 @@ public class UserRegistryTest {
 
     @Test
     public void testUpdate_activeUserAdded() {
-        User user = new Client(6L, "", "", "", "", "", "", "");
+        User user = new Client(6L, "", "", "", "", "", "");
 
         expectedActiveUsers.add(new ActiveUser(6L));
         userRegistry.update(user);
