@@ -1,9 +1,13 @@
 package com.soen343.project.repository.entity.catalog;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 public class Book extends PrintedItem {
 
     private String author;
