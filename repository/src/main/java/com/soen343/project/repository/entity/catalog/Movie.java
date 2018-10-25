@@ -1,10 +1,14 @@
 package com.soen343.project.repository.entity.catalog;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 public class Movie extends MediaItem {
     private String director;
     private String producer;

@@ -1,10 +1,14 @@
 package com.soen343.project.repository.entity.catalog;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 public class Music extends MediaItem {
     private String type;
     private String artist;
