@@ -1,7 +1,8 @@
-package com.soen343.project.service.registry;
 
 import com.soen343.project.repository.entity.catalog.Item;
 import com.soen343.project.repository.entity.catalog.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.Music;
+import com.soen343.project.service.catalog.Catalog;
 import com.soen343.project.service.database.RecordDatabase;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ public class CatalogTest {
     private RecordDatabase recordDatabase;
     private Catalog catalog;
     private List <Item> expectedItems;
+    private ItemSpecification spec;
 
 
     @Before
@@ -29,40 +31,40 @@ public class CatalogTest {
         catalog = new Catalog(recordDatabase);
         expectedItems= new LinkedList();
         for (long i = 1; i < 6; i++) {
-        Item item = new Item(i);
-        catalog.item.add(item);
-        expectedItems.add(item);
+            spec = new Music(i,"",null,"","","","");
+            Item item = new Item(i, spec);
+            expectedItems.add(item);
+            catalog.addCatalogItem(spec);
         }
     }
 
     @Test
     public void testUpdate_ItemEdited(){
-        Item item = new Item ("3","");
-        expectedItems.update(1);
-        catalog.update(item);
-        assertThat(catalog.item, is(expectedItems));
+        Item item = new Item (1L,spec);
+        expectedItems.set(0,item);
+        catalog.editItem(1L,spec);
+        assertThat(catalog.getAllItem(), is(expectedItems));
     }
 
     @Test
     public void testUpdate_ItemDeleted(){
-        Item item = new Item ("1","");
         expectedItems.remove(0);
-        catalog.update(item);
-        assertThat(catalog.item, is(expectedItems));
+        catalog.deleteCatalogItem(1L);
+        assertThat(catalog.getAllItem(), is(expectedItems));
     }
 
     @Test
     public void testUpdate_ItemAdded(){
-        Item item = new Item ("8","");
-        expectedItems.add(new Item(8));
-        catalog.update(item);
-        assertThat(catalog.item, is(expectedItems));
-    }
-    
-    @Test
-    public void testGetAllItem(){
-        assertThat(catalog.getAllItem(), is(expectedItems))
+        Item item = new Item (6L,spec);
+        expectedItems.add(item);
+        catalog.addCatalogItem(spec);
+        assertThat(catalog.getAllItem(), is(expectedItems));
     }
 
-    }
+    @Test
+    public void testGetAllItem(){
+        assertThat(catalog.getAllItem(), is(expectedItems));
+   }
+
+}
 
