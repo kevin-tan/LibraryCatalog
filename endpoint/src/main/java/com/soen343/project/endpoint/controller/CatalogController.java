@@ -29,17 +29,20 @@ public class CatalogController {
 
     @PostMapping("/catalog/modify")
     public ResponseEntity<?> modifyItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
-        return new ResponseEntity<>(catalog.modifyCatalogItem(sessionID, itemSpec), HttpStatus.OK);
+        catalog.modifyCatalogItem(sessionID, itemSpec);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/catalog/add")
     public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
-        return new ResponseEntity<>(catalog.addCatalogItem(sessionID, itemSpec), HttpStatus.OK);
+        catalog.addCatalogItem(sessionID, itemSpec);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/catalog/delete/{itemID}")
     public ResponseEntity<?> deleteItem(@PathVariable Long itemID, @RequestBody String sessionID){
-        return new ResponseEntity<>(catalog.deleteCatalogItem(sessionID, itemID), HttpStatus.OK);
+        catalog.deleteCatalogItem(sessionID, itemID);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/catalog/save")

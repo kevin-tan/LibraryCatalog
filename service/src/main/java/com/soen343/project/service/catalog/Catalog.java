@@ -29,30 +29,28 @@ public class Catalog {
         return sessionID;
     }
 
-    public List<Item> modifyCatalogItem(String sessionID, ItemSpecification itemSpec) {
+    public void modifyCatalogItem(String sessionID, ItemSpecification itemSpec) {
         CatalogSession session = getSession(sessionID);
         session.updateEntry(itemSpec);
-        return getAllItems();
     }
 
-    public List<Item> addCatalogItem(String sessionID, ItemSpecification itemSpec) {
+    public void addCatalogItem(String sessionID, ItemSpecification itemSpec) {
         Item itemToAdd = recordDatabase.createItem(itemSpec);
         CatalogSession session = getSession(sessionID);
         session.addEntry(itemToAdd);
-        return getAllItems();
     }
 
-    public List<Item> deleteCatalogItem(String sessionID, Long itemID) {
+    public void deleteCatalogItem(String sessionID, Long itemID) {
         Item itemToDelete = recordDatabase.getItem(itemID);
         CatalogSession session = getSession(sessionID);
         session.removeEntry(itemToDelete);
-        return getAllItems();
     }
 
-    public boolean endSession(String sessionID) {
+    public List<Item> endSession(String sessionID) {
         CatalogSession session = getSession(sessionID);
         session.endSession();
-        return catalogSessions.remove(session);
+        catalogSessions.remove(session);
+        return getAllItems();
     }
 
     public List<Item> getAllItems(){
