@@ -29,14 +29,28 @@ public class Catalog {
         return sessionID;
     }
 
+    public List<Item> deleteCatalogItem(String sessionID, Long itemID) {
+        Item itemToDelete = recordDatabase.getItem(itemID);
+        CatalogSession session = getSession(sessionID);
+        session.removeEntry(itemToDelete);
+        return getAllItems();
+    }
+
     public boolean endSession(String sessionID) {
-        CatalogSession session = catalogSessions.stream()
+        CatalogSession session = getSession(sessionID);
+        session.endSession();
+        return catalogSessions.remove(session);
+    }
+
+    private CatalogSession getSession(String sessionID) {
+        return catalogSessions.stream()
                 .filter(s -> s.getId().equals(sessionID))
                 .findAny()
                 .orElse(null);
+    }
 
-        session.endSession();
-        return catalogSessions.remove(session);
+    private List<Item> getAllItems(){
+        return recordDatabase.findAllItems();
     }
 
 /*    public List<Item> editItem(long itemID, ItemSpecification itemSpec){
@@ -54,7 +68,5 @@ public class Catalog {
         return getAllItem();
     }
 
-    public List<Item> getAllItem(){
-        return recordDatabase.findAllItem();
-    }*/
+    */
 }

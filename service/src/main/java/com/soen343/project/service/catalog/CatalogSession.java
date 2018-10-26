@@ -19,4 +19,8 @@ class CatalogSession {
     void endSession() {
         itemUnitOfWork.commit();
     }
+
+    void removeEntry(Item item) {
+        itemUnitOfWork.registerDelete(item);
+    }
 }

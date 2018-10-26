@@ -1,6 +1,7 @@
 package com.soen343.project.service.database;
 
 import com.soen343.project.repository.dao.catalog.CatalogRepository;
+import com.soen343.project.repository.dao.catalog.ItemRepository;
 import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.entity.catalog.Item;
 import com.soen343.project.repository.entity.catalog.ItemSpecification;
@@ -17,12 +18,14 @@ import java.util.List;
 public class RecordDatabase {
 
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
     private final CatalogRepository catalogRepository;
 
     @Autowired
-    public RecordDatabase(UserRepository userRepository, CatalogRepository catalogRepository) {
+    public RecordDatabase(UserRepository userRepository, CatalogRepository catalogRepository, ItemRepository itemRepository) {
         this.userRepository = userRepository;
         this.catalogRepository = catalogRepository;
+        this.itemRepository = itemRepository;
     }
 
     public List<User> register(User userToRegister) {
@@ -35,6 +38,14 @@ public class RecordDatabase {
             return null;
         }
 
+    }
+
+    public Item getItem(Long itemID) {
+        return itemRepository.findById(itemID);
+    }
+
+    public List<Item> findAllItems(){
+        return itemRepository.findAll();
     }
 
 /*    public void updateItem(long itemID, ItemSpecification itemSpec){
@@ -64,11 +75,6 @@ public class RecordDatabase {
             catalogRepository.createItem(itemSpec);
     }
 
-    public Item getItem(long itemID){
-        return catalogRepository.findItem(itemID);
-    }
 
-    public List<Item> findAllItem(){
-        return catalogRepository.findAll();
-    }*/
+    */
 }
