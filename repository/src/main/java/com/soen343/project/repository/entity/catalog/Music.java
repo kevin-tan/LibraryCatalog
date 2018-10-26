@@ -1,9 +1,12 @@
 package com.soen343.project.repository.entity.catalog;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import static com.soen343.project.repository.entity.EntityConstants.*;
 
 public class Music extends MediaItem {
     private String type;
@@ -31,5 +34,41 @@ public class Music extends MediaItem {
                 Objects.equals(artist, music.artist) &&
                 Objects.equals(label, music.label) &&
                 Objects.equals(asin, music.asin);
+    }
+
+    @Override
+    public String sqlUpdateValues() {
+        String columnValues = TITLE + " = '" + getTitle() + "', ";
+        columnValues += RELEASEDATE + " = '" + getReleaseDate() + "', ";
+        columnValues += TYPE + " = '" + type + "', ";
+        columnValues += ARTIST + " = '" + artist + "', ";
+        columnValues += LABEL + " = '" + label + "', ";
+        columnValues += ASIN + " = '" + asin + "'";
+
+        return columnValues;
+    }
+
+    @Override
+    @JsonIgnore
+    public String toSQLValue() {
+        return "('" + getTitle() + "','" + getReleaseDate() + "','" + type + "','" + artist + "','" + label + "','" +
+                asin + "')";
+    }
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
+    @Override
+    @JsonIgnore
+    public String getTable() {
+        return MUSIC_TABLE;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getTableWithColumns(){
+        return MUSIC_TABLE_WITH_COLUMNS;
     }
 }

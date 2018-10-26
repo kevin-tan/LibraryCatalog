@@ -23,7 +23,7 @@ public class CatalogController {
         this.catalog = catalog;
     }
 
-    @PostMapping("/catalog/modify/{itemID}")
+/*    @PostMapping("/catalog/modify/{itemID}")
     public ResponseEntity<?> modifyItem(@PathVariable Long id, @PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){
         return new ResponseEntity<>(catalog.editItem(itemID, itemSpec), HttpStatus.OK);
     }
@@ -41,5 +41,5 @@ public class CatalogController {
     @PostMapping("/catalog")
     public ResponseEntity<?> viewCatalogInventory(@PathVariable Long id){
         return new ResponseEntity<>(catalog.getAllItem(), HttpStatus.OK);
-    }
+    }*/
 }

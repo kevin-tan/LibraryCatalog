@@ -1,88 +1,88 @@
 package com.soen343.project.repository.dao.catalog;
 
-import com.soen343.project.repository.entity.catalog.Item;
+import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.entity.catalog.ItemSpecification;
+import com.soen343.project.repository.entity.user.Admin;
+import com.soen343.project.repository.entity.user.Client;
+import com.soen343.project.repository.entity.user.User;
+import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.soen343.project.database.connection.DatabaseConnector.executeQuery;
+import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
+import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+import static com.soen343.project.database.query.QueryBuilder.*;
+import static com.soen343.project.repository.entity.EntityConstants.*;
+
 @Component
-public class CatalogRepository {
+public class CatalogRepository implements Repository<ItemSpecification> {
 
-    private static int itemIDs = 1;
-    private static int itemSpecIDs = 1;
-    private List<Item> items = new ArrayList<>();
-    private List<ItemSpecification> itemSpecs = new ArrayList<>();
-
-    public List<Item> findAll(){
-        return items;
+    @Override
+    public void save(ItemSpecification entity) {
+        executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
     }
 
-    public Item findItem(long itemID){
-        for(int i = 0; i < items.size(); i++){
-            if(items.get(i).getId() == itemID){
-                return items.get(i);
-            }
+    @Override
+    public void saveAll(ItemSpecification... entities) {
+        UnitOfWork<ItemSpecification> uow = new UnitOfWork<>();
+        for (ItemSpecification entity : entities) {
+            uow.registerCreate(entity);
         }
-        return null;
+        uow.commit();
     }
 
-    public ItemSpecification findItemSpec(ItemSpecification itemSpec){
-        for(int i = 0; i < itemSpecs.size(); i++){
-            if(itemSpecs.get(i).equals(itemSpec)){
-                return itemSpecs.get(i);
-            }
-        }
-        return null;
+    @Override
+    public void delete(ItemSpecification entity) {
+        executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
     }
 
-    public void update(Item item, ItemSpecification itemSpec){
-        ItemSpecification oldSpec = item.getSpec();
-        item.setSpec(itemSpec);
-
-        for(int i = 0; i < items.size(); i++){
-            if(items.get(i).getSpec() == oldSpec){
-                return;
-            }
-        }
-        for(int i = 0; i < itemSpecs.size(); i++){
-            if(itemSpecs.get(i) == oldSpec){
-                itemSpecs.remove(i);
-                return;
-            }
-        }
+    @Override
+    public ItemSpecification findById(Long id) {
+        return (ItemSpecification) executeQuery(createFindByIdQuery(USER_TABLE, id), rs -> {
+            /*while (rs.next()) {
+                if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
+                    return Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
+                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
+                }
+                else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
+                    return Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
+                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
+                }
+            }*/
+            //Should never be reached
+            return null;
+        });
     }
 
-    public void addItemSpec(ItemSpecification itemSpec){
-        itemSpec.setId(itemSpecIDs++);
-        itemSpecs.add(itemSpec);
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ItemSpecification> findAll() {
+        return (List<ItemSpecification>) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), rs -> {
+            List<DatabaseEntity> list = new ArrayList<>();
+            /*while (rs.next()) {
+                if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
+                    list.add(Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
+                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build());
+                }
+                else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
+                    list.add(Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
+                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build());
+                }
+            }*/
+            return list;
+        });
     }
 
-    public void createItem(ItemSpecification itemSpec){
-        items.add(new Item(itemIDs++, itemSpec));
-    }
-
-    public void remove(Item item){
-        ItemSpecification spec = null;
-        //Delete the item
-        for(int i = 0; i < items.size(); i++){
-            if(items.get(i).getId() == item.getId()){
-                spec = items.get(i).getSpec();
-                items.remove(i);
-            }
-        }
-        //Checks if there are any items that references the spec of the deleted item
-        for(int i = 0; i < items.size(); i++){
-            if(spec == items.get(i).getSpec()){
-                return;
-            }
-        }
-        //If not, then delete the spec
-        for(int i = 0; i < itemSpecs.size(); i++){
-            if(spec == itemSpecs.get(i)){
-                itemSpecs.remove(i);
-            }
-        }
+    @Override
+    public void update(ItemSpecification entity) {
+        executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
     }
 }

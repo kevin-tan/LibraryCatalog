@@ -1,6 +1,9 @@
 package com.soen343.project.repository.entity.catalog;
 
+import lombok.Data;
+
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public abstract class MediaItem extends ItemSpecification {
@@ -11,6 +14,11 @@ public abstract class MediaItem extends ItemSpecification {
     public MediaItem(long id, String title, ZonedDateTime releaseDate){
         super(id, title);
         this.releaseDate = releaseDate;
+    }
+
+    public String getReleaseDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM. dd yyyy");
+        return releaseDate.format(formatter);
     }
 
     @Override

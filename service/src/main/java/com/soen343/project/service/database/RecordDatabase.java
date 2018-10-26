@@ -37,7 +37,7 @@ public class RecordDatabase {
 
     }
 
-    public void updateItem(long itemID, ItemSpecification itemSpec){
+/*    public void updateItem(long itemID, ItemSpecification itemSpec){
         Item item = catalogRepository.findItem(itemID);
         ItemSpecification spec = catalogRepository.findItemSpec(itemSpec);
 
@@ -70,5 +70,5 @@ public class RecordDatabase {
 
     public List<Item> findAllItem(){
         return catalogRepository.findAll();
-    }
+    }*/
 }

@@ -18,7 +18,7 @@ public class Catalog {
         this.recordDatabase = recordDatabase;
     }
 
-    public List<Item> editItem(long itemID, ItemSpecification itemSpec){
+/*    public List<Item> editItem(long itemID, ItemSpecification itemSpec){
         recordDatabase.updateItem(itemID, itemSpec);
         return getAllItem();
     }
@@ -35,5 +35,5 @@ public class Catalog {
 
     public List<Item> getAllItem(){
         return recordDatabase.findAllItem();
-    }
+    }*/
 }
