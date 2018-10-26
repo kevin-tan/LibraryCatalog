@@ -6,6 +6,7 @@ import com.soen343.project.service.database.RecordDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,12 +20,23 @@ public class Catalog {
     @Autowired
     public Catalog(RecordDatabase recordDatabase){
         this.recordDatabase = recordDatabase;
+        this.catalogSessions = new ArrayList<>();
     }
 
     public String createNewSession() {
         String sessionID = UUID.randomUUID().toString();
         catalogSessions.add(new CatalogSession(sessionID));
         return sessionID;
+    }
+
+    public boolean endSession(String sessionID) {
+        CatalogSession session = catalogSessions.stream()
+                .filter(s -> s.getId().equals(sessionID))
+                .findAny()
+                .orElse(null);
+
+        session.endSession();
+        return catalogSessions.remove(session);
     }
 
 /*    public List<Item> editItem(long itemID, ItemSpecification itemSpec){

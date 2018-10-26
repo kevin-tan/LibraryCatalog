@@ -27,6 +27,11 @@ public class CatalogController {
         return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
     }
 
+    @PostMapping("/catalog/save")
+    public ResponseEntity<?> save(@RequestBody String sessionID){
+        return new ResponseEntity<>(catalog.endSession(sessionID), HttpStatus.OK);
+    }
+
     /*
     @PostMapping("/catalog/modify/{itemID}")
     public ResponseEntity<?> modifyItem(@PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){

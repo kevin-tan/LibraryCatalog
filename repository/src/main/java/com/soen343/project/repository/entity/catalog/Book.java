@@ -18,7 +18,7 @@ public class Book extends PrintedItem {
     private int pages;
 
     public enum Format {
-        PAPERBACK, HARDCOVER;
+        PAPERBACK, HARDCOVER
     }
 
     @Builder
