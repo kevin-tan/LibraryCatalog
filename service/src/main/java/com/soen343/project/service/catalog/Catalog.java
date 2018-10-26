@@ -29,6 +29,12 @@ public class Catalog {
         return sessionID;
     }
 
+    public List<Item> modifyCatalogItem(String sessionID, ItemSpecification itemSpec) {
+        CatalogSession session = getSession(sessionID);
+        session.updateEntry(itemSpec);
+        return getAllItems();
+    }
+
     public List<Item> addCatalogItem(String sessionID, ItemSpecification itemSpec) {
         Item itemToAdd = recordDatabase.createItem(itemSpec);
         CatalogSession session = getSession(sessionID);
@@ -49,6 +55,10 @@ public class Catalog {
         return catalogSessions.remove(session);
     }
 
+    public List<Item> getAllItems(){
+        return recordDatabase.findAllItems();
+    }
+
     private CatalogSession getSession(String sessionID) {
         return catalogSessions.stream()
                 .filter(s -> s.getId().equals(sessionID))
@@ -56,24 +66,4 @@ public class Catalog {
                 .orElse(null);
     }
 
-    private List<Item> getAllItems(){
-        return recordDatabase.findAllItems();
-    }
-
-/*    public List<Item> editItem(long itemID, ItemSpecification itemSpec){
-        recordDatabase.updateItem(itemID, itemSpec);
-        return getAllItem();
-    }
-
-    public List<Item> deleteCatalogItem(long itemID){
-        recordDatabase.removeItem(itemID);
-        return getAllItem();
-    }
-
-    public List<Item> addCatalogItem(ItemSpecification itemSpec){
-        recordDatabase.insertCatalogItem(itemSpec);
-        return getAllItem();
-    }
-
-    */
 }

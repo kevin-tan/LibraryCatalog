@@ -27,6 +27,11 @@ public class CatalogController {
         return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
     }
 
+    @PostMapping("/catalog/modify")
+    public ResponseEntity<?> modifyItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
+        return new ResponseEntity<>(catalog.modifyCatalogItem(sessionID, itemSpec), HttpStatus.OK);
+    }
+
     @PostMapping("/catalog/add")
     public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
         return new ResponseEntity<>(catalog.addCatalogItem(sessionID, itemSpec), HttpStatus.OK);
@@ -42,14 +47,9 @@ public class CatalogController {
         return new ResponseEntity<>(catalog.endSession(sessionID), HttpStatus.OK);
     }
 
-    /*
-    @PostMapping("/catalog/modify/{itemID}")
-    public ResponseEntity<?> modifyItem(@PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){
-        return new ResponseEntity<>(catalog.editItem(itemID, itemSpec), HttpStatus.OK);
-    }
-
     @PostMapping("/catalog")
     public ResponseEntity<?> viewCatalogInventory(){
-        return new ResponseEntity<>(catalog.getAllItem(), HttpStatus.OK);
-    }*/
+        return new ResponseEntity<>(catalog.getAllItems(), HttpStatus.OK);
+    }
+
 }
