@@ -23,7 +23,14 @@ public class CatalogController {
         this.catalog = catalog;
     }
 
-/*    @PostMapping("/catalog/modify/{itemID}")
+
+    @PostMapping("/catalog/edit")
+    public ResponseEntity<?> editCatalog(){
+        return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
+    }
+
+    /*
+    @PostMapping("/catalog/modify/{itemID}")
     public ResponseEntity<?> modifyItem(@PathVariable Long id, @PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){
         return new ResponseEntity<>(catalog.editItem(itemID, itemSpec), HttpStatus.OK);
     }

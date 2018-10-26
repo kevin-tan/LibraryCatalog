@@ -7,15 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class Catalog {
 
     private final RecordDatabase recordDatabase;
 
+    private List<CatalogSession> catalogSessions;
+
     @Autowired
     public Catalog(RecordDatabase recordDatabase){
         this.recordDatabase = recordDatabase;
+    }
+
+    public String createNewSession() {
+        String sessionID = UUID.randomUUID().toString();
+        catalogSessions.add(new CatalogSession(sessionID));
+        return sessionID;
     }
 
 /*    public List<Item> editItem(long itemID, ItemSpecification itemSpec){
