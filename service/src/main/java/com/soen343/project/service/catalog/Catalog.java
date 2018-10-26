@@ -29,6 +29,13 @@ public class Catalog {
         return sessionID;
     }
 
+    public List<Item> addCatalogItem(String sessionID, ItemSpecification itemSpec) {
+        Item itemToAdd = recordDatabase.createItem(itemSpec);
+        CatalogSession session = getSession(sessionID);
+        session.addEntry(itemToAdd);
+        return getAllItems();
+    }
+
     public List<Item> deleteCatalogItem(String sessionID, Long itemID) {
         Item itemToDelete = recordDatabase.getItem(itemID);
         CatalogSession session = getSession(sessionID);

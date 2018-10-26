@@ -18,6 +18,10 @@ public class Item implements DatabaseEntity {
         this.spec = spec;
     }
 
+    public Item(ItemSpecification spec) {
+        this.spec = spec;
+    }
+
     @Override
     public String sqlUpdateValues() {
         String columnValues = ITEMSPECID + " = '" + spec.getId() + "', ";

@@ -27,6 +27,11 @@ public class CatalogController {
         return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
     }
 
+    @PostMapping("/catalog/add")
+    public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
+        return new ResponseEntity<>(catalog.addCatalogItem(sessionID, itemSpec), HttpStatus.OK);
+    }
+
     @PostMapping("/catalog/delete/{itemID}")
     public ResponseEntity<?> deleteItem(@PathVariable Long itemID, @RequestBody String sessionID){
         return new ResponseEntity<>(catalog.deleteCatalogItem(sessionID, itemID), HttpStatus.OK);
@@ -41,12 +46,6 @@ public class CatalogController {
     @PostMapping("/catalog/modify/{itemID}")
     public ResponseEntity<?> modifyItem(@PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){
         return new ResponseEntity<>(catalog.editItem(itemID, itemSpec), HttpStatus.OK);
-    }
-
-
-    @PostMapping("/catalog/add")
-    public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec){
-        return new ResponseEntity<>(catalog.addCatalogItem(itemSpec), HttpStatus.OK);
     }
 
     @PostMapping("/catalog")

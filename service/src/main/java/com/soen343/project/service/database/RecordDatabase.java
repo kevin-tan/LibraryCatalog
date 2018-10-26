@@ -40,6 +40,10 @@ public class RecordDatabase {
 
     }
 
+    public Item createItem(ItemSpecification itemSpec) {
+        return new Item(itemSpec);
+    }
+
     public Item getItem(Long itemID) {
         return itemRepository.findById(itemID);
     }

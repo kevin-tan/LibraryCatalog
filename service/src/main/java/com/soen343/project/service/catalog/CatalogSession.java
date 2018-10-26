@@ -16,11 +16,15 @@ class CatalogSession {
         this.itemUnitOfWork = new UnitOfWork<>();
     }
 
-    void endSession() {
-        itemUnitOfWork.commit();
+    void addEntry(Item item) {
+        itemUnitOfWork.registerCreate(item);
     }
 
     void removeEntry(Item item) {
         itemUnitOfWork.registerDelete(item);
+    }
+
+    void endSession() {
+        itemUnitOfWork.commit();
     }
 }
