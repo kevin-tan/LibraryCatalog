@@ -21,7 +21,7 @@ import {LoginRedirectService} from "./login/login-redirect.service";
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   providers: [LoginRedirectService],
   bootstrap: [AppComponent]

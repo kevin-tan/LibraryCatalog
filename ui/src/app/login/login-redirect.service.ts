@@ -10,7 +10,7 @@ export class LoginRedirectService implements CanActivate{
   }
   canActivate(): boolean{
     if(this.getStatus()== true){
-      this.router.navigate(['home']);
+      this.router.navigateByUrl('/home');
       return false;
     }else{
       return true;

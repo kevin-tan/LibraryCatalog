@@ -5,12 +5,15 @@ import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
 import {CatalogComponent} from "./Catalog/catalog.component";
 import {LoginRedirectService} from "./login/login-redirect.service";
+import {HomeComponent} from "./Home/home.component";
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalog', pathMatch: 'full'},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent, canActivate: [LoginRedirectService]},
-  { path: 'catalog', component: CatalogComponent}
+  { path: 'catalog', component: CatalogComponent},
+  { path: 'home', component: HomeComponent}
 ];
 
 @NgModule({
@@ -21,7 +24,9 @@ const routes: Routes = [
   exports: [
     RouterModule
   ],
-  declarations: []
+  declarations: [
+    HomeComponent
+  ]
 })
 export class AppRoutingModule { }
 export const routingComponents = [RegistrationComponent, LoginComponent, CatalogComponent]
