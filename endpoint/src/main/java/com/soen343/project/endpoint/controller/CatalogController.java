@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/admin")
 public class CatalogController {
@@ -31,22 +29,22 @@ public class CatalogController {
 
     /*
     @PostMapping("/catalog/modify/{itemID}")
-    public ResponseEntity<?> modifyItem(@PathVariable Long id, @PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){
+    public ResponseEntity<?> modifyItem(@PathVariable Long itemID, @RequestBody ItemSpecification itemSpec){
         return new ResponseEntity<>(catalog.editItem(itemID, itemSpec), HttpStatus.OK);
     }
 
     @PostMapping("/catalog/delete/{itemID}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long id, @PathVariable Long itemID){
+    public ResponseEntity<?> deleteItem(@PathVariable Long itemID){
         return new ResponseEntity<>(catalog.deleteCatalogItem(itemID), HttpStatus.OK);
     }
 
     @PostMapping("/catalog/add")
-    public ResponseEntity<?> addItem(@PathVariable Long id, @RequestBody ItemSpecification itemSpec){
+    public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec){
         return new ResponseEntity<>(catalog.addCatalogItem(itemSpec), HttpStatus.OK);
     }
 
     @PostMapping("/catalog")
-    public ResponseEntity<?> viewCatalogInventory(@PathVariable Long id){
+    public ResponseEntity<?> viewCatalogInventory(){
         return new ResponseEntity<>(catalog.getAllItem(), HttpStatus.OK);
     }*/
 }

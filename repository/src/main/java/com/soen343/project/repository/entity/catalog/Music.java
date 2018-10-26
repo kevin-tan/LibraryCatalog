@@ -2,12 +2,16 @@ package com.soen343.project.repository.entity.catalog;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
+@Data
+@NoArgsConstructor
 public class Music extends MediaItem {
     private String type;
     private String artist;

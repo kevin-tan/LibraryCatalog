@@ -2,9 +2,13 @@ package com.soen343.project.repository.entity.catalog;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
+@Data
+@NoArgsConstructor
 public class Magazine extends PrintedItem {
 
     @Builder

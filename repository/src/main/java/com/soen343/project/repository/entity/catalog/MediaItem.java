@@ -1,11 +1,16 @@
 package com.soen343.project.repository.entity.catalog;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@Data
+@JsonSubTypes({@JsonSubTypes.Type(value = Movie.class, name = "Movie"), @JsonSubTypes.Type(value = Music.class, name = "Music")})
+@NoArgsConstructor
 public abstract class MediaItem extends ItemSpecification {
 
     //In the form 'Oct. 20 2009'
