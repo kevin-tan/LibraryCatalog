@@ -13,12 +13,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class CatalogTest {
@@ -75,22 +76,62 @@ public class CatalogTest {
 
     @Test
     public void testUpdate_ItemDeleted() {
+
+        // Setup expected
         expectedItems.remove(0);
+
+        // Mocks
+        when(recordDatabase.findAllItem()).thenReturn(items);
+        Mockito.doAnswer((invocation) -> {
+            items.remove(0);
+            return null;
+        }).when(recordDatabase).removeItem(anyLong());
+
+        //Update catalog for the item
         catalog.deleteCatalogItem(1L);
-        assertThat(catalog.getAllItem(), is(expectedItems));
+
+        verify(recordDatabase,times(1)).removeItem(1L);
+
+        for (int i = 0; i < catalog.getAllItem().size(); i++) {
+            assertEquals(catalog.getAllItem().get(i).getId(), expectedItems.get(i).getId());
+            assertEquals(catalog.getAllItem().get(i).getSpec().getId(), expectedItems.get(i).getSpec().getId());
+        }
+
     }
 
     @Test
     public void testUpdate_ItemAdded() {
-//        Item item = new Item(6L, spec);
-//        expectedItems.add(item);
-//        catalog.addCatalogItem(spec);
-        assertThat(catalog.getAllItem(), is(expectedItems));
+        //Create new item to be added
+        ItemSpecification spec = new Music(6L, "", null, "", "", "", "");
+        Item item = new Item(6L, spec);
+        //Setup expected
+        expectedItems.add(item);
+
+        //Mocks
+        when(recordDatabase.findAllItem()).thenReturn(items);
+        Mockito.doAnswer((invocation) -> {
+            items.add(item);
+            return null;
+        }).when(recordDatabase).insertCatalogItem(item.getSpec());
+
+        //Update catalog for the item
+        catalog.addCatalogItem(spec);
+
+        verify(recordDatabase,times(1)).insertCatalogItem(item.getSpec());
+
+        for (int i = 0; i < catalog.getAllItem().size(); i++) {
+            assertEquals(catalog.getAllItem().get(i).getId(), expectedItems.get(i).getId());
+            assertEquals(catalog.getAllItem().get(i).getSpec().getId(), expectedItems.get(i).getSpec().getId());
+        }
     }
 
     @Test
     public void testGetAllItem() {
-        assertThat(catalog.getAllItem(), is(expectedItems));
+
+        for (int i = 0; i < catalog.getAllItem().size(); i++) {
+            assertEquals(catalog.getAllItem().get(i).getId(), expectedItems.get(i).getId());
+            assertEquals(catalog.getAllItem().get(i).getSpec().getId(), expectedItems.get(i).getSpec().getId());
+        }
     }
 
 }
