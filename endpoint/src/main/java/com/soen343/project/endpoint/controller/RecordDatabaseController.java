@@ -1,6 +1,8 @@
 package com.soen343.project.endpoint.controller;
 
 
+import com.soen343.project.repository.entity.user.Admin;
+import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.service.database.RecordDatabase;
 import com.soen343.project.repository.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/app/v1")
+@RequestMapping("/admin")
 public class RecordDatabaseController {
 
     private final RecordDatabase recordDatabase;
@@ -33,6 +35,6 @@ public class RecordDatabaseController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         return new ResponseEntity<>(recordDatabase.register(user), HttpStatus.OK);
-    }
 
+    }
 }

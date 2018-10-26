@@ -13,7 +13,7 @@ export class RegistrationComponent implements OnInit {
   ngOnInit() {
   }
 
-  userModel = new User(undefined,undefined,undefined,undefined,undefined,undefined,undefined);
+  //userModel = new User(undefined,undefined,undefined,undefined,undefined,undefined,undefined);
 
   // constructor(private _registerService: RegisterService){}
   //
@@ -29,10 +29,12 @@ export class RegistrationComponent implements OnInit {
   constructor(private http: HttpClient) {
   }
 
-  register(username: string, password: string) {
+  register(username: string, password: string, userType: string, id: string, email: string, newUserPassword: string, firstName: string, lastName: string, phoneNumber: string, address: string) {
+    console.log(userType, id, email, newUserPassword, firstName, lastName, phoneNumber, address);
+    let Admin = "Admin:{"+id + ", " + email + ", "+newUserPassword+", "+firstName+", "+lastName+", "+phoneNumber+", "+address+"}";
     let headers = new HttpHeaders({"Authorization" : "Basic " + btoa(username + ":" + password)});
-    let options = {headers: headers}
-    this.http.post('http://localhost:8080/app/v1/register', this.userModel, options).subscribe(response => {
+    let options = {headers: headers};
+    this.http.post('http://localhost:8080/admin/register', Admin, options).subscribe(response => {
       console.log(response);
     }, err => {
       console.log(err);
