@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +22,7 @@ public class Movie extends MediaItem {
     private int runTime;
 
     @Builder
-    public Movie(long id, String title, ZonedDateTime date, String director, List<String> producers, List<String> actors
+    public Movie(long id, String title, String date, String director, List<String> producers, List<String> actors
             , List<String> dubbed, String lang, String subtitles, int runTime){
         super(id, title, date);
         this.director = director;
@@ -84,5 +83,68 @@ public class Movie extends MediaItem {
     @JsonIgnore
     public String getTableWithColumns(){
         return MOVIE_TABLE_WITH_COLUMNS;
+    }
+
+    @JsonIgnore
+    public String getProducersTable() {
+        return PRODUCERS_TABLE;
+    }
+
+    @JsonIgnore
+    public String getActorsTable() {
+        return ACTORS_TABLE;
+    }
+
+    @JsonIgnore
+    public String getDubbedTable() {
+        return DUBBED_TABLE;
+    }
+
+    @JsonIgnore
+    public String getProducersTableWithColumns() {
+        return PRODUCERS_TABLE_WITH_COLUMNS;
+    }
+
+    @JsonIgnore
+    public String getActorsTableWithColumns() {
+        return ACTORS_TABLE_WITH_COLUMNS;
+    }
+
+    @JsonIgnore
+    public String getDubbedTableWithColumns() {
+        return DUBBED_TABLE_WITH_COLUMNS;
+    }
+
+    @JsonIgnore
+    public String getProducersSQLValues() {
+        return listToSQLValues(this.producers);
+    }
+
+    @JsonIgnore
+    public String getActorsSQLValues() {
+        return listToSQLValues(this.actors);
+    }
+
+    @JsonIgnore
+    public String getDubbedSQLValues() {
+        return listToSQLValues(this.dubbed);
+    }
+
+    @JsonIgnore
+    public String listToSQLValues(List<String> items) {
+        StringBuilder values = new StringBuilder("");
+        for (String item: items){
+            values.append("('" + this.getId() + "', '" + item + "'),");
+        }
+        return values.toString().substring(0, values.length() - 1);
+    }
+
+    @JsonIgnore
+    public String listToSQLUpdateValues(List<String> items) {
+        StringBuilder values = new StringBuilder("");
+        for (String item: items){
+            values.append("('" + this.getId() + "', '" + item + "'),");
+        }
+        return values.toString().substring(0, values.length() - 1);
     }
 }

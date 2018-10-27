@@ -6,10 +6,8 @@ import com.soen343.project.database.connection.operation.DatabaseBatchOperation;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.database.connection.operation.DatabaseScript;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,6 +51,23 @@ public class DatabaseConnector {
             statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
             statement.executeUpdate(update);
         });
+    }
+
+    public static List<Long> executeUpdateAndReturnIDs(String update) {
+        List<Long> list = new ArrayList<>();
+        executeDatabaseScript(connection -> {
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds
+            statement.executeUpdate(update);
+            ResultSet rs = statement.getGeneratedKeys();
+            while (rs.next()){
+                Long id = rs.getLong(1);
+                if (id != 0){
+                    list.add(id);
+                }
+            }
+        });
+        return list;
     }
 
     public static DatabaseEntity executeQuery(String query, DatabaseQueryOperation databaseQueryOperation) {

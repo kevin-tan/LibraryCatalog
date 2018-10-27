@@ -1,4 +1,4 @@
-package com.soen343.project.repository.dao.catalog;
+package com.soen343.project.repository.dao.catalog.item;
 
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.repository.dao.Repository;
@@ -45,9 +45,10 @@ public class ItemRepository implements Repository<Item> {
         executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
     }
 
+    //TODO
     @Override
     public Item findById(Long id) {
-        return (Item) executeQuery(createFindByIdQuery(ITEMSPEC_TABLE, id), rs -> {
+        return (Item) executeQuery(createFindByIdQuery(ITEM_TABLE, id), rs -> {
             if (rs.next()) {
                 //return Item.builder().id(rs.getLong(ID)).spec(new ItemSpecification(rs.getLong(ITEMSPECID))).build();
             }
@@ -56,10 +57,11 @@ public class ItemRepository implements Repository<Item> {
         });
     }
 
+    //TODO
     @Override
     @SuppressWarnings("unchecked")
     public List<Item> findAll() {
-        return (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEMSPEC_TABLE), rs -> {
+        return (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), rs -> {
             List<DatabaseEntity> list = new ArrayList<>();
             while (rs.next()) {
                 list.add(Item.builder().id(rs.getLong(ID)).build());

@@ -18,7 +18,22 @@ public class Book extends PrintedItem {
     private int pages;
 
     public enum Format {
-        PAPERBACK, HARDCOVER
+        PAPERBACK("PAPERBACK"), HARDCOVER("HARDCOVER");
+
+        private String text;
+
+        Format(String text){
+            this.text = text;
+        }
+
+        public static Format stringToEnum(String text) {
+            for (Format format : Format.values()) {
+                if (format.text.equalsIgnoreCase(text)) {
+                    return format;
+                }
+            }
+            return null;
+        }
     }
 
     @Builder

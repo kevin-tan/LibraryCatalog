@@ -10,7 +10,8 @@ CREATE TABLE Movie (
  director varchar(255),
  language varchar(255),
  subtitles varchar(255),
- runtime varchar(255)
+ runtime varchar(255),
+ UNIQUE(title, director)
  );
 
 CREATE TABLE Producers(
@@ -24,8 +25,8 @@ FOREIGN KEY(movieId) REFERENCES Movie(id)
 CREATE TABLE Actors(
     _id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     movieId INTEGER,
-    actors varchar(255),
-    UNIQUE(movieId, actors)
+    actor varchar(255),
+    UNIQUE(movieId, actor)
 FOREIGN KEY(movieId) REFERENCES Movie(id)
 );
 

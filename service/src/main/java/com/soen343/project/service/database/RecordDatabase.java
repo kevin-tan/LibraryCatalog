@@ -1,7 +1,7 @@
 package com.soen343.project.service.database;
 
-import com.soen343.project.repository.dao.catalog.CatalogRepository;
-import com.soen343.project.repository.dao.catalog.ItemRepository;
+import com.soen343.project.repository.dao.catalog.itemspec.MovieRepository;
+import com.soen343.project.repository.dao.catalog.item.ItemRepository;
 import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.entity.catalog.Item;
 import com.soen343.project.repository.entity.catalog.ItemSpecification;
@@ -19,12 +19,12 @@ public class RecordDatabase {
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
-    private final CatalogRepository catalogRepository;
+    private final MovieRepository movieRepository;
 
     @Autowired
-    public RecordDatabase(UserRepository userRepository, CatalogRepository catalogRepository, ItemRepository itemRepository) {
+    public RecordDatabase(UserRepository userRepository, MovieRepository movieRepository, ItemRepository itemRepository) {
         this.userRepository = userRepository;
-        this.catalogRepository = catalogRepository;
+        this.movieRepository = movieRepository;
         this.itemRepository = itemRepository;
     }
 

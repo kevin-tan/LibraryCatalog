@@ -19,7 +19,7 @@ public class Music extends MediaItem {
     private String asin;
 
     @Builder
-    public Music(long id, String title, ZonedDateTime date,
+    public Music(long id, String title, String date,
                  String type, String artist, String label, String asin){
         super(id, title, date);
         this.type = type;

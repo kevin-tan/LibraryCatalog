@@ -13,17 +13,12 @@ import java.util.Objects;
 @NoArgsConstructor
 public abstract class MediaItem extends ItemSpecification {
 
-    //In the form 'Oct. 20 2009'
-    private ZonedDateTime releaseDate;
+    //In the form 'Oct 20 2009'
+    private String releaseDate;
 
-    public MediaItem(long id, String title, ZonedDateTime releaseDate){
+    public MediaItem(long id, String title, String releaseDate){
         super(id, title);
         this.releaseDate = releaseDate;
-    }
-
-    public String getReleaseDate(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM. dd yyyy");
-        return releaseDate.format(formatter);
     }
 
     @Override

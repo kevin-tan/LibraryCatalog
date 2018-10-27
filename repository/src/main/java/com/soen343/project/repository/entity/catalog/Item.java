@@ -11,11 +11,13 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public class Item implements DatabaseEntity {
     private Long id;
     private ItemSpecification spec;
+    private String type;
 
     @Builder
-    public Item(Long id, ItemSpecification spec){
+    public Item(Long id, ItemSpecification spec, String type){
         this.id = id;
         this.spec = spec;
+        this.type = type;
     }
 
     public Item(ItemSpecification spec) {
@@ -37,13 +39,13 @@ public class Item implements DatabaseEntity {
     @Override
     @JsonIgnore
     public String getTable() {
-        return ITEMSPEC_TABLE;
+        return ITEM_TABLE;
     }
 
     @Override
     @JsonIgnore
     public String getTableWithColumns(){
-        return ITEMSPEC_TABLE_WITH_COLUMNS;
+        return ITEM_TABLE_WITH_COLUMNS;
     }
 
     @Override
