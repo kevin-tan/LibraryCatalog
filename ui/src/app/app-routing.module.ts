@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
-import {CatalogComponent} from "./Catalog/catalog.component";
+import {CatalogComponent} from "./catalog/catalog.component";
 import {LoginRedirectService} from "./login/login-redirect.service";
 import {HomeComponent} from "./Home/home.component";
 
