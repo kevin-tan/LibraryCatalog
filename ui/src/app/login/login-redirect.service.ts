@@ -1,19 +1,13 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 @Injectable()
-export class LoginRedirectService implements CanActivate{
+export class LoginRedirectService{
 
-  constructor(private router: Router) {}
-  getStatus():boolean{
-    return new Boolean(sessionStorage.getItem('status')).valueOf();
+  constructor(private router: Router) {
   }
-  canActivate(): boolean{
-    if(this.getStatus()== true){
+
+  redirect(): void {
       this.router.navigateByUrl('/home');
-      return false;
-    }else{
-      return true;
-    }
   }
 }

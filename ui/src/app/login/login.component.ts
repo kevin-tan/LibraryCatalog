@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {LoginRedirectService} from "./login-redirect.service";
 
 @Component({
   selector: 'app-login',
@@ -8,7 +9,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private loginRedirectService: LoginRedirectService) {
   }
 
   login(username: string, password: string) {
@@ -16,9 +17,11 @@ export class LoginComponent implements OnInit {
     let options = {headers: headers}
     this.http.post('http://localhost:8080/app/v1/login', null, options).subscribe(response => {
       console.log(response);
+      this.loginRedirectService.redirect();
     }, err => {
       console.log(err);
     })
+
   }
 
   ngOnInit() {

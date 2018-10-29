@@ -4,14 +4,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
 import {CatalogComponent} from "./catalog/catalog.component";
-import {LoginRedirectService} from "./login/login-redirect.service";
-import {HomeComponent} from "./Home/home.component";
+import {HomeComponent} from "./home/home.component";
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalog', pathMatch: 'full'},
   { path: 'register', component: RegistrationComponent},
-  { path: 'login', component: LoginComponent, canActivate: [LoginRedirectService]},
+  { path: 'login', component: LoginComponent},
   { path: 'catalog', component: CatalogComponent},
   { path: 'home', component: HomeComponent}
 ];
@@ -23,9 +22,6 @@ const routes: Routes = [
   ],
   exports: [
     RouterModule
-  ],
-  declarations: [
-    HomeComponent
   ]
 })
 export class AppRoutingModule { }
