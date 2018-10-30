@@ -1,5 +1,6 @@
 package com.soen343.project.endpoint.controller;
 
+import com.soen343.project.database.connection.DatabaseConnector;
 import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
@@ -29,6 +30,19 @@ public class ExampleController {
     public ExampleController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    @GetMapping("/test/db")
+    public ResponseEntity<?> testDb() {
+        DatabaseConnector.executeBatchOperation((statement -> {
+            statement.executeUpdate(
+                    "INSERT INTO Movie (title, releaseDate, director, language, subtitles, runTime) VALUES ('Test', 'Test', 'Test', 'Test', 'Test', '50');");
+            long id = statement.executeQuery("SELECT LAST_INSERT_ROWID();").getInt(1);
+            statement.executeUpdate("INSERT INTO Producers (movieId, producer) VALUES (" + id + " , 'Test');");
+            statement.executeUpdate("INSERT INTO Actors (movieId, actor) VALUES (" + id + ", 'Test');");
+            statement.executeUpdate("INSERT INTO Dubbed (movieId, dub) VALUES (" + id + ", 'Test');");
+        }));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/admin/getAll")
@@ -96,7 +110,7 @@ public class ExampleController {
 
 
     @GetMapping("/test/batch")
-    public ResponseEntity<?> batch(){
+    public ResponseEntity<?> batch() {
         UnitOfWork<User> uow = new UnitOfWork<>();
         Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
                 .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
@@ -110,7 +124,7 @@ public class ExampleController {
     }
 
     @GetMapping("/test/saveAll")
-    public ResponseEntity<?> saveAll(){
+    public ResponseEntity<?> saveAll() {
         Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
                 .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         Admin admin1 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test1@hotmail.com").phoneNumber("514-Test1")

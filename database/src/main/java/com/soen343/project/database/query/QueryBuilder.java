@@ -19,6 +19,8 @@ public class QueryBuilder {
     private final static String UPDATE = "UPDATE ";
     private final static String SET = " SET ";
     private final static String DELETE = "DELETE ";
+    public final static String GET_ID_MOST_RECENT = "SELECT LAST_INSERT_ROWID();";
+    public final static int MOST_RECENT_ID_COL = 1;
 
     private final static String END_QUERY = ";";
     private final static String COMMA = ",";

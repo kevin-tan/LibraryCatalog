@@ -19,13 +19,13 @@ public class MovieRepository implements Repository<Movie> {
 
     @Override
     public void save(Movie movie) {
-        List<Long> ids = executeUpdateAndReturnIDs(createSaveQuery(movie.getTableWithColumns(), movie.toSQLValue()));
-        if (ids.size() == 1){
-                movie.setId(ids.get(0));
-                executeUpdate(createSaveQuery(movie.getProducersTableWithColumns(), movie.getProducersSQLValues()));
-                executeUpdate(createSaveQuery(movie.getActorsTableWithColumns(), movie.getActorsSQLValues()));
-                executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
-        }
+        executeBatchOperation(statement -> {
+            statement.executeUpdate(createSaveQuery(movie.getTableWithColumns(), movie.toSQLValue()));
+            movie.setId(statement.executeQuery(GET_ID_MOST_RECENT).getInt(MOST_RECENT_ID_COL));
+            statement.executeUpdate(createSaveQuery(movie.getProducersTableWithColumns(), movie.getProducersSQLValues()));
+            statement.executeUpdate(createSaveQuery(movie.getActorsTableWithColumns(), movie.getActorsSQLValues()));
+            statement.executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
+        });
     }
 
     @Override
@@ -50,8 +50,7 @@ public class MovieRepository implements Repository<Movie> {
                 List<String> producers = findAllFromForeignKey(PRODUCERS_TABLE, id);
                 List<String> actors = findAllFromForeignKey(ACTORS_TABLE, id);
                 List<String> dubbed = findAllFromForeignKey(DUBBED_TABLE, id);
-                return Movie.builder().id(rs.getLong(ID)).actors(actors)
-                        .date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
+                return Movie.builder().id(rs.getLong(ID)).actors(actors).date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
                         .dubbed(dubbed).lang(rs.getString(LANGUAGE)).producers(producers).runTime(rs.getInt(RUNTIME))
                         .subtitles(rs.getString(SUBTITLES)).title(rs.getString(TITLE)).build();
             }
@@ -71,8 +70,7 @@ public class MovieRepository implements Repository<Movie> {
                 List<String> producers = findAllFromForeignKey(PRODUCERS_TABLE, id);
                 List<String> actors = findAllFromForeignKey(ACTORS_TABLE, id);
                 List<String> dubbed = findAllFromForeignKey(DUBBED_TABLE, id);
-                movies.add(Movie.builder().id(id).actors(actors)
-                        .date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
+                movies.add(Movie.builder().id(id).actors(actors).date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
                         .dubbed(dubbed).lang(rs.getString(LANGUAGE)).producers(producers).runTime(rs.getInt(RUNTIME))
                         .subtitles(rs.getString(SUBTITLES)).title(rs.getString(TITLE)).build());
             }
@@ -93,7 +91,7 @@ public class MovieRepository implements Repository<Movie> {
         executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
     }
 
-    private List<String> findAllFromForeignKey(String table, Long key){
+    private List<String> findAllFromForeignKey(String table, Long key) {
         List<String> list = new ArrayList<>();
         executeQueryExpectMultiple(createFindByIdQuery(table, MOVIEID, key.toString()), rs -> {
             while (rs.next()) {
