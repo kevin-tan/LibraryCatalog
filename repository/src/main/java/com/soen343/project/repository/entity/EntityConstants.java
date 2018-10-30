@@ -46,7 +46,7 @@ public final class EntityConstants {
     public static final String PASSWORD = "password";
 
     //Items
-    public static final String ITEMSPECID = "itemspecificationid";
+    public static final String ITEMSPECID = "itemSpecId";
     public static final String TITLE = "title";
     public static final String RELEASEDATE = "releaseDate";
     public static final String PUBLISHER = "publisher";

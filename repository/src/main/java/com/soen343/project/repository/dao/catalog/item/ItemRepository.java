@@ -2,12 +2,16 @@ package com.soen343.project.repository.dao.catalog.item;
 
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.repository.dao.Repository;
-import com.soen343.project.repository.entity.catalog.Item;
-import com.soen343.project.repository.entity.catalog.ItemSpecification;
+import com.soen343.project.repository.dao.catalog.itemspec.BookRepository;
+import com.soen343.project.repository.dao.catalog.itemspec.MagazineRepository;
+import com.soen343.project.repository.dao.catalog.itemspec.MovieRepository;
+import com.soen343.project.repository.dao.catalog.itemspec.MusicRepository;
+import com.soen343.project.repository.entity.catalog.*;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.uow.UnitOfWork;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,12 +23,22 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 import static com.soen343.project.repository.entity.user.types.UserType.ADMIN;
 import static com.soen343.project.repository.entity.user.types.UserType.CLIENT;
 
-/**
- * Created by Kevin Tan 2018-09-23
- */
-
 @Component
 public class ItemRepository implements Repository<Item> {
+
+    private final MusicRepository musicRepository;
+    private final MagazineRepository magazineRepository;
+    private final BookRepository bookRepository;
+    private final MovieRepository movieRepository;
+
+    @Autowired
+    public ItemRepository(MusicRepository musicRepository, MagazineRepository magazineRepository,
+                          BookRepository bookRepository, MovieRepository movieRepository){
+        this.musicRepository = musicRepository;
+        this.magazineRepository = magazineRepository;
+        this.bookRepository = bookRepository;
+        this.movieRepository = movieRepository;
+    }
 
     @Override
     public void save(Item entity) {
@@ -50,7 +64,8 @@ public class ItemRepository implements Repository<Item> {
     public Item findById(Long id) {
         return (Item) executeQuery(createFindByIdQuery(ITEM_TABLE, id), rs -> {
             if (rs.next()) {
-                //return Item.builder().id(rs.getLong(ID)).spec(new ItemSpecification(rs.getLong(ITEMSPECID))).build();
+                ItemSpecification itemSpec = getItemSpec(rs.getLong(ITEMSPECID), rs.getString(TYPE));
+                return new Item(rs.getLong(ID), itemSpec);
             }
             //Should never be reached
             return null;
@@ -64,8 +79,8 @@ public class ItemRepository implements Repository<Item> {
         return (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), rs -> {
             List<DatabaseEntity> list = new ArrayList<>();
             while (rs.next()) {
-                list.add(Item.builder().id(rs.getLong(ID)).build());
-
+                ItemSpecification itemSpec = getItemSpec(rs.getLong(ITEMSPECID), rs.getString(TYPE));
+                list.add(new Item(rs.getLong(ID), itemSpec));
             }
             return list;
         });
@@ -74,5 +89,22 @@ public class ItemRepository implements Repository<Item> {
     @Override
     public void update(Item entity) {
         executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
+    }
+
+    private ItemSpecification getItemSpec(Long id, String type){
+
+
+        if (type.equalsIgnoreCase(Music.class.getSimpleName())){
+            return musicRepository.findById(id);
+        } else if (type.equalsIgnoreCase(Magazine.class.getSimpleName())){
+            return magazineRepository.findById(id);
+        } else if (type.equalsIgnoreCase(Book.class.getSimpleName())){
+            return bookRepository.findById(id);
+        } else if (type.equalsIgnoreCase(Movie.class.getSimpleName())){
+            return movieRepository.findById(id);
+        }
+
+        //Should not be reached
+        return null;
     }
 }
