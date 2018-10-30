@@ -7,7 +7,7 @@ package com.soen343.project.database.query;
 
 public class QueryBuilder {
 
-    private final static String INSERT_IGNORE_INTO = "INSERT OR IGNORE INTO ";
+    private final static String INSERT_INTO = "INSERT INTO ";
     private final static String SELECT = "SELECT ";
     private final static String ALL = " * ";
     private final static String FROM = " FROM ";
@@ -29,7 +29,7 @@ public class QueryBuilder {
 
     //INSERT INTO User VALUES (‘Big’, ‘Boss’, ‘7582 Rue Concordia’, ‘bigboss@hotmail.com’, ‘514-895-9852’, ‘Admin’);
     public static String createSaveQuery(String table, String... values) {
-        StringBuilder query = new StringBuilder(INSERT_IGNORE_INTO);
+        StringBuilder query = new StringBuilder(INSERT_INTO);
         query.append(table);
         query.append(VALUES);
         for (int i = 0; i < values.length; i++) {
