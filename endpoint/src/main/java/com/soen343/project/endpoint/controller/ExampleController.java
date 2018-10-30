@@ -1,7 +1,12 @@
 package com.soen343.project.endpoint.controller;
 
+import com.google.common.collect.Lists;
 import com.soen343.project.database.connection.DatabaseConnector;
+import com.soen343.project.database.query.QueryBuilder;
+import com.soen343.project.repository.dao.catalog.itemspec.MovieRepository;
+import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.entity.catalog.Movie;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+
 /**
  * Created by Kevin Tan 2018-09-25
  */
@@ -25,11 +32,26 @@ public class ExampleController {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MovieRepository movieRepository;
 
     @Autowired
-    public ExampleController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public ExampleController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MovieRepository movieRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.movieRepository = movieRepository;
+    }
+
+    @GetMapping("/test/movie")
+    public ResponseEntity<?> testMovie() {
+        UnitOfWork unitOfWork = new UnitOfWork();
+        Movie movie = new Movie(0L, "Test", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),
+                Lists.newArrayList("Dubbed"), "Lang", "Sub", 50);
+        Movie movie2 = new Movie(0L, "Test2", "Date2", "Director2", Lists.newArrayList("Producer2"), Lists.newArrayList("Actor2"),
+                Lists.newArrayList("Dubbed2"), "Lang2", "Sub2", 50);
+        unitOfWork.registerOperation(ItemSpecificationOperation.movieSaveOperation(movie));
+        unitOfWork.registerOperation(ItemSpecificationOperation.movieSaveOperation(movie2));
+        unitOfWork.commit();
+        return new ResponseEntity<>("Movie success", HttpStatus.OK);
     }
 
     @GetMapping("/test/db")
@@ -111,14 +133,15 @@ public class ExampleController {
 
     @GetMapping("/test/batch")
     public ResponseEntity<?> batch() {
-        UnitOfWork<User> uow = new UnitOfWork<>();
+        UnitOfWork uow = new UnitOfWork();
         Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
                 .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         Admin admin1 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test1@hotmail.com").phoneNumber("514-Test1")
                 .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
-        uow.registerCreate(admin);
-        uow.registerCreate(admin1);
-        uow.registerDelete(userRepository.findAll().get(0));
+        uow.registerOperation(statement -> executeUpdate((QueryBuilder.createSaveQuery(admin.getTableWithColumns(), admin.toSQLValue()))));
+        uow.registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(admin1.getTableWithColumns(), admin1.toSQLValue())));
+        User user = userRepository.findAll().get(0);
+        uow.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(user.getTable(), user.getId())));
         uow.commit();
         return new ResponseEntity<>("It worked.", HttpStatus.OK);
     }

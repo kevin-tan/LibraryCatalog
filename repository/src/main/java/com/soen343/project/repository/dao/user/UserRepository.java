@@ -1,6 +1,7 @@
 package com.soen343.project.repository.dao.user;
 
 import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
@@ -33,9 +34,10 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public void saveAll(User... entities) {
-        UnitOfWork<User> uow = new UnitOfWork<>();
+        UnitOfWork uow = new UnitOfWork();
         for (User entity : entities) {
-            uow.registerCreate(entity);
+            uow.registerOperation(
+                    statement -> executeUpdate(QueryBuilder.createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue())));
         }
         uow.commit();
     }

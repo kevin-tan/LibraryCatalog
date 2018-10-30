@@ -1,8 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.entity.catalog.Book;
-import com.soen343.project.repository.entity.catalog.Magazine;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +23,9 @@ public class BookRepository implements Repository<Book> {
 
     @Override
     public void saveAll(Book... books) {
-        UnitOfWork<Book> uow = new UnitOfWork<>();
+        UnitOfWork uow = new UnitOfWork();
         for (Book book : books) {
-            uow.registerCreate(book);
+            uow.registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(book.getTableWithColumns(), book.toSQLValue())));
         }
         uow.commit();
     }

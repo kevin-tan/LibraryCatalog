@@ -1,8 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.entity.catalog.Magazine;
-import com.soen343.project.repository.entity.catalog.Music;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +23,9 @@ public class MagazineRepository implements Repository<Magazine> {
 
     @Override
     public void saveAll(Magazine... magazines) {
-        UnitOfWork<Magazine> uow = new UnitOfWork<>();
+        UnitOfWork uow = new UnitOfWork();
         for (Magazine magazine : magazines) {
-            uow.registerCreate(magazine);
+            uow.registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(magazine.getTableWithColumns(), magazine.toSQLValue())));
         }
         uow.commit();
     }

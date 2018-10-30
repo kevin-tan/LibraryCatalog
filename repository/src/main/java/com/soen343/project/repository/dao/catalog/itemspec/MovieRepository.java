@@ -1,7 +1,9 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.Movie;
+import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,22 +19,19 @@ public class MovieRepository implements Repository<Movie> {
     private final static String MOVIEID = "movieId";
     private final static int COLUMNINDEX = 3;
 
+
     @Override
     public void save(Movie movie) {
-        executeBatchOperation(statement -> {
-            statement.executeUpdate(createSaveQuery(movie.getTableWithColumns(), movie.toSQLValue()));
-            movie.setId(statement.executeQuery(GET_ID_MOST_RECENT).getInt(MOST_RECENT_ID_COL));
-            statement.executeUpdate(createSaveQuery(movie.getProducersTableWithColumns(), movie.getProducersSQLValues()));
-            statement.executeUpdate(createSaveQuery(movie.getActorsTableWithColumns(), movie.getActorsSQLValues()));
-            statement.executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
-        });
+        executeBatchOperation(ItemSpecificationOperation.movieSaveOperation(movie));
     }
 
     @Override
     public void saveAll(Movie... movies) {
+        UnitOfWork uow = new UnitOfWork();
         for (Movie movie : movies) {
-            save(movie);
+            uow.registerOperation(ItemSpecificationOperation.movieSaveOperation(movie));
         }
+        uow.commit();
     }
 
     @Override
@@ -101,4 +100,6 @@ public class MovieRepository implements Repository<Movie> {
         });
         return list;
     }
+
+
 }
