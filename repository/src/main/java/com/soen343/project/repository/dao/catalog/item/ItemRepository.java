@@ -59,7 +59,6 @@ public class ItemRepository implements Repository<Item> {
         executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
     }
 
-    //TODO
     @Override
     public Item findById(Long id) {
         return (Item) executeQuery(createFindByIdQuery(ITEM_TABLE, id), rs -> {
@@ -72,7 +71,6 @@ public class ItemRepository implements Repository<Item> {
         });
     }
 
-    //TODO
     @Override
     @SuppressWarnings("unchecked")
     public List<Item> findAll() {

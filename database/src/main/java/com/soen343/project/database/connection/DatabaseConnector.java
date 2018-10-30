@@ -61,10 +61,7 @@ public class DatabaseConnector {
             statement.executeUpdate(update);
             ResultSet rs = statement.getGeneratedKeys();
             while (rs.next()){
-                Long id = rs.getLong(1);
-                if (id != 0){
-                    list.add(id);
-                }
+                list.add(rs.getLong(1));
             }
         });
         return list;

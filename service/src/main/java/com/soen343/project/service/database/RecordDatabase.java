@@ -1,6 +1,5 @@
 package com.soen343.project.service.database;
 
-import com.soen343.project.repository.dao.catalog.itemspec.MovieRepository;
 import com.soen343.project.repository.dao.catalog.item.ItemRepository;
 import com.soen343.project.repository.dao.user.UserRepository;
 import com.soen343.project.repository.entity.catalog.Item;
@@ -19,12 +18,10 @@ public class RecordDatabase {
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
-    private final MovieRepository movieRepository;
 
     @Autowired
-    public RecordDatabase(UserRepository userRepository, MovieRepository movieRepository, ItemRepository itemRepository) {
+    public RecordDatabase(UserRepository userRepository, ItemRepository itemRepository) {
         this.userRepository = userRepository;
-        this.movieRepository = movieRepository;
         this.itemRepository = itemRepository;
     }
 
@@ -51,34 +48,4 @@ public class RecordDatabase {
     public List<Item> findAllItems(){
         return itemRepository.findAll();
     }
-
-/*    public void updateItem(long itemID, ItemSpecification itemSpec){
-        Item item = catalogRepository.findItem(itemID);
-        ItemSpecification spec = catalogRepository.findItemSpec(itemSpec);
-
-        if(item != null){
-            //Creates and adds a new itemSpec
-            if(spec == null){
-                catalogRepository.addItemSpec(itemSpec);
-            }
-            catalogRepository.update(item, itemSpec);
-        }
-    }
-
-    public void removeItem(long itemID){
-        Item item = catalogRepository.findItem(itemID);
-        if(item != null){
-            catalogRepository.remove(item);
-        }
-    }
-
-    public void insertCatalogItem(ItemSpecification itemSpec){
-            if(catalogRepository.findItemSpec(itemSpec) == null){
-                catalogRepository.addItemSpec(itemSpec);
-            }
-            catalogRepository.createItem(itemSpec);
-    }
-
-
-    */
 }
