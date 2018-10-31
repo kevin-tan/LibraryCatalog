@@ -6,5 +6,5 @@ CREATE TABLE Music (
  type varchar(255),
  artist varchar(255),
  label varchar(255),
- asin varchar(255)
+ asin varchar(255) UNIQUE
  );

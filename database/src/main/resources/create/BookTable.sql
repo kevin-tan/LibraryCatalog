@@ -5,8 +5,8 @@ CREATE TABLE Book (
  publisher varchar(255),
  pubDate varchar(255),
  language varchar(255),
- isbn10 varchar(255),
- isbn13 varchar(255),
+ isbn10 varchar(255) UNIQUE ,
+ isbn13 varchar(255) UNIQUE ,
  author varchar(255),
  format varchar(255),
  pages varchar(255)
