@@ -16,7 +16,6 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 @Component
 public class MovieRepository implements Repository<Movie> {
 
-    private final static String MOVIEID = "movieId";
     private final static int COLUMNINDEX = 3;
 
 
@@ -36,10 +35,7 @@ public class MovieRepository implements Repository<Movie> {
 
     @Override
     public void delete(Movie movie) {
-        executeUpdate(createDeleteQuery(movie.getTable(), movie.getId()));
-        executeUpdate(createDeleteQuery(movie.getProducersTable(), MOVIEID, movie.getId().toString()));
-        executeUpdate(createDeleteQuery(movie.getActorsTable(), MOVIEID, movie.getId().toString()));
-        executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId().toString()));
+        executeBatchOperation(ItemSpecificationOperation.movieDeleteOperation(movie));
     }
 
     @Override
@@ -80,14 +76,7 @@ public class MovieRepository implements Repository<Movie> {
 
     @Override
     public void update(Movie movie) {
-        executeUpdate(createUpdateQuery(movie.getTable(), movie.sqlUpdateValues(), movie.getId()));
-
-        executeUpdate(createDeleteQuery(movie.getProducersTable(), MOVIEID, movie.getId().toString()));
-        executeUpdate(createDeleteQuery(movie.getActorsTable(), MOVIEID, movie.getId().toString()));
-        executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId().toString()));
-        executeUpdate(createSaveQuery(movie.getProducersTableWithColumns(), movie.getProducersSQLValues()));
-        executeUpdate(createSaveQuery(movie.getActorsTableWithColumns(), movie.getActorsSQLValues()));
-        executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
+        executeBatchOperation(ItemSpecificationOperation.movieUpdateOperation(movie));
     }
 
     private List<String> findAllFromForeignKey(String table, Long key) {
