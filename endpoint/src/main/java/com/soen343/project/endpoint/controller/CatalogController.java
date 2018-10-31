@@ -27,26 +27,26 @@ public class CatalogController {
         return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
     }
 
-    @PostMapping("/catalog/modify")
-    public ResponseEntity<?> modifyItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
+    @PostMapping("/catalog/{sessionID}/modify")
+    public ResponseEntity<?> modifyItem(@RequestBody ItemSpecification itemSpec, @PathVariable String sessionID){
         catalog.modifyCatalogItem(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/catalog/add")
-    public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec, @RequestBody String sessionID){
+    @PostMapping("/catalog/{sessionID}/add")
+    public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec, @PathVariable String sessionID){
         catalog.addCatalogItem(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/catalog/delete/{itemID}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long itemID, @RequestBody String sessionID){
+    @PostMapping("/catalog/{sessionID}/delete/{itemID}")
+    public ResponseEntity<?> deleteItem(@PathVariable Long itemID, @PathVariable String sessionID){
         catalog.deleteCatalogItem(sessionID, itemID);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/catalog/save")
-    public ResponseEntity<?> save(@RequestBody String sessionID){
+    @PostMapping("/catalog/{sessionID}/save")
+    public ResponseEntity<?> save(@PathVariable String sessionID){
         return new ResponseEntity<>(catalog.endSession(sessionID), HttpStatus.OK);
     }
 
