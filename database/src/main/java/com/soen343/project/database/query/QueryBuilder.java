@@ -19,9 +19,12 @@ public class QueryBuilder {
     private final static String UPDATE = "UPDATE ";
     private final static String SET = " SET ";
     private final static String DELETE = "DELETE ";
+    public final static String GET_ID_MOST_RECENT = "SELECT LAST_INSERT_ROWID();";
+    public final static int MOST_RECENT_ID_COL = 1;
 
     private final static String END_QUERY = ";";
     private final static String COMMA = ",";
+    private final static String QUOTE = "'";
 
     private QueryBuilder() { }
 
@@ -46,11 +49,24 @@ public class QueryBuilder {
         return SELECT + ALL + FROM + table + WHERE + ID + EQUAL + id + END_QUERY;
     }
 
+    public static String createFindByIdQuery(String table, String attribute, String value) {
+        return SELECT + ALL + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
+    }
+
     public static String createUpdateQuery(String table, String updatedValues, Long id) {
         return UPDATE + table + SET + updatedValues + WHERE + ID + EQUAL + id + END_QUERY;
     }
 
     public static String createDeleteQuery(String table, Long id) {
         return DELETE + FROM + table + WHERE + ID + EQUAL + id + END_QUERY;
+    }
+
+    public static String createDeleteQuery(String table, String attribute, String value) {
+        return DELETE + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
+    }
+
+    public static String createDeleteQuery(String table, String attribute1, String value1, String attribute2, String value2) {
+        return DELETE + FROM + table + WHERE + attribute1 + EQUAL + QUOTE + value1 + QUOTE +
+                AND + attribute2 + EQUAL + QUOTE + value2 + QUOTE + END_QUERY;
     }
 }
