@@ -2,6 +2,7 @@ package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.Music;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class MusicRepository implements Repository<Music> {
 
     @Override
     public void delete(Music music) {
-        executeUpdate(createDeleteQuery(music.getTable(), music.getId()));
+        executeBatchOperation(ItemSpecificationOperation.musicDeleteOperation(music));
     }
 
     @Override

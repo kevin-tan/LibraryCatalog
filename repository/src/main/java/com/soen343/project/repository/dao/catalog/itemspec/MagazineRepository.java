@@ -2,6 +2,7 @@ package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.Magazine;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class MagazineRepository implements Repository<Magazine> {
 
     @Override
     public void delete(Magazine magazine) {
-        executeUpdate(createDeleteQuery(magazine.getTable(), magazine.getId()));
+        executeBatchOperation(ItemSpecificationOperation.magazineDeleteOperation(magazine));
     }
 
     @Override

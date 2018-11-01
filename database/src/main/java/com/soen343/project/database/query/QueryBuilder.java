@@ -24,6 +24,7 @@ public class QueryBuilder {
 
     private final static String END_QUERY = ";";
     private final static String COMMA = ",";
+    private final static String QUOTE = "'";
 
     private QueryBuilder() { }
 
@@ -49,7 +50,7 @@ public class QueryBuilder {
     }
 
     public static String createFindByIdQuery(String table, String attribute, String value) {
-        return SELECT + ALL + FROM + table + WHERE + attribute + EQUAL + value + END_QUERY;
+        return SELECT + ALL + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
     }
 
     public static String createUpdateQuery(String table, String updatedValues, Long id) {
@@ -61,6 +62,11 @@ public class QueryBuilder {
     }
 
     public static String createDeleteQuery(String table, String attribute, String value) {
-        return DELETE + FROM + table + WHERE + attribute + EQUAL + value + END_QUERY;
+        return DELETE + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
+    }
+
+    public static String createDeleteQuery(String table, String attribute1, String value1, String attribute2, String value2) {
+        return DELETE + FROM + table + WHERE + attribute1 + EQUAL + QUOTE + value1 + QUOTE +
+                AND + attribute2 + EQUAL + QUOTE + value2 + QUOTE + END_QUERY;
     }
 }
