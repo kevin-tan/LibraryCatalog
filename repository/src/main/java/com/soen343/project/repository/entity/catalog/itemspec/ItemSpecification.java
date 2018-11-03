@@ -1,11 +1,11 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
-import lombok.AccessLevel;
+import com.soen343.project.repository.entity.catalog.itemspec.media.common.MediaItem;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.common.PrintedItem;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Objects;

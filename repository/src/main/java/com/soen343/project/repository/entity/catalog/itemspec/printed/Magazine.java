@@ -1,9 +1,13 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec.printed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.common.PrintedItem;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -12,9 +16,13 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public class Magazine extends PrintedItem {
 
     @Builder
-    public Magazine(long id, String title, String publisher, String pubDate, String lang,
-                    String isbn10, String isbn13){
+    public Magazine(long id, String title, String publisher, String pubDate, String lang, String isbn10, String isbn13) {
         super(id, title, publisher, pubDate, lang, isbn10, isbn13);
+    }
+
+    public static Magazine buildMagazine(ResultSet rs) throws SQLException {
+        return Magazine.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10)).isbn13(rs.getString(ISBN13))
+                .lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE)).publisher(rs.getString(PUBLISHER)).build();
     }
 
     @Override
@@ -40,7 +48,7 @@ public class Magazine extends PrintedItem {
     @JsonIgnore
     public String toSQLValue() {
         return "('" + getTitle() + "','" + getPublisher() + "','" + getPubDate() + "','" + getLanguage() + "','" + getIsbn10() + "','" +
-                getIsbn13() + "')";
+               getIsbn13() + "')";
     }
 
     @Override
@@ -56,7 +64,7 @@ public class Magazine extends PrintedItem {
 
     @Override
     @JsonIgnore
-    public String getTableWithColumns(){
+    public String getTableWithColumns() {
         return MAGAZINE_TABLE_WITH_COLUMNS;
     }
 }

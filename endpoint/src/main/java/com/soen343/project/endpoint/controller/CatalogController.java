@@ -1,6 +1,6 @@
 package com.soen343.project.endpoint.controller;
 
-import com.soen343.project.repository.entity.catalog.*;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.service.catalog.Catalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

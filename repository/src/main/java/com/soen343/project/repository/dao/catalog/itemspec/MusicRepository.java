@@ -1,9 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
-import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
-import com.soen343.project.repository.entity.catalog.Music;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +11,7 @@ import java.util.List;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
+import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.defaultSaveOperation;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
@@ -19,32 +19,30 @@ public class MusicRepository implements Repository<Music> {
 
     @Override
     public void save(Music music) {
-        executeUpdate(createSaveQuery(music.getTableWithColumns(), music.toSQLValue()));
+        executeBatchUpdate(statement -> defaultSaveOperation(statement, music, ASIN, music.getAsin()));
     }
 
     @Override
     public void saveAll(Music... musics) {
         UnitOfWork uow = new UnitOfWork();
         for (Music music : musics) {
-            uow.registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(music.getTableWithColumns(), music.toSQLValue())));
+            uow.registerOperation(statement -> defaultSaveOperation(statement, music, ASIN, music.getAsin()));
         }
         uow.commit();
     }
 
     @Override
     public void delete(Music music) {
-        executeBatchOperation(ItemSpecificationOperation.musicDeleteOperation(music));
+        executeBatchUpdate(ItemSpecificationOperation.musicDeleteOperation(music));
     }
 
     @Override
     public Music findById(Long id) {
-        return (Music) executeQuery(createFindByIdQuery(MUSIC_TABLE, id), rs -> {
+        return (Music) executeQuery(createFindByIdQuery(MUSIC_TABLE, id), (rs, statement) -> {
             if (rs.next()) {
                 return Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
-                        .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL))
-                        .type(rs.getString(TYPE)).build();
+                        .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL)).type(rs.getString(TYPE)).build();
             }
-
             //Should never be reached
             return null;
         });
@@ -53,12 +51,11 @@ public class MusicRepository implements Repository<Music> {
     @Override
     @SuppressWarnings("unchecked")
     public List<Music> findAll() {
-        return (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), rs -> {
+        return (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), (rs, statement) -> {
             List<Music> musics = new ArrayList<>();
             while (rs.next()) {
                 musics.add(Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
-                        .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL))
-                        .type(rs.getString(TYPE)).build());
+                        .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL)).type(rs.getString(TYPE)).build());
             }
 
             return musics;

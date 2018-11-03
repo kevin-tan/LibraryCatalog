@@ -1,11 +1,12 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec.media.common;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Data

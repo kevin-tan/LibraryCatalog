@@ -1,11 +1,13 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.soen343.project.repository.entity.catalog.itemspec.media.common.MediaItem;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
@@ -38,6 +40,12 @@ public class Music extends MediaItem {
                 Objects.equals(artist, music.artist) &&
                 Objects.equals(label, music.label) &&
                 Objects.equals(asin, music.asin);
+    }
+
+    public static Music buildMusic(ResultSet rs) throws SQLException {
+        return Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
+                .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL))
+                .type(rs.getString(TYPE)).build();
     }
 
     @Override

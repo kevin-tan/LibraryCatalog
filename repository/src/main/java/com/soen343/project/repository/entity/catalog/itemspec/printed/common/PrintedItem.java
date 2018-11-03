@@ -1,6 +1,9 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec.printed.common;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

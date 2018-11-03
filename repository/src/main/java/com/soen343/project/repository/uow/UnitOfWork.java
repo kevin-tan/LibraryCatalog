@@ -20,7 +20,7 @@ public class UnitOfWork{
     }
 
     public void commit() {
-        DatabaseConnector.executeBatchOperation((statement -> {
+        DatabaseConnector.executeBatchUpdate((statement -> {
             while (!commandBatchQueue.isEmpty()) {
                 commandBatchQueue.remove().execute(statement);
             }

@@ -1,7 +1,7 @@
 package com.soen343.project.service.catalog;
 
-import com.soen343.project.repository.entity.catalog.Item;
-import com.soen343.project.repository.entity.catalog.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.service.database.RecordDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

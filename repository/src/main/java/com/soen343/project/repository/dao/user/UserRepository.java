@@ -49,7 +49,7 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public User findById(Long id) {
-        return (User) executeQuery(createFindByIdQuery(USER_TABLE, id), rs -> {
+        return (User) executeQuery(createFindByIdQuery(USER_TABLE, id), (rs,statement) -> {
             while (rs.next()) {
                 if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
                     return Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
@@ -70,7 +70,7 @@ public class UserRepository implements Repository<User> {
     @Override
     @SuppressWarnings("unchecked")
     public List<User> findAll() {
-        return (List<User>) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), rs -> {
+        return (List<User>) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), (rs, statement) -> {
             List<DatabaseEntity> list = new ArrayList<>();
             while (rs.next()) {
                 if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {

@@ -1,10 +1,13 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec.printed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.common.PrintedItem;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
@@ -18,11 +21,12 @@ public class Book extends PrintedItem {
     private int pages;
 
     public enum Format {
-        PAPERBACK("PAPERBACK"), HARDCOVER("HARDCOVER");
+        PAPERBACK("PAPERBACK"),
+        HARDCOVER("HARDCOVER");
 
         private String text;
 
-        Format(String text){
+        Format(String text) {
             this.text = text;
         }
 
@@ -37,12 +41,18 @@ public class Book extends PrintedItem {
     }
 
     @Builder
-    public Book(long id, String title, String publisher, String pubDate, String lang, String isbn10,
-                String isbn13, String author, Format format, int pages){
+    public Book(long id, String title, String publisher, String pubDate, String lang, String isbn10, String isbn13, String author,
+                Format format, int pages) {
         super(id, title, publisher, pubDate, lang, isbn10, isbn13);
         this.author = author;
         this.format = format;
         this.pages = pages;
+    }
+
+    public static Book buildBook(ResultSet rs) throws SQLException {
+        return Book.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10)).isbn13(rs.getString(ISBN13))
+                .lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE)).publisher(rs.getString(PUBLISHER)).author(rs.getString(AUTHOR))
+                .pages(rs.getInt(PAGES)).format(Book.Format.stringToEnum(rs.getString(FORMAT))).build();
     }
 
     @Override
@@ -64,7 +74,7 @@ public class Book extends PrintedItem {
     @JsonIgnore
     public String toSQLValue() {
         return "('" + getTitle() + "','" + getPublisher() + "','" + getPubDate() + "','" + getLanguage() + "','" + getIsbn10() + "','" +
-                getIsbn13() + "','" + author + "','" + format.name() + "','" + pages + "')";
+               getIsbn13() + "','" + author + "','" + format.name() + "','" + pages + "')";
     }
 
     @Override
@@ -80,7 +90,7 @@ public class Book extends PrintedItem {
 
     @Override
     @JsonIgnore
-    public String getTableWithColumns(){
+    public String getTableWithColumns() {
         return BOOK_TABLE_WITH_COLUMNS;
     }
 
@@ -90,8 +100,6 @@ public class Book extends PrintedItem {
         if (!(o instanceof Book)) return false;
         if (!super.equals(o)) return false;
         Book book = (Book) o;
-        return pages == book.pages &&
-                Objects.equals(author, book.author) &&
-                Objects.equals(format, book.format);
+        return pages == book.pages && Objects.equals(author, book.author) && Objects.equals(format, book.format);
     }
 }

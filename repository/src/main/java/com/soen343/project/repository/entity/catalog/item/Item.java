@@ -1,8 +1,9 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import lombok.Data;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
@@ -11,16 +12,27 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public class Item implements DatabaseEntity {
     private Long id;
-    private final ItemSpecification spec;
-    private final String type;
+    private ItemSpecification spec;
+    private String type;
 
-    public Item(Long id, ItemSpecification spec){
+    public Item(Long id, ItemSpecification spec) {
         this.id = id;
         this.spec = spec;
         this.type = spec.getClass().getSimpleName();
     }
 
-    public Item(ItemSpecification spec){
+
+    public Item(ItemSpecification spec) {
+        this.spec = spec;
+        this.type = spec.getClass().getSimpleName();
+    }
+
+    public Item(Long id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public void setSpec(ItemSpecification spec) {
         this.spec = spec;
         this.type = spec.getClass().getSimpleName();
     }
@@ -47,7 +59,7 @@ public class Item implements DatabaseEntity {
 
     @Override
     @JsonIgnore
-    public String getTableWithColumns(){
+    public String getTableWithColumns() {
         return ITEM_TABLE_WITH_COLUMNS;
     }
 

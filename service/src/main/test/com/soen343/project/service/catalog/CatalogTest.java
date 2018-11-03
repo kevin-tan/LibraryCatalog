@@ -1,6 +1,6 @@
 package com.soen343.project.service.catalog;
 
-import com.soen343.project.repository.entity.catalog.Item;
+import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.service.database.RecordDatabase;
 import org.junit.Before;
 import org.junit.Test;

@@ -41,6 +41,7 @@ public class QueryBuilder {
         return query.toString();
     }
 
+
     public static String createFindAllQuery(String table) {
         return SELECT + ALL + FROM + table + END_QUERY;
     }
@@ -50,6 +51,10 @@ public class QueryBuilder {
     }
 
     public static String createFindByIdQuery(String table, String attribute, String value) {
+        return SELECT + ALL + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
+    }
+
+    public static String createFindByAttributeQuery(String table, String attribute, String value) {
         return SELECT + ALL + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
     }
 
