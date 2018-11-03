@@ -1,9 +1,11 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Repository;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.uow.UnitOfWork;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,9 +19,18 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 @Component
 public class MusicRepository implements Repository<Music> {
 
+    private final Scheduler scheduler;
+
+    @Autowired
+    public MusicRepository(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
     @Override
     public void save(Music music) {
+        scheduler.addWriter();
         executeBatchUpdate(statement -> defaultSaveOperation(statement, music, ASIN, music.getAsin()));
+        scheduler.removeWriter();
     }
 
     @Override
@@ -38,6 +49,7 @@ public class MusicRepository implements Repository<Music> {
 
     @Override
     public Music findById(Long id) {
+
         return (Music) executeQuery(createFindByIdQuery(MUSIC_TABLE, id), (rs, statement) -> {
             if (rs.next()) {
                 return Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
