@@ -4,12 +4,15 @@ import { Routes, RouterModule } from '@angular/router';
 import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
 import {CatalogComponent} from "./catalog/catalog.component";
+import {HomeComponent} from "./home/home.component";
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/catalog', pathMatch: 'full'},
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
-  { path: 'catalog', component: CatalogComponent}
+  { path: 'catalog', component: CatalogComponent},
+  { path: 'home', component: HomeComponent}
 ];
 
 @NgModule({
@@ -19,8 +22,7 @@ const routes: Routes = [
   ],
   exports: [
     RouterModule
-  ],
-  declarations: []
+  ]
 })
 export class AppRoutingModule { }
 export const routingComponents = [RegistrationComponent, LoginComponent, CatalogComponent]

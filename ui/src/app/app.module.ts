@@ -6,14 +6,16 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { LoginComponent } from './login/login.component';
 import { CatalogComponent } from './catalog/catalog.component';
-
+import { HomeComponent } from './home/home.component';
+import {LoginRedirectService} from "./login/login-redirect.service";
 
 @NgModule({
   declarations: [
     AppComponent,
     routingComponents,
     LoginComponent,
-    CatalogComponent
+    CatalogComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +23,7 @@ import { CatalogComponent } from './catalog/catalog.component';
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [LoginRedirectService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
