@@ -60,6 +60,19 @@ public class ExampleController {
         this.musicRepository = musicRepository;
     }
 
+    @GetMapping("/test/concurrency")
+    public ResponseEntity<?> testConcurrency() {
+        Music music = new Music(0L, "Title", "Date", "Type", "Artist", "Label", "Asin");
+        musicRepository.save(music);
+        return new ResponseEntity<>("Done", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/concurrency2")
+    public ResponseEntity<?> testConcurrency2() {
+        musicRepository.findById(0L);
+        return new ResponseEntity<>("Done", HttpStatus.OK);
+    }
+
     @GetMapping("/test/itemrepo")
     public ResponseEntity<?> testItemRepo() {
         Movie movie = new Movie(0L, "Test", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),

@@ -1,6 +1,7 @@
 package com.soen343.project.service.catalog;
 
 import com.soen343.project.database.query.QueryBuilder;
+import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -13,10 +14,11 @@ class CatalogSession {
 
     private final String id;
     private UnitOfWork unitOfWork;
+    private final Scheduler scheduler;
 
-
-    CatalogSession(String sessionID) {
+    CatalogSession(String sessionID, Scheduler scheduler) {
         this.id = sessionID;
+        this.scheduler = scheduler;
         this.unitOfWork = new UnitOfWork();
     }
 
@@ -35,6 +37,8 @@ class CatalogSession {
     }
 
     void endSession() {
+        scheduler.writer_p();
         unitOfWork.commit();
+        scheduler.writer_v();
     }
 }
