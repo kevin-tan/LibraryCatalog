@@ -1,10 +1,12 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec.media.common;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Data
@@ -12,10 +14,10 @@ import java.util.Objects;
 @NoArgsConstructor
 public abstract class MediaItem extends ItemSpecification {
 
-    //In the form 'Oct. 20 2009'
-    private ZonedDateTime releaseDate;
+    //In the form 'Oct 20 2009'
+    private String releaseDate;
 
-    public MediaItem(long id, String title, ZonedDateTime releaseDate){
+    public MediaItem(long id, String title, String releaseDate){
         super(id, title);
         this.releaseDate = releaseDate;
     }

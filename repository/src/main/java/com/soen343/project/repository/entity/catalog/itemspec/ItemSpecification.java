@@ -1,7 +1,10 @@
-package com.soen343.project.repository.entity.catalog;
+package com.soen343.project.repository.entity.catalog.itemspec;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.repository.entity.catalog.itemspec.media.common.MediaItem;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.common.PrintedItem;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,13 +14,18 @@ import java.util.Objects;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonSubTypes({@JsonSubTypes.Type(value = PrintedItem.class, name = "PrintedItem"), @JsonSubTypes.Type(value = MediaItem.class, name = "MediaItem")})
 @NoArgsConstructor
-public abstract class ItemSpecification {
+public abstract class ItemSpecification implements DatabaseEntity {
     private long id;
     private String title;
 
-    public ItemSpecification(long id, String title){
+    public ItemSpecification(Long id, String title){
         this.id = id;
         this.title = title;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
     }
 
     @Override
