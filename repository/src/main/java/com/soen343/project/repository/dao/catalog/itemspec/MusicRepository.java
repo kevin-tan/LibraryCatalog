@@ -28,9 +28,9 @@ public class MusicRepository implements Repository<Music> {
 
     @Override
     public void save(Music music) {
-        scheduler.addWriter();
+        scheduler.writer_p();
         executeBatchUpdate(statement -> defaultSaveOperation(statement, music, ASIN, music.getAsin()));
-        scheduler.removeWriter();
+        scheduler.writer_v();
     }
 
     @Override
@@ -39,18 +39,22 @@ public class MusicRepository implements Repository<Music> {
         for (Music music : musics) {
             uow.registerOperation(statement -> defaultSaveOperation(statement, music, ASIN, music.getAsin()));
         }
+        scheduler.writer_p();
         uow.commit();
+        scheduler.writer_v();
     }
 
     @Override
     public void delete(Music music) {
+        scheduler.writer_p();
         executeBatchUpdate(ItemSpecificationOperation.musicDeleteOperation(music));
+        scheduler.writer_v();
     }
 
     @Override
     public Music findById(Long id) {
-
-        return (Music) executeQuery(createFindByIdQuery(MUSIC_TABLE, id), (rs, statement) -> {
+        scheduler.reader_p();
+        Music music = (Music) executeQuery(createFindByIdQuery(MUSIC_TABLE, id), (rs, statement) -> {
             if (rs.next()) {
                 return Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
                         .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL)).type(rs.getString(TYPE)).build();
@@ -58,12 +62,15 @@ public class MusicRepository implements Repository<Music> {
             //Should never be reached
             return null;
         });
+        scheduler.reader_v();
+        return music;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Music> findAll() {
-        return (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), (rs, statement) -> {
+        scheduler.reader_p();
+        List<Music> list = (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), (rs, statement) -> {
             List<Music> musics = new ArrayList<>();
             while (rs.next()) {
                 musics.add(Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
@@ -72,10 +79,14 @@ public class MusicRepository implements Repository<Music> {
 
             return musics;
         });
+        scheduler.reader_v();
+        return list;
     }
 
     @Override
     public void update(Music music) {
+        scheduler.writer_p();
         executeUpdate(createUpdateQuery(music.getTable(), music.sqlUpdateValues(), music.getId()));
+        scheduler.writer_v();
     }
 }

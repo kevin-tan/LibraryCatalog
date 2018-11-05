@@ -1,5 +1,6 @@
 package com.soen343.project.service.catalog;
 
+import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.service.database.RecordDatabase;
@@ -12,18 +13,19 @@ import java.util.*;
 public class Catalog {
 
     private final RecordDatabase recordDatabase;
-
+    private final Scheduler scheduler;
     private Map<String, CatalogSession> catalogSessions;
 
     @Autowired
-    public Catalog(RecordDatabase recordDatabase){
+    public Catalog(RecordDatabase recordDatabase, Scheduler scheduler) {
         this.recordDatabase = recordDatabase;
+        this.scheduler = scheduler;
         this.catalogSessions = new HashMap<>();
     }
 
     public String createNewSession() {
         String sessionID = UUID.randomUUID().toString();
-        catalogSessions.put(sessionID, new CatalogSession(sessionID));
+        catalogSessions.put(sessionID, new CatalogSession(sessionID, scheduler));
         return sessionID;
     }
 
@@ -51,7 +53,7 @@ public class Catalog {
         return getAllItems();
     }
 
-    public List<Item> getAllItems(){
+    public List<Item> getAllItems() {
         return recordDatabase.findAllItems();
     }
 
