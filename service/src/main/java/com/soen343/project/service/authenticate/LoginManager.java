@@ -24,18 +24,22 @@ public class LoginManager implements Subject<User> {
         addObserver(userRegistry);
     }
 
-    //TODO: Change to String parameter insted of User
-    public boolean loginUser(User username){
-        // must be called after successful login
-        notifyObservers(username);
-        return true;
+    public boolean loginUser(String email){
+        User user = recordDatabase.getUserByEmail(email);
+        if (user != null){
+            notifyObservers(user, true);
+            return true;
+        }
+        return false;
     }
 
-    //TODO: Change to String parameter insted of User
-    public boolean logoutUser(User username) {
-        // must be called after successful logout
-        notifyObservers(username);
-        return true;
+    public boolean logoutUser(String email) {
+        User user = recordDatabase.getUserByEmail(email);
+        if (user != null){
+            notifyObservers(user, false);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -49,9 +53,9 @@ public class LoginManager implements Subject<User> {
     }
 
     @Override
-    public void notifyObservers(User data) {
+    public void notifyObservers(User data, boolean islogin) {
         for (Observer observer: observers) {
-            observer.update(data);
+            observer.update(data, islogin);
         }
     }
 }
