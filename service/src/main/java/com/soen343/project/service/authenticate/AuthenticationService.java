@@ -1,6 +1,6 @@
 package com.soen343.project.service.authenticate;
 
-import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.entity.user.types.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-    private final UserRepository userRepository;
+    private final UserGateway userRepository;
 
     @Autowired
-    public AuthenticationService(UserRepository userRepository) {
+    public AuthenticationService(UserGateway userRepository) {
         this.userRepository = userRepository;
     }
 

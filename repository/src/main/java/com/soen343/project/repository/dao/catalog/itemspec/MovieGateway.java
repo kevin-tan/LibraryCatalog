@@ -1,7 +1,7 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -19,12 +19,12 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class MovieRepository implements Repository<Movie> {
+public class MovieGateway implements Gateway<Movie> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public MovieRepository(Scheduler scheduler) {
+    public MovieGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 

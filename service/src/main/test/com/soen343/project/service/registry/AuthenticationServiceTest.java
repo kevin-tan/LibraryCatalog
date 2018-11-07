@@ -1,6 +1,6 @@
 package com.soen343.project.service.registry;
 
-import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.service.authenticate.AuthenticationService;
@@ -17,14 +17,14 @@ import static org.junit.Assert.assertTrue;
 public class AuthenticationServiceTest {
 
     private AuthenticationService authenticationService;
-    private UserRepository userRepository;
+    private UserGateway userRepository;
 
     private static final Admin VALID_ADMIN = new Admin(1L, "test", "test", "test", "test", "test", "test");
     private static final Client VALID_CLIENT = new Client(2L, "test", "test", "test", "test", "test", "test");
 
     @Before
     public void setup() {
-        userRepository =  Mockito.mock(UserRepository.class);
+        userRepository =  Mockito.mock(UserGateway.class);
         authenticationService = new AuthenticationService(userRepository);
     }
 

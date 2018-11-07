@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Kevin Tan 2018-09-23
  */
 
-public interface Repository<E> {
+public interface Gateway<E> {
 
     void save(E entity);
 

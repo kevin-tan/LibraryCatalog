@@ -3,13 +3,13 @@ package com.soen343.project.endpoint.controller;
 import com.google.common.collect.Lists;
 import com.soen343.project.database.connection.DatabaseConnector;
 import com.soen343.project.database.query.QueryBuilder;
-import com.soen343.project.repository.dao.catalog.item.ItemRepository;
-import com.soen343.project.repository.dao.catalog.itemspec.BookRepository;
-import com.soen343.project.repository.dao.catalog.itemspec.MagazineRepository;
-import com.soen343.project.repository.dao.catalog.itemspec.MovieRepository;
-import com.soen343.project.repository.dao.catalog.itemspec.MusicRepository;
+import com.soen343.project.repository.dao.catalog.item.ItemGateway;
+import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
+import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
+import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
+import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
-import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
@@ -38,19 +38,19 @@ import static com.soen343.project.database.connection.DatabaseConnector.executeU
 @Controller
 public class ExampleController {
 
-    private final UserRepository userRepository;
+    private final UserGateway userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final ItemRepository itemRepository;
-    private final MovieRepository movieRepository;
-    private final BookRepository bookRepository;
-    private final MagazineRepository magazineRepository;
-    private final MusicRepository musicRepository;
+    private final ItemGateway itemRepository;
+    private final MovieGateway movieRepository;
+    private final BookGateway bookRepository;
+    private final MagazineGateway magazineRepository;
+    private final MusicGateway musicRepository;
 
     @Autowired
-    public ExampleController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MovieRepository movieRepository,
-                             ItemRepository itemRepository, BookRepository bookRepository, MagazineRepository magazineRepository,
-                             MusicRepository musicRepository) {
+    public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MovieGateway movieRepository,
+                             ItemGateway itemRepository, BookGateway bookRepository, MagazineGateway magazineRepository,
+                             MusicGateway musicRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.movieRepository = movieRepository;

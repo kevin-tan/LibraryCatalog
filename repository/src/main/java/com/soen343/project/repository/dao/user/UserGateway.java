@@ -3,7 +3,7 @@ package com.soen343.project.repository.dao.user;
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -27,12 +27,12 @@ import static com.soen343.project.repository.entity.user.types.UserType.CLIENT;
  */
 
 @Component
-public class UserRepository implements Repository<User> {
+public class UserGateway implements Gateway<User> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public UserRepository(Scheduler scheduler){
+    public UserGateway(Scheduler scheduler){
         this.scheduler = scheduler;
     }
 

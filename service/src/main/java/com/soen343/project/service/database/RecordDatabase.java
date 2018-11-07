@@ -1,7 +1,7 @@
 package com.soen343.project.service.database;
 
-import com.soen343.project.repository.dao.catalog.item.ItemRepository;
-import com.soen343.project.repository.dao.user.UserRepository;
+import com.soen343.project.repository.dao.catalog.item.ItemGateway;
+import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.User;
@@ -16,11 +16,11 @@ import java.util.List;
 @Service
 public class RecordDatabase {
 
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    private final UserGateway userRepository;
+    private final ItemGateway itemRepository;
 
     @Autowired
-    public RecordDatabase(UserRepository userRepository, ItemRepository itemRepository) {
+    public RecordDatabase(UserGateway userRepository, ItemGateway itemRepository) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
     }

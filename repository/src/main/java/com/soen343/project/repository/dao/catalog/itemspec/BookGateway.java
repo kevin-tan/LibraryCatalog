@@ -1,7 +1,7 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -17,12 +17,12 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class BookRepository implements Repository<Book> {
+public class BookGateway implements Gateway<Book> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public BookRepository(Scheduler scheduler){
+    public BookGateway(Scheduler scheduler){
         this.scheduler = scheduler;
     }
 

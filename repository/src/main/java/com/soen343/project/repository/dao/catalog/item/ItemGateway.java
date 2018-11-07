@@ -4,7 +4,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -28,12 +28,12 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class ItemRepository implements Repository<Item> {
+public class ItemGateway implements Gateway<Item> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public ItemRepository(Scheduler scheduler) {
+    public ItemGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
