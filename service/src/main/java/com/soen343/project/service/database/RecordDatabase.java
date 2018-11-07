@@ -38,14 +38,7 @@ public class RecordDatabase {
     }
 
     public User getUserByEmail(String email){
-        List<User> users = userRepository.findAll();
-        for (User user: users){
-            if (user.getEmail().equalsIgnoreCase(email)){
-                return user;
-            }
-        }
-
-        return null;
+        return userRepository.findByEmail(email);
     }
 
     public Item createItem(ItemSpecification itemSpec) {
