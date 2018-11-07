@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { CatalogComponent } from './catalog/catalog.component';
 import { HomeComponent } from './home/home.component';
 import {LoginRedirectService} from "./login/login-redirect.service";
+import { SearchCatalogComponent } from './search-catalog/search-catalog.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {LoginRedirectService} from "./login/login-redirect.service";
     routingComponents,
     LoginComponent,
     CatalogComponent,
-    HomeComponent
+    HomeComponent,
+    SearchCatalogComponent
   ],
   imports: [
     BrowserModule,
