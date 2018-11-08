@@ -24,21 +24,33 @@ public class CatalogController {
         return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
     }
 
-    @PostMapping("/catalog/{sessionID}/modify")
-    public ResponseEntity<?> modifyItem(@RequestBody ItemSpecification itemSpec, @PathVariable String sessionID){
-        catalog.modifyCatalogItem(sessionID, itemSpec);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @PostMapping("/catalog/{sessionID}/add")
-    public ResponseEntity<?> addItem(@RequestBody ItemSpecification itemSpec, @PathVariable String sessionID){
+    public ResponseEntity<?> addItem(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
         catalog.addCatalogItem(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/catalog/{sessionID}/delete/{itemID}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long itemID, @PathVariable String sessionID){
+    public ResponseEntity<?> deleteItem(@PathVariable String sessionID, @PathVariable Long itemID){
         catalog.deleteCatalogItem(sessionID, itemID);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/catalog/{sessionID}/addSpec")
+    public ResponseEntity<?> addItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+        catalog.addItemSpec(sessionID, itemSpec);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/catalog/{sessionID}/deleteSpec")
+    public ResponseEntity<?> deleteItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+        catalog.deleteItemSpec(sessionID, itemSpec);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/catalog/{sessionID}/modifySpec")
+    public ResponseEntity<?> modifyItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+        catalog.modifyItemSpec(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
