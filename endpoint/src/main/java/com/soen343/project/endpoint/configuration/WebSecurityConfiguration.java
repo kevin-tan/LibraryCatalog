@@ -21,7 +21,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
@@ -48,6 +47,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
                 .and()
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAuthority("Admin")
+                .antMatchers("/user/**").hasAnyAuthority("Admin", "Client")
                 .anyRequest()
                 .authenticated()
                 .and()
