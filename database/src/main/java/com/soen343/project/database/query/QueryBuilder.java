@@ -23,24 +23,19 @@ public class QueryBuilder {
     public final static int MOST_RECENT_ID_COL = 1;
 
     private final static String END_QUERY = ";";
-    private final static String COMMA = ",";
     private final static String QUOTE = "'";
 
     private QueryBuilder() { }
 
     //INSERT INTO User VALUES (‘Big’, ‘Boss’, ‘7582 Rue Concordia’, ‘bigboss@hotmail.com’, ‘514-895-9852’, ‘Admin’);
-    public static String createSaveQuery(String table, String... values) {
+    public static String createSaveQuery(String table, String values) {
         StringBuilder query = new StringBuilder(INSERT_INTO);
         query.append(table);
         query.append(VALUES);
-        for (int i = 0; i < values.length; i++) {
-            query.append(values[i]);
-            if (i < values.length - 1) query.append(COMMA);
-        }
+        query.append(values);
         query.append(END_QUERY);
         return query.toString();
     }
-
 
     public static String createFindAllQuery(String table) {
         return SELECT + ALL + FROM + table + END_QUERY;
