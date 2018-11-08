@@ -19,6 +19,7 @@ import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.uow.UnitOfWork;
+import com.soen343.project.service.catalog.CatalogSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+import static com.soen343.project.repository.entity.EntityConstants.TITLE;
 
 /**
  * Created by Kevin Tan 2018-09-25
@@ -40,6 +45,7 @@ public class ExampleController {
 
     private final UserGateway userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CatalogSearch catalogSearch;
 
     private final ItemGateway itemRepository;
     private final MovieGateway movieRepository;
@@ -48,11 +54,12 @@ public class ExampleController {
     private final MusicGateway musicRepository;
 
     @Autowired
-    public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MovieGateway movieRepository,
+    public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CatalogSearch catalogSearch, MovieGateway movieRepository,
                              ItemGateway itemRepository, BookGateway bookRepository, MagazineGateway magazineRepository,
                              MusicGateway musicRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.catalogSearch = catalogSearch;
         this.movieRepository = movieRepository;
         this.itemRepository = itemRepository;
         this.bookRepository = bookRepository;
@@ -62,9 +69,16 @@ public class ExampleController {
 
     @GetMapping("/test/concurrency")
     public ResponseEntity<?> testConcurrency() {
-        Music music = new Music(0L, "Title", "Date", "Type", "Artist", "Label", "Asin");
-        musicRepository.save(music);
-        return new ResponseEntity<>("Done", HttpStatus.OK);
+        Movie movie = new Movie(0L, "Test", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),
+                Lists.newArrayList("Dubbed"), "Lang", "Sub", 50);
+        Movie movie2 = new Movie(0L, "Test", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),
+                Lists.newArrayList("Dubbed"), "Lang", "Sub", 50);
+        Item item = new Item(movie);
+        Item item11 = new Item(movie2);
+        movieRepository.save(movie);
+        movieRepository.save(movie2);
+        movieRepository.saveAll(movie, movie2);
+        return new ResponseEntity<>(movieRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/test/concurrency2")
@@ -240,5 +254,66 @@ public class ExampleController {
                 .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         userRepository.saveAll(admin, admin1, admin2, admin3);
         return new ResponseEntity<>("It worked.", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/titleSearch/{titleValue}")
+    public ResponseEntity<?> keyword(@PathVariable String titleValue) {
+        Movie movie = new Movie(0L, "Test1", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),
+                Lists.newArrayList("Dubbed"), "Lang", "Sub", 50);
+        Movie movie2 = new Movie(0L, "Test2", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),
+                Lists.newArrayList("Dubbed"), "Lang", "Sub", 50);
+        Item item = new Item(movie);
+        Item item11 = new Item(movie2);
+        movieRepository.save(movie);
+        movieRepository.save(movie2);
+        movieRepository.saveAll(movie, movie2);
+        itemRepository.save(item);
+        itemRepository.save(item11);
+
+        Book book =
+                new Book(0L, "BoTestok", "Publisher", "Pub date", "Language", "ISBN-10-13", "ISBN-13-12", "Author", Book.Format.HARDCOVER, 10);
+        Book book2 =
+                new Book(0L, "BookTest", "Publisher", "Pub date", "Language", "ISBN-10-14", "ISBN-13-13", "Author", Book.Format.HARDCOVER, 10);
+        Item item2 = new Item(book);
+        Item item22 = new Item(book2);
+        bookRepository.save(book);
+        bookRepository.save(book2);
+        bookRepository.saveAll(book, book2);
+        itemRepository.save(item2);
+        itemRepository.save(item22);
+
+        Magazine magazine = new Magazine(0L, "TitleTest", "Pub", "Pub Date", "Language", "ISBN-10-15", "ISBN=13-17");
+        Magazine magazine2 = new Magazine(0L, "TTestitle", "Pub", "Pub Date", "Language", "ISBN-10-16", "ISBN=13-18");
+        Item item3 = new Item(magazine);
+        Item item33 = new Item(magazine2);
+        magazineRepository.save(magazine);
+        magazineRepository.save(magazine2);
+        magazineRepository.saveAll(magazine, magazine2);
+        itemRepository.save(item3);
+        itemRepository.save(item33);
+
+        Music music = new Music(0L, "TestTitle", "Date", "Type", "Artist", "Label", "Asin9");
+        Music music2 = new Music(0L, "TitlTeste", "Date", "Type", "Artist", "Label", "Asin0");
+        Item item4 = new Item(music);
+        Item item44 = new Item(music2);
+        musicRepository.save(music);
+        musicRepository.save(music2);
+        musicRepository.saveAll(music, music2);
+        itemRepository.save(item4);
+        itemRepository.save(item44);
+
+        List<Object> itemspecs = new LinkedList<>();
+
+        itemspecs.add(movieRepository.findByAttribute(TITLE, titleValue));
+        itemspecs.add(bookRepository.findByAttribute(TITLE, titleValue));
+        itemspecs.add(musicRepository.findByAttribute(TITLE, titleValue));
+        itemspecs.add(magazineRepository.findByAttribute(TITLE, titleValue));
+
+        return new ResponseEntity<>(itemspecs, HttpStatus.OK);
+    }
+
+    @GetMapping("/test/{itemType}/{attribute}/{attributeValue}")
+    public ResponseEntity<?> keyword(@PathVariable String itemType, @PathVariable String attribute, @PathVariable String attributeValue) {
+        return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attribute, attributeValue), HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
@@ -17,6 +18,7 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
+@SuppressWarnings("ALL")
 public class MagazineGateway implements Gateway<Magazine> {
 
     private final Scheduler scheduler;
@@ -68,20 +70,18 @@ public class MagazineGateway implements Gateway<Magazine> {
         return magazine;
     }
 
+    public List<Magazine> findByAttribute(String attribute, String attributeValue) {
+        scheduler.reader_p();
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributeQuery(MAGAZINE_TABLE, attribute, attributeValue), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<Magazine> findAll() {
         scheduler.reader_p();
-        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createFindAllQuery(MAGAZINE_TABLE), (rs, statement) -> {
-            List<Magazine> magazines = new ArrayList<>();
-            while (rs.next()) {
-                magazines.add(Magazine.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
-                        .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
-                        .publisher(rs.getString(PUBLISHER)).build());
-            }
-
-            return magazines;
-        });
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createFindAllQuery(MAGAZINE_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -91,5 +91,18 @@ public class MagazineGateway implements Gateway<Magazine> {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(magazine.getTable(), magazine.sqlUpdateValues(), magazine.getId()));
         scheduler.writer_v();
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
+            List<Magazine> magazines = new ArrayList<>();
+            while (rs.next()) {
+                magazines.add(Magazine.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
+                        .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
+                        .publisher(rs.getString(PUBLISHER)).build());
+            }
+
+            return magazines;
+        };
     }
 }
