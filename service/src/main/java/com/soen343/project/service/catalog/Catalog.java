@@ -46,6 +46,11 @@ public class Catalog {
         session.addEntry(itemSpec);
     }
 
+    public void deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
+        CatalogSession session = getSession(sessionID);
+        session.removeEntry(itemSpec);
+    }
+
     public void modifyItemSpec(String sessionID, ItemSpecification itemSpec) {
         CatalogSession session = getSession(sessionID);
         session.updateEntry(itemSpec);
@@ -65,5 +70,4 @@ public class Catalog {
     private CatalogSession getSession(String sessionID) {
         return catalogSessions.get(sessionID);
     }
-
 }

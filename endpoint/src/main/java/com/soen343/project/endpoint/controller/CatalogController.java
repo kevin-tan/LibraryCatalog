@@ -37,8 +37,14 @@ public class CatalogController {
     }
 
     @PostMapping("/catalog/{sessionID}/addSpec")
-    public ResponseEntity<?> addItemSpecification(@RequestBody ItemSpecification itemSpec, @PathVariable String sessionID){
+    public ResponseEntity<?> addItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
         catalog.addItemSpec(sessionID, itemSpec);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/catalog/{sessionID}/deleteSpec")
+    public ResponseEntity<?> deleteItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+        catalog.deleteItemSpec(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

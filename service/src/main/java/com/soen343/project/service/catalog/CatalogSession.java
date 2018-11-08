@@ -41,6 +41,10 @@ class CatalogSession {
         unitOfWork.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(item.getTable(), item.getId())));
     }
 
+    void removeEntry(ItemSpecification itemSpec) {
+        unitOfWork.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(itemSpec.getTable(), itemSpec.getId())));
+    }
+
     void endSession() {
         scheduler.writer_p();
         unitOfWork.commit();
