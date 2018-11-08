@@ -32,6 +32,11 @@ class CatalogSession {
                 .registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
     }
 
+    void addEntry(ItemSpecification itemSpec) {
+        unitOfWork
+                .registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+    }
+
     void removeEntry(Item item) {
         unitOfWork.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(item.getTable(), item.getId())));
     }
