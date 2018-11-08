@@ -46,7 +46,7 @@ public class UserRegistryTest {
         User user = new Client(1L, "", "", "", "", "", "");
 
         expectedActiveUsers.remove(0);
-        userRegistry.update(user);
+        userRegistry.update(user, false);
         assertThat(userRegistry.activeUsers, is(expectedActiveUsers));
     }
 
@@ -55,7 +55,7 @@ public class UserRegistryTest {
         User user = new Client(6L, "", "", "", "", "", "");
 
         expectedActiveUsers.add(new ActiveUser(6L));
-        userRegistry.update(user);
+        userRegistry.update(user, true);
         assertThat(userRegistry.activeUsers, is(expectedActiveUsers));
     }
 }

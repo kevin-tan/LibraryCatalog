@@ -1,18 +1,28 @@
 package com.soen343.project.endpoint.configuration;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soen343.project.endpoint.configuration.security.BasicAuthEntryPoint;
 import com.soen343.project.endpoint.configuration.security.MySavedRequestAwareAuthenticationSuccessHandler;
+import com.soen343.project.service.authenticate.LoginManager;
+import jdk.nashorn.internal.ir.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 @EnableWebSecurity
@@ -21,14 +31,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
     private final BasicAuthEntryPoint basicAuthEntryPoint;
     private final SimpleUrlAuthenticationFailureHandler myFailureHandler;
     private final MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler;
+    private final LoginManager loginManager;
 
     @Autowired
     public WebSecurityConfiguration(BasicAuthEntryPoint basicAuthEntryPoint,
                                     SimpleUrlAuthenticationFailureHandler myFailureHandler,
-                                    MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler) {
+                                    MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler,
+                                    LoginManager loginManager) {
         this.basicAuthEntryPoint = basicAuthEntryPoint;
         this.myFailureHandler = myFailureHandler;
         this.mySuccessHandler = mySuccessHandler;
+        this.loginManager = loginManager;
     }
 
 
@@ -46,6 +59,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
                 .failureHandler(myFailureHandler)
                 .and()
                 .logout()
+                .addLogoutHandler(getLogoutHandler())
                 .and()
                 .httpBasic()
                 .authenticationEntryPoint(basicAuthEntryPoint);
@@ -66,6 +80,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
                 .allowedHeaders("Authorization", "Cache-Control", "Content-Type");
     }
 
+    private LogoutHandler getLogoutHandler(){
+        return (request, response, authentication) -> {
+            try {
+                String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode jsonBody = mapper.readTree(body);
+                String email = jsonBody.get("email").asText();
+                loginManager.logoutUser(email);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("");
+                response.getWriter().close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+    }
 
 }
 

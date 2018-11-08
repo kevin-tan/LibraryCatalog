@@ -55,11 +55,11 @@ public class UserRegistry implements Observer<User> {
     }
 
     @Override
-    public void update(User data) {
-        if (isActiveUser(data)) {
-            removeActiveUser(data);
-        } else {
+    public void update(User data, boolean isLogin) {
+        if (isLogin && !isActiveUser(data)) {
             addActiveUser(data);
+        } else if (!isLogin && isActiveUser(data)){
+            removeActiveUser(data);
         }
     }
 }
