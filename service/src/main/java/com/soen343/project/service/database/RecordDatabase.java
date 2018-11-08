@@ -37,6 +37,10 @@ public class RecordDatabase {
 
     }
 
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
     public Item createItem(ItemSpecification itemSpec) {
         return new Item(itemSpec);
     }
