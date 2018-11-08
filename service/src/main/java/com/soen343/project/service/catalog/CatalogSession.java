@@ -23,26 +23,26 @@ class CatalogSession {
     }
 
     void updateEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(statement -> executeUpdate(
+        unitOfWork.registerOperation(statement -> statement.executeUpdate(
                 QueryBuilder.createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
     }
 
     void addEntry(Item item) {
         unitOfWork
-                .registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
+                .registerOperation(statement -> statement.executeUpdate(QueryBuilder.createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
     }
 
     void addEntry(ItemSpecification itemSpec) {
         unitOfWork
-                .registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+                .registerOperation(statement -> statement.executeUpdate(QueryBuilder.createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
     }
 
     void removeEntry(Item item) {
-        unitOfWork.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(item.getTable(), item.getId())));
+        unitOfWork.registerOperation(statement -> statement.executeUpdate(QueryBuilder.createDeleteQuery(item.getTable(), item.getId())));
     }
 
     void removeEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(itemSpec.getTable(), itemSpec.getId())));
+        unitOfWork.registerOperation(statement -> statement.executeUpdate(QueryBuilder.createDeleteQuery(itemSpec.getTable(), itemSpec.getId())));
     }
 
     void endSession() {
