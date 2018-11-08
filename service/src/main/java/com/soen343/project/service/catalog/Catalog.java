@@ -29,11 +29,6 @@ public class Catalog {
         return sessionID;
     }
 
-    public void modifyCatalogItem(String sessionID, ItemSpecification itemSpec) {
-        CatalogSession session = getSession(sessionID);
-        session.updateEntry(itemSpec);
-    }
-
     public void addCatalogItem(String sessionID, ItemSpecification itemSpec) {
         Item itemToAdd = recordDatabase.createItem(itemSpec);
         CatalogSession session = getSession(sessionID);
@@ -44,6 +39,21 @@ public class Catalog {
         Item itemToDelete = recordDatabase.getItem(itemID);
         CatalogSession session = getSession(sessionID);
         session.removeEntry(itemToDelete);
+    }
+
+    public void addItemSpec(String sessionID, ItemSpecification itemSpec) {
+        CatalogSession session = getSession(sessionID);
+        session.addEntry(itemSpec);
+    }
+
+    public void deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
+        CatalogSession session = getSession(sessionID);
+        session.removeEntry(itemSpec);
+    }
+
+    public void modifyItemSpec(String sessionID, ItemSpecification itemSpec) {
+        CatalogSession session = getSession(sessionID);
+        session.updateEntry(itemSpec);
     }
 
     public List<Item> endSession(String sessionID) {
@@ -60,5 +70,4 @@ public class Catalog {
     private CatalogSession getSession(String sessionID) {
         return catalogSessions.get(sessionID);
     }
-
 }

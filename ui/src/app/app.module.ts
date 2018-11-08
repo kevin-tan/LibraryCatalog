@@ -13,6 +13,7 @@ import {bookSearchComponent} from "./bookSearch/bookSearch.component";
 import {musicSearchComponent} from "./musicSearch/musicSearch.component";
 import {movieSearchComponent} from "./movieSearch/movieSearch.component";
 import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
+import {HomeRedirectService} from "./home/home-redirect.service";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [LoginRedirectService],
+  providers: [LoginRedirectService, HomeRedirectService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

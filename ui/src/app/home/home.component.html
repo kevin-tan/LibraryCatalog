@@ -33,7 +33,8 @@
       <i class="fa fa-compact-disc w3-xxlarge"></i>
       <p>MOVIE</p>
     </a>
-    <a href="#logout" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+
+    <a [routerLink]="" (click)="logout()" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-sign-out-alt w3-xxlarge"></i>
       <p>LOGOUT</p>
     </a>
@@ -48,7 +49,7 @@
     <a href="#magazineItem" class="w3-bar-item w3-button" style="width:25% !important">MAGAZINE</a>
     <a href="#musicItem" class="w3-bar-item w3-button" style="width:25% !important">MUSIC</a>
     <a href="#movieItem" class="w3-bar-item w3-button" style="width:25% !important">MOVIE</a>
-    <a href="#logout" class="w3-bar-item w3-button" style="width:25% !important">LOGOUT</a>
+    <a [routerLink]="" (click)="logout()" class="w3-bar-item w3-button" style="width:25% !important">Logout</a>
   </div>
 </div>
 
