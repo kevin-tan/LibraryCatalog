@@ -35,11 +35,9 @@ public class RecordDatabase {
             String password = userToRegister.getPassword();
             userToRegister.setPassword(bCryptPasswordEncoder.encode(password));
             userRepository.save(userToRegister);
-            return userRepository.findAll();
-        } else {
-            return null;
         }
 
+        return userRepository.findAll();
     }
 
     public User getUserByEmail(String email){
