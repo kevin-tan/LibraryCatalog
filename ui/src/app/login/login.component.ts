@@ -12,10 +12,14 @@ export class LoginComponent implements OnInit {
   constructor(private http: HttpClient, private loginRedirectService: LoginRedirectService) {
   }
 
-  login(username: string, password: string) {
-    let headers = new HttpHeaders({"Authorization" : "Basic " + btoa(username + ":" + password)});
+  login(email: string, password: string) {
+    let headers = new HttpHeaders({"Authorization": "Basic " + btoa(email + ":" + password)});
     let options = {headers: headers}
-    this.http.post('http://localhost:8080/app/v1/login', null, options).subscribe(response => {
+    sessionStorage.setItem("loggedIn", "false");
+    let body = JSON.stringify({"email": email})
+    this.http.post('http://localhost:8080/app/v1/login', body, options).subscribe(response => {
+      sessionStorage.setItem("email", email);
+      sessionStorage.setItem("loggedIn", "true");
       this.loginRedirectService.redirect();
     })
 
