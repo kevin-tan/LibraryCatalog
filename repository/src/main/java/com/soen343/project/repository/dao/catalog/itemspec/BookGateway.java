@@ -2,7 +2,7 @@ package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -19,7 +20,7 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
 @SuppressWarnings("ALL")
-public class BookGateway implements Gateway<Book> {
+public class BookGateway implements ItemSpecificationGateway<Book> {
 
     private final Scheduler scheduler;
 
@@ -71,9 +72,10 @@ public class BookGateway implements Gateway<Book> {
         return book;
     }
 
-    public List<Book> findByAttribute(String attribute, String attributeValue) {
+    @Override
+    public List<Book> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributeQuery(BOOK_TABLE, attribute, attributeValue), databaseQueryOperation());
+        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributesQuery(BOOK_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -106,5 +108,13 @@ public class BookGateway implements Gateway<Book> {
 
             return books;
         };
+    }
+
+    @Override
+    public List<Book> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributeQuery(BOOK_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 }

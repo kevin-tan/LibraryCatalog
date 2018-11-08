@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.executeQuery;
 import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
@@ -83,6 +84,12 @@ public class UserGateway implements Gateway<User> {
         });
         scheduler.reader_v();
         return user;
+    }
+
+    @Override
+    public List<User> findByAttribute(Map<String, String> attributeValue) {
+        //Not required at the moment
+        return null;
     }
 
     @Override

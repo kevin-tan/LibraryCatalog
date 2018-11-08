@@ -2,7 +2,7 @@ package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -19,7 +20,7 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
 @SuppressWarnings("ALL")
-public class MagazineGateway implements Gateway<Magazine> {
+public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
 
     private final Scheduler scheduler;
 
@@ -70,9 +71,10 @@ public class MagazineGateway implements Gateway<Magazine> {
         return magazine;
     }
 
-    public List<Magazine> findByAttribute(String attribute, String attributeValue) {
+    @Override
+    public List<Magazine> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributeQuery(MAGAZINE_TABLE, attribute, attributeValue), databaseQueryOperation());
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributesQuery(MAGAZINE_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -104,5 +106,13 @@ public class MagazineGateway implements Gateway<Magazine> {
 
             return magazines;
         };
+    }
+
+    @Override
+    public List<Magazine> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributeQuery(MAGAZINE_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 }

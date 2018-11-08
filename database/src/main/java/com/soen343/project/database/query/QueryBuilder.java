@@ -1,5 +1,7 @@
 package com.soen343.project.database.query;
 
+import java.util.Map;
+
 /**
  * Created by Kevin Tan 2018-09-24
  */
@@ -57,6 +59,25 @@ public class QueryBuilder {
 
     public static String createSearchByAttributeQuery(String table, String attribute, String value) {
         return SELECT + ALL + FROM + table + WHERE + attribute + LIKE + QUOTE + PERCENTAGE + value + PERCENTAGE + QUOTE + END_QUERY;
+    }
+
+    public static String createSearchByAttributesQuery(String table, Map<String, String> attributeValue) {
+        StringBuilder query = new StringBuilder(SELECT + ALL + FROM + table + WHERE);
+
+        int counter = 0;
+        for(String attribute : attributeValue.keySet()){
+            if(counter != 0) {
+                query.append(AND);
+            }
+            query.append(attribute);
+            query.append(LIKE + QUOTE + PERCENTAGE);
+            query.append(attributeValue.get(attribute));
+            query.append(PERCENTAGE + QUOTE);
+            counter++;
+        }
+        query.append(END_QUERY);
+
+        return query.toString();
     }
 
     public static String createUpdateQuery(String table, String updatedValues, Long id) {

@@ -1,30 +1,31 @@
 package com.soen343.project.service.catalog;
 
+import com.google.common.collect.Lists;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
+import com.soen343.project.repository.dao.mapper.GatewayMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CatalogSearch {
 
-    private static final String BOOK = "Book";
-    private static final String MAGAZINE = "Magazine";
-    private static final String MOVIE = "Movie";
-    private static final String MUSIC = "Music";
-
+    private final GatewayMapper gatewayMapper;
     private final MovieGateway movieRepository;
     private final BookGateway bookRepository;
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
 
     @Autowired
-    public CatalogSearch(MovieGateway movieRepository, BookGateway bookRepository, MagazineGateway magazineRepository, MusicGateway musicRepository) {
+    public CatalogSearch(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
+                         MagazineGateway magazineRepository, MusicGateway musicRepository) {
+        this.gatewayMapper = gatewayMapper;
         this.movieRepository = movieRepository;
         this.bookRepository = bookRepository;
         this.magazineRepository = magazineRepository;
@@ -32,19 +33,14 @@ public class CatalogSearch {
     }
 
 
-    public List<Object> searchCatalogByAttribute(String itemType, String attribute, String attributeValue) {
-        List<Object> itemspecs = new LinkedList<>();
+    public List<?> searchCatalogByAttribute(String itemType, Map<String, String> attributeValue) {
+        Gateway gateway = gatewayMapper.getGateway(itemType);
 
-        if(itemType.equalsIgnoreCase(BOOK)) {
-            itemspecs.add(bookRepository.findByAttribute(attribute, attributeValue));
-        } else if (itemType.equalsIgnoreCase(MAGAZINE)) {
-            itemspecs.add(magazineRepository.findByAttribute(attribute, attributeValue));
-        } else if (itemType.equalsIgnoreCase(MOVIE)) {
-            itemspecs.add(movieRepository.findByAttribute(attribute, attributeValue));
-        } else if (itemType.equalsIgnoreCase(MUSIC)) {
-            itemspecs.add(musicRepository.findByAttribute(attribute, attributeValue));
-        }
+        return gateway.findByAttribute(attributeValue);
+    }
 
-        return itemspecs;
+    public List<?> searchAllByTitle(String titleValue) {
+        return Lists.newArrayList(movieRepository.findByTitle(titleValue), bookRepository.findByTitle(titleValue),
+                musicRepository.findByTitle(titleValue), magazineRepository.findByTitle(titleValue));
     }
 }

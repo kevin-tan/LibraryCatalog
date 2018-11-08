@@ -1,9 +1,6 @@
 package com.soen343.project.endpoint.controller;
 
-import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.service.catalog.Catalog;
 import com.soen343.project.service.catalog.CatalogSearch;
@@ -13,29 +10,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import static com.soen343.project.repository.entity.EntityConstants.TITLE;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
 public class CatalogController {
     private final Catalog catalog;
 
-    private final MovieGateway movieRepository;
-    private final BookGateway bookRepository;
-    private final MagazineGateway magazineRepository;
-    private final MusicGateway musicRepository;
     private final CatalogSearch catalogSearch;
 
     @Autowired
-    public CatalogController(Catalog catalog, MovieGateway movieRepository, BookGateway bookRepository, MagazineGateway magazineRepository, MusicGateway musicRepository, CatalogSearch catalogSearch){
+    public CatalogController(Catalog catalog, CatalogSearch catalogSearch){
         this.catalog = catalog;
-        this.movieRepository = movieRepository;
-        this.bookRepository = bookRepository;
-        this.magazineRepository = magazineRepository;
-        this.musicRepository = musicRepository;
         this.catalogSearch = catalogSearch;
     }
 
@@ -75,19 +62,17 @@ public class CatalogController {
 
     @GetMapping("/catalog/findByTitle/{titleValue}")
     public ResponseEntity<?> searchCatalogByTitle(@PathVariable String titleValue) {
-        List<Object> itemspecs = new LinkedList<>();
-
-        itemspecs.add(movieRepository.findByAttribute(TITLE, titleValue));
-        itemspecs.add(bookRepository.findByAttribute(TITLE, titleValue));
-        itemspecs.add(musicRepository.findByAttribute(TITLE, titleValue));
-        itemspecs.add(magazineRepository.findByAttribute(TITLE, titleValue));
-
-        return new ResponseEntity<>(itemspecs, HttpStatus.OK);
+        return new ResponseEntity<>(catalogSearch.searchAllByTitle(titleValue), HttpStatus.OK);
     }
 
-    @GetMapping("/test/{itemType}/{attribute}/{attributeValue}")
-    public ResponseEntity<?> searchCatalogByAttribute(@PathVariable String itemType, @PathVariable String attribute, @PathVariable String attributeValue) {
-        return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attribute, attributeValue), HttpStatus.OK);
+    @GetMapping("/catalog/search/{itemType}")
+    public ResponseEntity<?> searchCatalogByAttribute(@PathVariable String itemType, @RequestBody ObjectNode objectNode) {
+        Map<String, String> attributeValue = new HashMap<>();
+        objectNode.fieldNames().forEachRemaining(key ->
+                attributeValue.put(key,objectNode.get(key).asText())
+        );
+
+        return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attributeValue), HttpStatus.OK);
     }
 
 }

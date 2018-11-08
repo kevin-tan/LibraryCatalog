@@ -2,7 +2,7 @@ package com.soen343.project.repository.dao.catalog.itemspec;
 
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -10,20 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
-import static com.soen343.project.database.query.QueryBuilder.createFindAllQuery;
-import static com.soen343.project.database.query.QueryBuilder.createFindByIdQuery;
-import static com.soen343.project.database.query.QueryBuilder.createSearchByAttributeQuery;
+import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
 @SuppressWarnings("ALL")
-public class MovieGateway implements Gateway<Movie> {
+public class MovieGateway implements ItemSpecificationGateway<Movie> {
 
     private final Scheduler scheduler;
 
@@ -78,9 +76,10 @@ public class MovieGateway implements Gateway<Movie> {
         return movie;
     }
 
-    public List<Movie> findByAttribute(String attribute, String attributeValue) {
+    @Override
+    public List<Movie> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, attribute, attributeValue), databaseQueryOperation());
+        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributesQuery(MOVIE_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -98,6 +97,14 @@ public class MovieGateway implements Gateway<Movie> {
         scheduler.writer_p();
         executeBatchUpdate(ItemSpecificationOperation.movieUpdateOperation(movie));
         scheduler.writer_v();
+    }
+
+    @Override
+    public List<Movie> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 
     private DatabaseQueryOperation databaseQueryOperation() {

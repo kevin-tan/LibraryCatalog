@@ -1,5 +1,6 @@
 package com.soen343.project.endpoint.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.soen343.project.database.connection.DatabaseConnector;
 import com.soen343.project.database.query.QueryBuilder;
@@ -30,11 +31,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
-import static com.soen343.project.repository.entity.EntityConstants.TITLE;
 
 /**
  * Created by Kevin Tan 2018-09-25
@@ -271,9 +271,9 @@ public class ExampleController {
         itemRepository.save(item11);
 
         Book book =
-                new Book(0L, "BoTestok", "Publisher", "Pub date", "Language", "ISBN-10-13", "ISBN-13-12", "Author", Book.Format.HARDCOVER, 10);
+                new Book(0L, "BoTestok", "Publisher", "Pub date", "Language", "ISBN-10-13", "ISBN-13-12", "Bob", Book.Format.HARDCOVER, 10);
         Book book2 =
-                new Book(0L, "BookTest", "Publisher", "Pub date", "Language", "ISBN-10-14", "ISBN-13-13", "Author", Book.Format.HARDCOVER, 10);
+                new Book(0L, "BookTest", "Publisher", "Pub date", "Language", "ISBN-10-14", "ISBN-13-13", "Jim", Book.Format.HARDCOVER, 10);
         Item item2 = new Item(book);
         Item item22 = new Item(book2);
         bookRepository.save(book);
@@ -302,18 +302,16 @@ public class ExampleController {
         itemRepository.save(item4);
         itemRepository.save(item44);
 
-        List<Object> itemspecs = new LinkedList<>();
-
-        itemspecs.add(movieRepository.findByAttribute(TITLE, titleValue));
-        itemspecs.add(bookRepository.findByAttribute(TITLE, titleValue));
-        itemspecs.add(musicRepository.findByAttribute(TITLE, titleValue));
-        itemspecs.add(magazineRepository.findByAttribute(TITLE, titleValue));
-
-        return new ResponseEntity<>(itemspecs, HttpStatus.OK);
+        return new ResponseEntity<>(catalogSearch.searchAllByTitle(titleValue), HttpStatus.OK);
     }
 
-    @GetMapping("/test/{itemType}/{attribute}/{attributeValue}")
-    public ResponseEntity<?> keyword(@PathVariable String itemType, @PathVariable String attribute, @PathVariable String attributeValue) {
-        return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attribute, attributeValue), HttpStatus.OK);
+    @PostMapping("/testmulti/{itemType}")
+    public ResponseEntity<?> testmulti(@PathVariable String itemType, @RequestBody ObjectNode objectNode) {
+        Map<String, String> attributeValue = new HashMap<>();
+        objectNode.fieldNames().forEachRemaining(key ->
+            attributeValue.put(key,objectNode.get(key).asText())
+        );
+
+        return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attributeValue), HttpStatus.OK);
     }
 }
