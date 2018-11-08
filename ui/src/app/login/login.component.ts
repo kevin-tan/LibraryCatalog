@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
   }
 
   login(email: string, password: string) {
-    let headers = new HttpHeaders({"Authorization": "Basic " + btoa(email + ":" + password)});
+    let headers = new HttpHeaders({"Authorization": "Basic " + btoa(email + ":" + password), "Content-Type": "application/json"});
     let options = {headers: headers}
     sessionStorage.setItem("loggedIn", "false");
     let body = JSON.stringify({"email": email})
