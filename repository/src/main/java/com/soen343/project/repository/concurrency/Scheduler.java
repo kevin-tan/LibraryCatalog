@@ -78,6 +78,7 @@ public class Scheduler {
 
     public void writer_v() {
         try {
+            writerBlock.release();
             mutex2.acquire();
             numberOfWriters--;
             if (numberOfWriters == 0) readBlock.release();
