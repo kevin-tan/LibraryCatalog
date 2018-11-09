@@ -2,3 +2,5 @@
 */target/**
 *.iml
 data/**
+ui/node/**
+ui/node_modules/**

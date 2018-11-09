@@ -1,7 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -9,17 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
-import static com.soen343.project.database.query.QueryBuilder.createFindAllQuery;
-import static com.soen343.project.database.query.QueryBuilder.createFindByIdQuery;
+import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class MovieGateway implements Gateway<Movie> {
+@SuppressWarnings("ALL")
+public class MovieGateway implements ItemSpecificationGateway<Movie> {
 
     private final Scheduler scheduler;
 
@@ -75,23 +77,17 @@ public class MovieGateway implements Gateway<Movie> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public List<Movie> findByAttribute(Map<String, String> attributeValue) {
+        scheduler.reader_p();
+        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributesQuery(MOVIE_TABLE, attributeValue), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @Override
     public List<Movie> findAll() {
         scheduler.reader_p();
-        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createFindAllQuery(MOVIE_TABLE), (rs, statement) -> {
-            List<Movie> movies = new ArrayList<>();
-            while (rs.next()) {
-                Long id = rs.getLong(ID);
-                List<String> producers = findAllFromForeignKey(statement, PRODUCERS_TABLE, id);
-                List<String> actors = findAllFromForeignKey(statement, ACTORS_TABLE, id);
-                List<String> dubbed = findAllFromForeignKey(statement, DUBBED_TABLE, id);
-                movies.add(Movie.builder().id(id).actors(actors).date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
-                        .dubbed(dubbed).lang(rs.getString(LANGUAGE)).producers(producers).runTime(rs.getInt(RUNTIME))
-                        .subtitles(rs.getString(SUBTITLES)).title(rs.getString(TITLE)).build());
-            }
-
-            return movies;
-        });
+        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createFindAllQuery(MOVIE_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -101,5 +97,29 @@ public class MovieGateway implements Gateway<Movie> {
         scheduler.writer_p();
         executeBatchUpdate(ItemSpecificationOperation.movieUpdateOperation(movie));
         scheduler.writer_v();
+    }
+
+    @Override
+    public List<Movie> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
+            List<Movie> movies = new LinkedList<>();
+            while (rs.next()) {
+                movies.add(Movie.buildMovie(rs, null, null, null));
+            }
+
+            for (Movie movie : movies) {
+                movie.setProducers(findAllFromForeignKey(statement, PRODUCERS_TABLE, movie.getId()));
+                movie.setActors(findAllFromForeignKey(statement, ACTORS_TABLE, movie.getId()));
+                movie.setDubbed(findAllFromForeignKey(statement, DUBBED_TABLE, movie.getId()));
+            }
+            return movies;
+        };
     }
 }

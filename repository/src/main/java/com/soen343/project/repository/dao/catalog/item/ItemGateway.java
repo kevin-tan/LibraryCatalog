@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
@@ -79,6 +80,12 @@ public class ItemGateway implements Gateway<Item> {
         });
         scheduler.reader_v();
         return item;
+    }
+
+    @Override
+    public List<Item> findByAttribute(Map<String, String> attributeValue) {
+        //Not required at the moment
+        return null;
     }
 
     @Override
