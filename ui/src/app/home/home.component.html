@@ -69,6 +69,50 @@
 
 
       <h3>To search in a specific category, please click on the desired <br>item icon on the left to perform a filter search</h3>
+
+      <p *ngFor="let book of bookList">
+        {{book.title}}<br/>
+        {{book.author}}<br/>
+        {{book.pages}}<br/>
+        {{book.format}}<br/>
+        {{book.publisher}}<br/>
+        {{book.isbn10}}<br/>
+        {{book.isbn13}}<br/>
+        {{book.pubDate}}<br/>
+        {{book.language}}<br/>
+      </p>
+      <p *ngFor="let movie of movieList">
+        {{movie.title}}<br/>
+        {{movie.language}}<br/>
+        <span *ngFor="let prod of movie.producers">
+          {{prod}}<br/>
+        </span>
+        <span *ngFor="let actor of movie.actors">
+          {{actor}}<br/>
+        </span>
+        <span *ngFor="let dub of movie.dubbed">
+          {{dub}}<br/>
+        </span>
+        {{movie.subtitles}}<br/>
+        {{movie.releaseDate}}<br/>
+        {{movie.runTime}}<br/>
+      </p>
+      <p *ngFor="let magazine of magazineList">
+        {{magazine.title}}<br/>
+        {{magazine.publisher}}<br/>
+        {{magazine.pubDate}}<br/>
+        {{magazine.language}}<br/>
+        {{magazine.isbn10}}<br/>
+        {{magazine.isbn13}}<br/>
+      </p>
+      <p *ngFor="let music of musicList">
+        {{music.title}}<br/>
+        {{music.label}}<br/>
+        {{music.type}}<br/>
+        {{music.asin}}<br/>
+        {{music.releaseDate}}<br/>
+      </p>
+
     </header>
 
     <!-- Footer -->

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Book} from '../catalog/dto/book';
 
 @Component({
   selector: 'app-catalog',
@@ -7,9 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class bookSearchComponent implements OnInit {
 
-  constructor() { }
+  bookList: Array<Book> = [];
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
+    this.getAllBooks();
+  }
+
+  getAllBooks(): void {
+    this.http.get<Array<Book>>('http://localhost:8080/user/catalog/getAll/book', {withCredentials: true}).subscribe(response => {
+      this.bookList = response;
+    }, error => {
+      console.log(error);
+    });
   }
 
 }

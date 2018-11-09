@@ -52,7 +52,6 @@
       </div>
     </div>
 
-
     <!-- Page Content -->
     <div class="w3-padding-large" id="main">
       <!-- Header/Home -->
@@ -64,10 +63,20 @@
 
       <div>
         <p>Check the boxes to enter the keyword for searching</p>
+      </div>
 
-
-
-
+      <div>
+        <p *ngFor="let book of bookList">
+          {{book.title}}<br/>
+          {{book.author}}<br/>
+          {{book.pages}}<br/>
+          {{book.format}}<br/>
+          {{book.publisher}}<br/>
+          {{book.isbn10}}<br/>
+          {{book.isbn13}}<br/>
+          {{book.pubDate}}<br/>
+          {{book.language}}<br/>
+        </p>
       </div>
 
       <!-- Footer -->

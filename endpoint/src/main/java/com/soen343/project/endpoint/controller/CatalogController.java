@@ -51,4 +51,8 @@ public class CatalogController {
         return new ResponseEntity<>(catalogSearch.getAllItemSpecs(), HttpStatus.OK);
     }
 
+    @GetMapping("/catalog/getAll/{itemType}")
+    public ResponseEntity<?> getAllOfType(@PathVariable String itemType) {
+        return new ResponseEntity<>(catalogSearch.getAllOfType(itemType), HttpStatus.OK);
+    }
 }
