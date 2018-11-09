@@ -87,4 +87,9 @@ public class CatalogController {
         return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attributeValue), HttpStatus.OK);
     }
 
+    @GetMapping("/catalog/searchAll")
+    public ResponseEntity<?> getAllCatalog() {
+        return new ResponseEntity<>(catalogSearch.getAllItemSpecs(), HttpStatus.OK);
+    }
+
 }

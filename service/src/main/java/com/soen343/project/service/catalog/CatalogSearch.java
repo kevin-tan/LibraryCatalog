@@ -1,6 +1,6 @@
 package com.soen343.project.service.catalog;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
@@ -22,6 +22,11 @@ public class CatalogSearch {
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
 
+    private static final String BOOK = "book";
+    private static final String MAGAZINE = "magazine";
+    private static final String MOVIE = "movie";
+    private static final String MUSIC = "music";
+
     @Autowired
     public CatalogSearch(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
                          MagazineGateway magazineRepository, MusicGateway musicRepository) {
@@ -39,8 +44,13 @@ public class CatalogSearch {
         return gateway.findByAttribute(attributeValue);
     }
 
-    public List<?> searchAllByTitle(String titleValue) {
-        return Lists.newArrayList(movieRepository.findByTitle(titleValue), bookRepository.findByTitle(titleValue),
-                musicRepository.findByTitle(titleValue), magazineRepository.findByTitle(titleValue));
+    public Map<String, List<?>> searchAllByTitle(String titleValue) {
+        return ImmutableMap.of(MOVIE, movieRepository.findByTitle(titleValue), BOOK, bookRepository.findByTitle(titleValue), MUSIC,
+                musicRepository.findByTitle(titleValue), MAGAZINE, magazineRepository.findByTitle(titleValue));
+    }
+
+    public Map<String, List<?>> getAllItemSpecs() {
+        return ImmutableMap.of(MOVIE, movieRepository.findAll(), BOOK, bookRepository.findAll(), MUSIC,
+                musicRepository.findAll(), MAGAZINE, magazineRepository.findAll());
     }
 }
