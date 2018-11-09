@@ -24,4 +24,16 @@ export class HomeComponent implements OnInit{
       sessionStorage.setItem("email", "")
     })
   }
+
+  searchAllTitle(searchTitle: string) {
+    this.http.get('http://localhost:8080/catalog/'+searchTitle).subscribe(response => {
+
+    })
+  }
+
+  getAllCatalog() {
+    this.http.get('http://localhost:8080/catalog/searchAll').subscribe(response => {
+
+    })
+  }
 }
