@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/app/v1")
 public class RecordDatabaseController {
 
     private final RecordDatabase recordDatabase;
