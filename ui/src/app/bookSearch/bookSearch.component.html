@@ -65,8 +65,80 @@
         <hr style="width:100%" class="w3-opacity">
       </header>
 
+      <h4>Check the item detail to enter the keyword for searching</h4>
       <div>
-        <p>Check the boxes to enter the keyword for searching</p>
+        <form>
+          <table>
+            <tr>
+              <th>
+                <input id="toggleTitle" type="checkbox" >
+                <label for="toggleTitle">Title</label>
+                <div id="expandTitle">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+              <th>
+                <input id="toggleAuthor" type="checkbox" >
+                <label for="toggleAuthor">Author</label>
+                <div id="expandAuthor">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+            </tr>
+
+            <tr>
+              <th>
+                <input id="togglePublisher" type="checkbox" >
+                <label for="togglePublisher">Publisher</label>
+                <div id="expandPublisher">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+              <th>
+                <input id="togglePubDate" type="checkbox" >
+                <label for="togglePubDate">Publish Date</label>
+                <div id="expandPubDate">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+            </tr>
+
+            <tr>
+              <th>
+                <input id="toggleLang" type="checkbox" >
+                <label for="toggleLang">Language</label>
+                <div id="expandLang">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+              <th>
+                <input id="toggleFormat" type="checkbox" >
+                <label for="toggleFormat">Format</label>
+                <div id="expandFormat">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+            </tr>
+
+            <tr>
+              <th>
+                <input id="toggleISNB" type="checkbox" >
+                <label for="toggleISNB">ISBN</label>
+                <div id="expandISBN">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+              <th>
+                <input id="toggleISNBLong" type="checkbox" >
+                <label for="toggleISNBLong">ISBN13</label>
+                <div id="expandISBNLong">
+                  <textarea rows="1" cols="47"></textarea>
+                </div>
+              </th>
+            </tr>
+          </table>
+          <button class="w3-bar-item w3-button">Search <i class="fa fa-search"></i></button>
+        </form>
       </div>
 
       <div>
