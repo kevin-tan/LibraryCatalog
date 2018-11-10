@@ -50,7 +50,7 @@
 
         <p>Enter your admin credentials</p>
 
-        <form>
+        <form #registerForm="ngForm">
 
           <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="username" #username  username.value=''></p>
           <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="password" #password  password.value=''></p>
@@ -61,15 +61,15 @@
             <option value="Admin" name="admin">Admin</option>
             <option value="Client" name="client">Client</option>
           </select></p>
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="ID" required name="ID" #id id.value=''></p>
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="newUser" #email email.value=''></p>
-          <p><input class="w3-input w3-padding-16" type="password" Placeholder="Password" required name="newPassword" #newUserPassword newUserPassword.value=''></p>
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="First name" required name="firstName" #firstName firstName.value=''></p>
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="Last name" required name="lastName" #lastName lastName.value=''></p>
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="Phone number" required name="phoneNumber" #phoneNumber phoneNumber.value=''></p>
-          <p><input class="w3-input w3-padding-16" type="text" placeholder="Address" required name="address" #address address.value=''></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="ID" required name="ID" [(ngModel)]="newUser.id"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="newUser" [(ngModel)]="newUser.email"></p>
+          <p><input class="w3-input w3-padding-16" type="password" Placeholder="Password" required name="newPassword" [(ngModel)]="newUser.password"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="First name" required name="firstName" [(ngModel)]="newUser.firstName"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Last name" required name="lastName" [(ngModel)]="newUser.lastName"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Phone number" required name="phoneNumber" [(ngModel)]="newUser.phoneNumber"></p>
+          <p><input class="w3-input w3-padding-16" type="text" placeholder="Address" required name="address" [(ngModel)]="newUser.address"></p>
           <p>
-            <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="register(username.value, password.value, userType.value, id.value, email.value, newUserPassword.value, firstName.value, lastName.value, phoneNumber.value, address.value)">
+            <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="register(username.value, password.value, userType.value)">
               <i class="fa fa-paper-plane"></i> Register
             </button>
           </p>
