@@ -1,12 +1,13 @@
 package com.soen343.project.service.database;
 
-import com.soen343.project.repository.dao.catalog.CatalogRepository;
-import com.soen343.project.repository.dao.user.UserRepository;
-import com.soen343.project.repository.entity.catalog.Item;
-import com.soen343.project.repository.entity.catalog.ItemSpecification;
+import com.soen343.project.repository.dao.catalog.item.ItemGateway;
+import com.soen343.project.repository.dao.user.UserGateway;
+import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -16,59 +17,42 @@ import java.util.List;
 @Service
 public class RecordDatabase {
 
-    private final UserRepository userRepository;
-    private final CatalogRepository catalogRepository;
+    private final UserGateway userRepository;
+    private final ItemGateway itemRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public RecordDatabase(UserRepository userRepository, CatalogRepository catalogRepository) {
+    public RecordDatabase(UserGateway userRepository, ItemGateway itemRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
-        this.catalogRepository = catalogRepository;
+        this.itemRepository = itemRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public List<User> register(User userToRegister) {
         List<User> registeredUsers = userRepository.findAll();
 
         if(userToRegister.isUniqueFrom(registeredUsers)) {
+            String password = userToRegister.getPassword();
+            userToRegister.setPassword(bCryptPasswordEncoder.encode(password));
             userRepository.save(userToRegister);
-            return userRepository.findAll();
-        } else {
-            return null;
         }
 
+        return userRepository.findAll();
     }
 
-    public void updateItem(long itemID, ItemSpecification itemSpec){
-        Item item = catalogRepository.findItem(itemID);
-        ItemSpecification spec = catalogRepository.findItemSpec(itemSpec);
-
-        if(item != null){
-            //Creates and adds a new itemSpec
-            if(spec == null){
-                catalogRepository.addItemSpec(itemSpec);
-            }
-            catalogRepository.update(item, itemSpec);
-        }
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
-    public void removeItem(long itemID){
-        Item item = catalogRepository.findItem(itemID);
-        if(item != null){
-            catalogRepository.remove(item);
-        }
+    public Item createItem(ItemSpecification itemSpec) {
+        return new Item(itemSpec);
     }
 
-    public void insertCatalogItem(ItemSpecification itemSpec){
-            if(catalogRepository.findItemSpec(itemSpec) == null){
-                catalogRepository.addItemSpec(itemSpec);
-            }
-            catalogRepository.createItem(itemSpec);
+    public Item getItem(Long itemID) {
+        return itemRepository.findById(itemID);
     }
 
-    public Item getItem(long itemID){
-        return catalogRepository.findItem(itemID);
-    }
-
-    public List<Item> findAllItem(){
-        return catalogRepository.findAll();
+    public List<Item> findAllItems(){
+        return itemRepository.findAll();
     }
 }
