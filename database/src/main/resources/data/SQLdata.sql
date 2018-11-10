@@ -34,8 +34,10 @@ INSERT INTO Producers (movieId, producer) VALUES
 ('2', 'Emma Thomas'),
 ('3', 'Jon Landau'),
 ('4', 'Gary Kurtz'),
-('5', 'Barrie M. Osborne, Peter Jackson, Fran Walsh, Tim Sanders');
-
+('5', 'Barrie M. Osborne'),
+('5', 'Peter Jackson'),
+('5', 'Fran Walsh'),
+('5', 'Tim Sanders');
 
 INSERT INTO Dubbed (movieId, dub) VALUES
 ('1', 'French'),
@@ -45,8 +47,24 @@ INSERT INTO Dubbed (movieId, dub) VALUES
 ('5', 'French');
 
 INSERT INTO Actors (movieId, actor) VALUES
-('1', 'Chris Pratt, Zoe Saldana, Dave Bautista, Vin Diesel, Bradley Cooper'),
-('2', 'Leonardo DiCaprio, Ken Watanabe, Joseph Gordon-Levitt, Marion Cotillard'),
-('3', 'Leonardo DiCaprio, Kate Winslet, Billy Zane, Kathy Bates'),
-('4', 'Mark Hamill, Harrison Ford, Carrie Fisher, Peter Cushing'),
-('5', 'Elijah Wood, Ian McKellen, Viggo Mortensen, Liv Tyler');
+('1', 'Chris Pratt'),
+('1', 'Zoe Saldana'),
+('1', 'Dave Bautista'),
+('1',  'Vin Diesel'),
+('1', 'Bradley Cooper'),
+('2', 'Leonardo DiCaprio'),
+('2', 'Ken Watanabe'),
+('2', 'Joseph Gordon-Levitt'),
+('2', 'Marion Cotillard'),
+('3', 'Leonardo DiCaprio'),
+('3', 'Kate Winslet'),
+('3', 'Billy Zane'),
+('3', 'Kathy Bates'),
+('4', 'Mark Hamill'),
+('4', 'Harrison Ford'),
+('4', 'Carrie Fisher'),
+('4', 'Peter Cushing'),
+('5', 'Ian McKellen'),
+('5', 'Viggo Mortensen'),
+('5', 'Liv Tyler'),
+('5', 'Elijah Wood');
