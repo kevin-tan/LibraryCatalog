@@ -5,7 +5,7 @@ export class User {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  address: string;
+  physicalAddress: string;
 
   constructor(
     id: number,
@@ -14,7 +14,7 @@ export class User {
     firstName: string,
     lastName: string,
     phoneNumber: string,
-    address: string
+    physicalAddress: string
   ) {
     this.id = id;
     this.email = email;
@@ -22,6 +22,6 @@ export class User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.phoneNumber = phoneNumber;
-    this.address = address;
+    this.physicalAddress = physicalAddress;
   }
 }
