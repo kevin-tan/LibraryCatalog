@@ -1,7 +1,7 @@
 package com.soen343.project.service.catalog;
 
 import com.soen343.project.repository.entity.catalog.item.Item;
-import com.soen343.project.service.database.RecordDatabase;
+import com.soen343.project.service.database.Library;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +13,7 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class CatalogTest {
 
-    private RecordDatabase recordDatabase;
+    private Library library;
     private Catalog catalog;
     private List<Item> expectedItems;
     private List<Item> items;
