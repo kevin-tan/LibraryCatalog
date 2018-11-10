@@ -15,16 +15,14 @@ export class RegistrationComponent implements OnInit {
   constructor(private http: HttpClient) {
   }
 
-  newUser = new User(undefined,undefined,undefined,undefined,undefined,undefined,undefined);
+  newUser = new User(0);
   register(username: string, password: string, userType: string) {
 
     let headers = new HttpHeaders({'Authorization': 'Basic ' + btoa(username+':'+password), 'Content-Type': 'application/json'});
     let options = {headers: headers}
     let body = JSON.stringify({[userType]:this.newUser})
     this.http.post('http://localhost:8080/app/v1/register', body, options).subscribe(response => {
-      console.log(response);
-    }, err => {
-      console.log(err);
+
     })
   }
 }
