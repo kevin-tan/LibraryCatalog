@@ -68,3 +68,25 @@ INSERT INTO Actors (movieId, actor) VALUES
 ('5', 'Viggo Mortensen'),
 ('5', 'Liv Tyler'),
 ('5', 'Elijah Wood');
+
+INSERT INTO Item (itemSpecId, type) VALUES
+(1, 'Movie'),
+(2, 'Movie'),
+(3, 'Movie'),
+(4, 'Movie'),
+(5, 'Movie'),
+(1, 'Magazine'),
+(2, 'Magazine'),
+(3, 'Magazine'),
+(4, 'Magazine'),
+(5, 'Magazine'),
+(1, 'Music'),
+(2, 'Music'),
+(3, 'Music'),
+(4, 'Music'),
+(5, 'Music'),
+(1, 'Book'),
+(2, 'Book'),
+(3, 'Book'),
+(4, 'Book'),
+(5, 'Book');

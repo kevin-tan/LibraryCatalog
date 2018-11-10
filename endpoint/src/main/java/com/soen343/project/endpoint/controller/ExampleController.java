@@ -67,6 +67,11 @@ public class ExampleController {
         this.musicRepository = musicRepository;
     }
 
+    @GetMapping("/text/findAll")
+    public ResponseEntity<?> findAllTest(){
+        return new ResponseEntity<>(itemRepository.findAll(), HttpStatus.OK);
+    }
+
     @GetMapping("/test/concurrency")
     public ResponseEntity<?> testConcurrency() {
         Movie movie = new Movie(0L, "Test", "Date", "Director", Lists.newArrayList("Producer"), Lists.newArrayList("Actor"),
@@ -75,6 +80,7 @@ public class ExampleController {
                 Lists.newArrayList("Dubbed"), "Lang", "Sub", 50);
         Item item = new Item(movie);
         Item item11 = new Item(movie2);
+
         movieRepository.save(movie);
         movieRepository.save(movie2);
         movieRepository.saveAll(movie, movie2);
