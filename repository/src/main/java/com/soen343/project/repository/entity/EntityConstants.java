@@ -68,7 +68,6 @@ public final class EntityConstants {
     public static final String ASIN = "asin";
     public static final String MOVIEID = "movieId";
     public static final String ITEMID = "itemId";
-    public static final String LOANTIME= "loanTime";
     public static final String CHECKOUTDATE = "checkoutDate";
     public static final String DUEDATE = "dueDate";
 }

@@ -1,7 +1,7 @@
 package com.soen343.project.repository.dao.loanable;
 
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -15,24 +15,25 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import static com.soen343.project.database.connection.DatabaseConnector.*;
+import static com.soen343.project.database.connection.DatabaseConnector.executeForeignKeyTableQuery;
+import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class LoanableGateway implements Repository<Loan> {
+public class LoanableGateway implements Gateway<Loan> {
 
     private final Scheduler scheduler;
-//    private Loan loan;
-//    private Item item;
-//    private Long itemId;
+
     @Autowired
-    public LoanableGateway(Scheduler scheduler){ this.scheduler = scheduler; }
+    public LoanableGateway(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 
     @Override
     public void save(Loan entity) {
@@ -64,55 +65,36 @@ public class LoanableGateway implements Repository<Loan> {
     @Override
     public Loan findById(Long id) {
 
-       scheduler.reader_p();
-       Loan loan = (Loan) executeForeignKeyTableQuery(createFindByIdQuery(LOAN_TABLE,id),(rs,statement)-> {
-           rs.next();
-               Long loanId = rs.getLong(ID);
-               Long itemId = rs.getLong(ITEMID);
-               Date loanTime = rs.getDate(LOANTIME);
-               Date checkoutDate = rs.getDate(CHECKOUTDATE);
-               Date dueDate = rs.getDate(DUEDATE);
+        scheduler.reader_p();
+        Loan loan = (Loan) executeForeignKeyTableQuery(createFindByIdQuery(LOAN_TABLE, id), (rs, statement) -> {
+            rs.next();// Move to query result
+            Long loanId = rs.getLong(ID);
+            Long itemId = rs.getLong(ITEMID);
+            Date checkoutDate = rs.getDate(CHECKOUTDATE);
+            Date dueDate = rs.getDate(DUEDATE);
 
-           ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
-           rs.next();
-           Long itemSpecId = itemRS.getLong(ITEMSPECID);
-           String itemSpecType = itemRS.getString(TYPE);
+            rs.next();
+            ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
+            itemRS.next();
+            Long itemSpecId = itemRS.getLong(ITEMSPECID);
+            String itemSpecType = itemRS.getString(TYPE);
 
-           ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType,itemSpecId));
-           rs.next();
-           ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
+            itemRS.next();
+            ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
+            ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
 
-           Item item = new Item(itemId, itemSpecification);
+            Item item = new Item(itemId, itemSpecification);
 
-           return new Loan(loanId,item,loanTime,checkoutDate,dueDate);
+            return new Loan(loanId, item, checkoutDate, dueDate);
 
-       });
-
-//        loan = (Loan) executeForeignKeyTableQuery(createFindByIdQuery(LOAN_TABLE,id),(rs,statement)-> {
-//           rs.next();
-//               Long loanId = rs.getLong(ID);
-//               itemId = rs.getLong(ITEMID);
-//               Date loanTime = rs.getDate(LOANTIME);
-//               Date checkoutDate = rs.getDate(CHECKOUTDATE);
-//               Date dueDate = rs.getDate(DUEDATE);
-//
-//           return new Loan(loanId,item,loanTime,checkoutDate,dueDate);
-//       });
-//        item = (Item) executeForeignKeyTableQuery(createFindByIdQuery(ITEM_TABLE,itemId),(rs,statement)-> {
-//            rs.next();
-//            Long itemSpecId = rs.getLong(ITEMSPECID);
-//            String itemSpecType = rs.getString(TYPE);
-//
-//            ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
-//            rs.next(); // Move to query result
-//            ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
-//
-//            return new Item(itemId,itemSpecification);
-//        });
-//        loan.setItem(item);
-
+        });
         scheduler.reader_v();
         return loan;
+    }
+
+    @Override
+    public List<Loan> findByAttribute(Map<String, String> attributeValue) {
+        return null;
     }
 
     @Override
