@@ -19,6 +19,9 @@ label {
   padding: 5px;
   float: left;
 }
+td{
+  width: 200px;
+}
 label::before {
   /*font-family: Consolas, monaco, monospace;*/
   /*font-weight: bold;*/
