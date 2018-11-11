@@ -74,14 +74,14 @@
             <input id="toggleTitle" type="checkbox" >
             <label for="toggleTitle">Title</label>
             <div id="expandTitle">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #title title.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="toggleLang" type="checkbox" >
             <label for="toggleLang">Language</label>
             <div id="expandLang">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #language language.value=""></textarea>
             </div>
           </th>
         </tr>
@@ -91,14 +91,14 @@
             <input id="togglePublisher" type="checkbox" >
             <label for="togglePublisher">Publisher</label>
             <div id="expandPublisher">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #publisher publisher.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="togglePubDate" type="checkbox" >
             <label for="togglePubDate">Publish Date</label>
             <div id="expandPubDate">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #pubDate pubDate.value=""></textarea>
             </div>
           </th>
         </tr>
@@ -108,21 +108,34 @@
             <input id="toggleISNB" type="checkbox" >
             <label for="toggleISNB">ISBN</label>
             <div id="expandISBN">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #isbn10 isbn10.value></textarea>
             </div>
           </th>
           <th>
             <input id="toggleISNBLong" type="checkbox" >
             <label for="toggleISNBLong">ISBN13</label>
             <div id="expandISBNLong">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #isbn13 isbn13.value></textarea>
             </div>
           </th>
         </tr>
       </table>
-      <button class="w3-bar-item w3-button">Search <i class="fa fa-search"></i></button>
+      <button class="w3-bar-item w3-button" (click)="searchMagazines(title.value, publisher.value, pubDate.value, language.value, isbn10.value, isbn13.value)">
+        Search <i class="fa fa-search"></i>
+      </button>
     </form>
   </div>
+
+    <div>
+      <p *ngFor="let book of magazineList">
+        {{book.title}}<br/>
+        {{book.publisher}}<br/>
+        {{book.isbn10}}<br/>
+        {{book.isbn13}}<br/>
+        {{book.pubDate}}<br/>
+        {{book.language}}<br/>
+      </p>
+    </div>
 
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">

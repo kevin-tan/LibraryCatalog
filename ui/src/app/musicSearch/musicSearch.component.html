@@ -74,14 +74,14 @@
             <input id="toggleTitle" type="checkbox" >
             <label for="toggleTitle">Title</label>
             <div id="expandTitle">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #title title.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="toggleArtist" type="checkbox" >
             <label for="toggleArtist">Artist</label>
             <div id="expandArtist">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #artist artist.value=""></textarea>
             </div>
           </th>
         </tr>
@@ -91,14 +91,14 @@
             <input id="toggleRelease" type="checkbox" >
             <label for="toggleRelease">Release Date</label>
             <div id="expandRelease">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #releaseDate releaseDate.value></textarea>
             </div>
           </th>
           <th>
             <input id="toggleType" type="checkbox" >
             <label for="toggleType">Type</label>
             <div id="expandType">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #type type.value></textarea>
             </div>
           </th>
         </tr>
@@ -108,21 +108,33 @@
             <input id="toggleLabel" type="checkbox" >
             <label for="toggleLabel">Label</label>
             <div id="expandLabel">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #label label.value></textarea>
             </div>
           </th>
           <th>
             <input id="toggleASIN" type="checkbox" >
             <label for="toggleASIN">ASIN</label>
             <div id="expandASIN">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #asin asin.value></textarea>
             </div>
           </th>
         </tr>
       </table>
-      <button class="w3-bar-item w3-button">Search <i class="fa fa-search"></i></button>
+      <button class="w3-bar-item w3-button" (click)="searchMusics(title.value, artist.value, type.value, releaseDate.value, label.value, asin.value)">Search <i class="fa fa-search"></i></button>
     </form>
   </div>
+
+    <div>
+      <p *ngFor="let music of musicList">
+        {{music.title}}<br/>
+        {{music.artist}}<br/>
+        {{music.label}}<br/>
+        {{music.type}}<br/>
+        {{music.asin}}<br/>
+        {{music.releaseDate}}<br/>
+      </p>
+    </div>
+
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
     <p class="w3-medium">Created by SOEN343 team#10</p>

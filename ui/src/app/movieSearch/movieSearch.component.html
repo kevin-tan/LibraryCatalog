@@ -74,14 +74,14 @@
             <input id="toggleTitle" type="checkbox" >
             <label for="toggleTitle">Title</label>
             <div id="expandTitle">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #title title.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="toggleDirector" type="checkbox" >
             <label for="toggleDirector">Director</label>
             <div id="expandDirector">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #director director.value=""></textarea>
             </div>
           </th>
         </tr>
@@ -91,14 +91,14 @@
             <input id="toggleRelease" type="checkbox" >
             <label for="toggleRelease">Release Date</label>
             <div id="expandRelease">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #releaseDate releaseDate.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="toggleLang" type="checkbox" >
             <label for="toggleLang">Language</label>
             <div id="expandLang">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #language language.value=""></textarea>
             </div>
           </th>
         </tr>
@@ -108,14 +108,14 @@
             <input id="toggleSub" type="checkbox" >
             <label for="toggleSub">Subtitle Language</label>
             <div id="expandSub">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #subtitles subtitles.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="toggleDub" type="checkbox" >
             <label for="toggleDub">Dubbed Language</label>
             <div id="expandDub">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #dubbed dubbed.value=""></textarea>
             </div>
           </th>
         </tr>
@@ -125,21 +125,43 @@
             <input id="toggleActor" type="checkbox" >
             <label for="toggleActor">Actor</label>
             <div id="expandActor">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #actors actors.value=""></textarea>
             </div>
           </th>
           <th>
             <input id="toggleProducer" type="checkbox" >
             <label for="toggleProducer">Producer</label>
             <div id="expandProducer">
-              <textarea rows="1" cols="47"></textarea>
+              <textarea rows="1" cols="47" #producers producers.value=""></textarea>
             </div>
           </th>
         </tr>
       </table>
-      <button class="w3-bar-item w3-button">Search <i class="fa fa-search"></i></button>
+      <button class="w3-bar-item w3-button" (click)="searchMovies(title.value, director.value, releaseDate.value, language.value, subtitles.value, dubbed.value, actors.value, producers.value)">
+        Search <i class="fa fa-search"></i>
+      </button>
     </form>
   </div>
+
+    <div>
+      <p *ngFor="let movie of movieList">
+        {{movie.title}}<br/>
+        {{movie.language}}<br/>
+        <span *ngFor="let prod of movie.producers">
+          {{prod}}<br/>
+        </span>
+        <span *ngFor="let actor of movie.actors">
+          {{actor}}<br/>
+        </span>
+        <span *ngFor="let dub of movie.dubbed">
+          {{dub}}<br/>
+        </span>
+        {{movie.subtitles}}<br/>
+        {{movie.releaseDate}}<br/>
+        {{movie.runTime}}<br/>
+      </p>
+    </div>
+
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
     <p class="w3-medium">Created by SOEN343 team#10</p>

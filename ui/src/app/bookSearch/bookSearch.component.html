@@ -71,73 +71,75 @@
           <table>
             <tr>
               <th>
-                <input id="toggleTitle" type="checkbox" >
+                <input id="toggleTitle" type="checkbox">
                 <label for="toggleTitle">Title</label>
                 <div id="expandTitle">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #title title.value=""></textarea>
                 </div>
               </th>
               <th>
-                <input id="toggleAuthor" type="checkbox" >
+                <input id="toggleAuthor" type="checkbox">
                 <label for="toggleAuthor">Author</label>
                 <div id="expandAuthor">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #author author.value=""></textarea>
                 </div>
               </th>
             </tr>
 
             <tr>
               <th>
-                <input id="togglePublisher" type="checkbox" >
+                <input id="togglePublisher" type="checkbox">
                 <label for="togglePublisher">Publisher</label>
                 <div id="expandPublisher">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #publisher publisher.value=""></textarea>
                 </div>
               </th>
               <th>
-                <input id="togglePubDate" type="checkbox" >
+                <input id="togglePubDate" type="checkbox">
                 <label for="togglePubDate">Publish Date</label>
                 <div id="expandPubDate">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #pubDate pubDate.value=""></textarea>
                 </div>
               </th>
             </tr>
 
             <tr>
               <th>
-                <input id="toggleLang" type="checkbox" >
+                <input id="toggleLang" type="checkbox">
                 <label for="toggleLang">Language</label>
                 <div id="expandLang">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #language language.value=""></textarea>
                 </div>
               </th>
               <th>
-                <input id="toggleFormat" type="checkbox" >
+                <input id="toggleFormat" type="checkbox">
                 <label for="toggleFormat">Format</label>
                 <div id="expandFormat">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #format format.value=""></textarea>
                 </div>
               </th>
             </tr>
 
             <tr>
               <th>
-                <input id="toggleISNB" type="checkbox" >
+                <input id="toggleISNB" type="checkbox">
                 <label for="toggleISNB">ISBN</label>
                 <div id="expandISBN">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #isbn10 isbn10.value=""></textarea>
                 </div>
               </th>
               <th>
-                <input id="toggleISNBLong" type="checkbox" >
+                <input id="toggleISNBLong" type="checkbox">
                 <label for="toggleISNBLong">ISBN13</label>
                 <div id="expandISBNLong">
-                  <textarea rows="1" cols="47"></textarea>
+                  <textarea rows="1" cols="47" #isbn13 isbn13.value=""></textarea>
                 </div>
               </th>
             </tr>
           </table>
-          <button class="w3-bar-item w3-button">Search <i class="fa fa-search"></i></button>
+          <button class="w3-bar-item w3-button" (click)="searchBooks(title.value, author.value, publisher.value, pubDate.value, language.value, format.value, isbn10.value, isbn13.value)">
+            Search <i class="fa fa-search"></i>
+          </button>
         </form>
       </div>
 
