@@ -3,7 +3,7 @@ package com.soen343.project.service.registry;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.instance.ActiveUser;
-import com.soen343.project.service.database.RecordDatabase;
+import com.soen343.project.service.database.Library;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,15 +19,15 @@ import static org.junit.Assert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class UserRegistryTest {
 
-    private RecordDatabase recordDatabase;
+    private Library library;
 
     private UserRegistry userRegistry;
     private List<ActiveUser> expectedActiveUsers;
 
     @Before
     public void setup() {
-        recordDatabase = Mockito.mock(RecordDatabase.class);
-        userRegistry = new UserRegistry(recordDatabase);
+        library = Mockito.mock(Library.class);
+        userRegistry = new UserRegistry(library);
         expectedActiveUsers = new LinkedList<>();
         for (long i = 1; i < 6; ++i){
             ActiveUser activeUser = new ActiveUser(i);

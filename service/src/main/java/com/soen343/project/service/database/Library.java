@@ -15,14 +15,14 @@ import java.util.List;
  * Created by Kevin Tan 2018-09-25
  */
 @Service
-public class RecordDatabase {
+public class Library {
 
     private final UserGateway userRepository;
     private final ItemGateway itemRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public RecordDatabase(UserGateway userRepository, ItemGateway itemRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public Library(UserGateway userRepository, ItemGateway itemRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
