@@ -25,14 +25,14 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class LoanableRepository implements Repository<Loan> {
+public class LoanableGateway implements Repository<Loan> {
 
     private final Scheduler scheduler;
 //    private Loan loan;
 //    private Item item;
 //    private Long itemId;
     @Autowired
-    public LoanableRepository(Scheduler scheduler){ this.scheduler = scheduler; }
+    public LoanableGateway(Scheduler scheduler){ this.scheduler = scheduler; }
 
     @Override
     public void save(Loan entity) {

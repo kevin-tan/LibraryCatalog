@@ -34,7 +34,7 @@ public final class EntityConstants {
     public static final String DUBBED_TABLE = "Dubbed";
     public static final String DUBBED_TABLE_WITH_COLUMNS =
             DUBBED_TABLE + "(movieId, dub)";
-    public static final String LOAN_TABLE = "LOAN";
+    public static final String LOAN_TABLE = "Loan";
     public static final String LOAN_TABLE_WITH_COLUMNS =
             LOAN_TABLE + "itemId, loanTime, checkoutDate, dueDate";
     //User

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
@@ -14,12 +16,12 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public class Loan implements DatabaseEntity {
     private Long id;
     private Item item;
-    private String loanTime;
-    private String checkoutDate;
-    private String dueDate;
+    private Date loanTime;
+    private Date checkoutDate;
+    private Date dueDate;
 
     @Builder
-    public Loan(Long id, Item item, String loanTime, String checkoutDate, String dueDate) {
+    public Loan(Long id, Item item, Date loanTime, Date checkoutDate, Date dueDate) {
         this.id = id;
         this.item = item;
         this.loanTime = loanTime;
