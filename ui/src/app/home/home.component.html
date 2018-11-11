@@ -60,7 +60,7 @@
   <!-- Page Content -->
   <div class="w3-padding-large" id="main">
     <!-- Header/Home -->
-    <header class="w3-container w3-padding-32 w3-center w3-black" id="home" style="padding-bottom: 210px !important;">
+    <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
       <h3 class="w3-jumbo">Welcome to Library Catalog</h3> <br>
       <h2>What would you like to search for today?</h2><br><br>
       <h2>
@@ -69,12 +69,14 @@
           <input type="text" size="30" name="keywordSearch" style="line-height: 50px; padding-bottom: 6px;" placeholder="Enter item title" #searchTitle searchTitle.value=''>
           <button class="w3-bar-item w3-button" (click)="searchAllTitle(searchTitle.value)"><i class="fa fa-search"></i></button>
         </form>
-      </h2><br><br><br>
-
-
+      </h2><br><br>
       <h3>To search in a specific category, please click on the desired <br>item icon on the left to perform a filter search</h3>
-
-      <p *ngFor="let book of bookList">
+      <hr style="width:100%" class="w3-opacity">
+    </header>
+    <h3>Here are the currently items we have in our library</h3>
+    <table>
+      <tr><h4><i>Books</i></h4><hr></tr>
+      <td *ngFor="let book of bookList">
         {{book.title}}<br/>
         {{book.author}}<br/>
         {{book.pages}}<br/>
@@ -84,8 +86,12 @@
         {{book.isbn13}}<br/>
         {{book.pubDate}}<br/>
         {{book.language}}<br/>
-      </p>
-      <p *ngFor="let movie of movieList">
+      </td>
+    </table>
+    <br>
+    <table>
+      <tr><h4><i>Movies</i></h4><hr></tr>
+      <td *ngFor="let movie of movieList">
         {{movie.title}}<br/>
         {{movie.language}}<br/>
         <span *ngFor="let prod of movie.producers">
@@ -100,24 +106,32 @@
         {{movie.subtitles}}<br/>
         {{movie.releaseDate}}<br/>
         {{movie.runTime}}<br/>
-      </p>
-      <p *ngFor="let magazine of magazineList">
+      </td>
+    </table>
+    <br>
+    <table>
+      <tr><h4><i>Magazines</i></h4><hr></tr>
+      <td *ngFor="let magazine of magazineList">
         {{magazine.title}}<br/>
         {{magazine.publisher}}<br/>
         {{magazine.pubDate}}<br/>
         {{magazine.language}}<br/>
         {{magazine.isbn10}}<br/>
         {{magazine.isbn13}}<br/>
-      </p>
-      <p *ngFor="let music of musicList">
+      </td>
+    </table>
+    <br>
+    <table>
+      <tr><h4><i>Music</i></h4><hr></tr>
+      <td *ngFor="let music of musicList">
         {{music.title}}<br/>
         {{music.label}}<br/>
         {{music.type}}<br/>
         {{music.asin}}<br/>
         {{music.releaseDate}}<br/>
-      </p>
+      </td>
 
-    </header>
+    </table>
 
     <!-- Footer -->
     <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
