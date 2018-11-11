@@ -1,6 +1,7 @@
 package com.soen343.project.repository.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
@@ -27,7 +28,7 @@ public abstract class User implements DatabaseEntity {
     private String physicalAddress;
     private String email;
     private String phoneNumber;
-    @Getter(AccessLevel.NONE)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     User() {}

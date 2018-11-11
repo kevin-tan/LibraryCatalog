@@ -1,5 +1,7 @@
 package com.soen343.project.database.query;
 
+import java.util.Map;
+
 /**
  * Created by Kevin Tan 2018-09-24
  */
@@ -19,28 +21,25 @@ public class QueryBuilder {
     private final static String UPDATE = "UPDATE ";
     private final static String SET = " SET ";
     private final static String DELETE = "DELETE ";
+    private final static String LIKE = " LIKE ";
     public final static String GET_ID_MOST_RECENT = "SELECT LAST_INSERT_ROWID();";
     public final static int MOST_RECENT_ID_COL = 1;
 
     private final static String END_QUERY = ";";
-    private final static String COMMA = ",";
     private final static String QUOTE = "'";
+    private final static String PERCENTAGE = "%";
 
     private QueryBuilder() { }
 
     //INSERT INTO User VALUES (‘Big’, ‘Boss’, ‘7582 Rue Concordia’, ‘bigboss@hotmail.com’, ‘514-895-9852’, ‘Admin’);
-    public static String createSaveQuery(String table, String... values) {
+    public static String createSaveQuery(String table, String values) {
         StringBuilder query = new StringBuilder(INSERT_INTO);
         query.append(table);
         query.append(VALUES);
-        for (int i = 0; i < values.length; i++) {
-            query.append(values[i]);
-            if (i < values.length - 1) query.append(COMMA);
-        }
+        query.append(values);
         query.append(END_QUERY);
         return query.toString();
     }
-
 
     public static String createFindAllQuery(String table) {
         return SELECT + ALL + FROM + table + END_QUERY;
@@ -56,6 +55,29 @@ public class QueryBuilder {
 
     public static String createFindByAttributeQuery(String table, String attribute, String value) {
         return SELECT + ALL + FROM + table + WHERE + attribute + EQUAL + QUOTE + value + QUOTE + END_QUERY;
+    }
+
+    public static String createSearchByAttributeQuery(String table, String attribute, String value) {
+        return SELECT + ALL + FROM + table + WHERE + attribute + LIKE + QUOTE + PERCENTAGE + value + PERCENTAGE + QUOTE + END_QUERY;
+    }
+
+    public static String createSearchByAttributesQuery(String table, Map<String, String> attributeValue) {
+        StringBuilder query = new StringBuilder(SELECT + ALL + FROM + table + WHERE);
+
+        int counter = 0;
+        for(String attribute : attributeValue.keySet()){
+            if(counter != 0) {
+                query.append(AND);
+            }
+            query.append(attribute);
+            query.append(LIKE + QUOTE + PERCENTAGE);
+            query.append(attributeValue.get(attribute));
+            query.append(PERCENTAGE + QUOTE);
+            counter++;
+        }
+        query.append(END_QUERY);
+
+        return query.toString();
     }
 
     public static String createUpdateQuery(String table, String updatedValues, Long id) {

@@ -1,7 +1,7 @@
 package com.soen343.project.service.authenticate;
 
 import com.soen343.project.repository.entity.user.User;
-import com.soen343.project.service.database.RecordDatabase;
+import com.soen343.project.service.database.Library;
 import com.soen343.project.service.notification.Observer;
 import com.soen343.project.service.notification.Subject;
 import com.soen343.project.service.registry.UserRegistry;
@@ -14,28 +14,32 @@ import java.util.List;
 @Service
 public class LoginManager implements Subject<User> {
 
-    private RecordDatabase recordDatabase;
+    private Library library;
     private List<Observer> observers;
 
     @Autowired
-    LoginManager(UserRegistry userRegistry, RecordDatabase recordDatabase) {
-        this.recordDatabase = recordDatabase;
+    LoginManager(UserRegistry userRegistry, Library library) {
+        this.library = library;
         observers = new LinkedList<>();
         addObserver(userRegistry);
     }
 
-    //TODO: Change to String parameter insted of User
-    public boolean loginUser(User username){
-        // must be called after successful login
-        notifyObservers(username);
-        return true;
+    public boolean loginUser(String email){
+        User user = library.getUserByEmail(email);
+        if (user != null){
+            notifyObservers(user, true);
+            return true;
+        }
+        return false;
     }
 
-    //TODO: Change to String parameter insted of User
-    public boolean logoutUser(User username) {
-        // must be called after successful logout
-        notifyObservers(username);
-        return true;
+    public boolean logoutUser(String email) {
+        User user = library.getUserByEmail(email);
+        if (user != null){
+            notifyObservers(user, false);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -49,9 +53,9 @@ public class LoginManager implements Subject<User> {
     }
 
     @Override
-    public void notifyObservers(User data) {
+    public void notifyObservers(User data, boolean islogin) {
         for (Observer observer: observers) {
-            observer.update(data);
+            observer.update(data, islogin);
         }
     }
 }

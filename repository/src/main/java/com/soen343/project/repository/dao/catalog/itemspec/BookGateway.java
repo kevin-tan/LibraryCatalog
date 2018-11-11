@@ -1,7 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -17,12 +19,13 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class BookRepository implements Repository<Book> {
+@SuppressWarnings("ALL")
+public class BookGateway implements ItemSpecificationGateway<Book> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public BookRepository(Scheduler scheduler){
+    public BookGateway(Scheduler scheduler){
         this.scheduler = scheduler;
     }
 
@@ -70,20 +73,18 @@ public class BookRepository implements Repository<Book> {
     }
 
     @Override
+    public List<Book> findByAttribute(Map<String, String> attributeValue) {
+        scheduler.reader_p();
+        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributesQuery(BOOK_TABLE, attributeValue), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<Book> findAll() {
         scheduler.reader_p();
-        List<Book> list = (List<Book>) executeQueryExpectMultiple(createFindAllQuery(BOOK_TABLE), (rs, statement) -> {
-            List<Book> books = new ArrayList<>();
-            while (rs.next()) {
-                books.add(Book.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
-                        .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
-                        .publisher(rs.getString(PUBLISHER)).author(rs.getString(AUTHOR)).pages(rs.getInt(PAGES))
-                        .format(Book.Format.stringToEnum(rs.getString(FORMAT))).build());
-            }
-
-            return books;
-        });
+        List<Book> list = (List<Book>) executeQueryExpectMultiple(createFindAllQuery(BOOK_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -93,5 +94,27 @@ public class BookRepository implements Repository<Book> {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(book.getTable(), book.sqlUpdateValues(), book.getId()));
         scheduler.writer_v();
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation(){
+        return (rs, statement) -> {
+            List<Book> books = new ArrayList<>();
+            while (rs.next()) {
+                books.add(Book.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
+                        .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
+                        .publisher(rs.getString(PUBLISHER)).author(rs.getString(AUTHOR)).pages(rs.getInt(PAGES))
+                        .format(Book.Format.stringToEnum(rs.getString(FORMAT))).build());
+            }
+
+            return books;
+        };
+    }
+
+    @Override
+    public List<Book> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributeQuery(BOOK_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 }

@@ -1,9 +1,10 @@
 package com.soen343.project.repository.dao.user;
 
 import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.executeQuery;
 import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
@@ -27,12 +29,12 @@ import static com.soen343.project.repository.entity.user.types.UserType.CLIENT;
  */
 
 @Component
-public class UserRepository implements Repository<User> {
+public class UserGateway implements Gateway<User> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public UserRepository(Scheduler scheduler){
+    public UserGateway(Scheduler scheduler){
         this.scheduler = scheduler;
     }
 
@@ -65,24 +67,15 @@ public class UserRepository implements Repository<User> {
     @Override
     public User findById(Long id) {
         scheduler.reader_p();
-        User user = (User) executeQuery(createFindByIdQuery(USER_TABLE, id), (rs,statement) -> {
-            while (rs.next()) {
-                if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
-                    return Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
-                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
-                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
-                }
-                else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
-                    return Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
-                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
-                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
-                }
-            }
-            //Should never be reached
-            return null;
-        });
+        User user = (User) executeQuery(createFindByIdQuery(USER_TABLE, id), extractUser());
         scheduler.reader_v();
         return user;
+    }
+
+    @Override
+    public List<User> findByAttribute(Map<String, String> attributeValue) {
+        //Not required at the moment
+        return null;
     }
 
     @Override
@@ -109,10 +102,36 @@ public class UserRepository implements Repository<User> {
         return list;
     }
 
+    public User findByEmail(String email) {
+        scheduler.reader_p();
+        User user = (User) executeQuery(createFindByAttributeQuery(USER_TABLE, EMAIL, email), extractUser());
+        scheduler.reader_v();
+        return user;
+    }
+
     @Override
     public void update(User entity) {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
         scheduler.writer_v();
+    }
+
+    private DatabaseQueryOperation extractUser(){
+        return (rs,statement) -> {
+            while (rs.next()) {
+                if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
+                    return Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
+                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
+                }
+                else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
+                    return Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
+                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
+                }
+            }
+            //Should never be reached
+            return null;
+        };
     }
 }

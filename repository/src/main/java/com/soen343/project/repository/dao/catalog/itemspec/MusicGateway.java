@@ -1,7 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -17,12 +19,13 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class MusicRepository implements Repository<Music> {
+@SuppressWarnings("ALL")
+public class MusicGateway implements ItemSpecificationGateway<Music> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public MusicRepository(Scheduler scheduler) {
+    public MusicGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -67,18 +70,18 @@ public class MusicRepository implements Repository<Music> {
     }
 
     @Override
+    public List<Music> findByAttribute(Map<String, String> attributeValue) {
+        scheduler.reader_p();
+        List<Music> list = (List<Music>) executeQueryExpectMultiple(createSearchByAttributesQuery(MUSIC_TABLE, attributeValue), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<Music> findAll() {
         scheduler.reader_p();
-        List<Music> list = (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), (rs, statement) -> {
-            List<Music> musics = new ArrayList<>();
-            while (rs.next()) {
-                musics.add(Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
-                        .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL)).type(rs.getString(TYPE)).build());
-            }
-
-            return musics;
-        });
+        List<Music> list = (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -88,5 +91,25 @@ public class MusicRepository implements Repository<Music> {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(music.getTable(), music.sqlUpdateValues(), music.getId()));
         scheduler.writer_v();
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
+            List<Music> musics = new ArrayList<>();
+            while (rs.next()) {
+                musics.add(Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
+                        .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL)).type(rs.getString(TYPE)).build());
+            }
+
+            return musics;
+        };
+    }
+
+    @Override
+    public List<Music> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Music> list = (List<Music>) executeQueryExpectMultiple(createSearchByAttributeQuery(MUSIC_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 }

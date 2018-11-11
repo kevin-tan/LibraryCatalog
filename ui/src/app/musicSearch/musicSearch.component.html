@@ -17,24 +17,23 @@
   <!-- Side Bar -->
   <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
 
-    <a href="#bookItem" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/book" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-book w3-xxlarge"></i>
       <p>BOOK</p>
     </a>
-    <a href="#magazineItem" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/magazine" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-book-open w3-xxlarge"></i>
       <p>MAGAZINE</p>
     </a>
-    <a href="#musicItem" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/music" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-music w3-xxlarge"></i>
       <p>MUSIC</p>
     </a>
-    <a href="#movieItem" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/movie" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-compact-disc w3-xxlarge"></i>
       <p>MOVIE</p>
     </a>
-
-    <a [routerLink]="" (click)="logout()" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/catalog" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-sign-out-alt w3-xxlarge"></i>
       <p>LOGOUT</p>
     </a>
@@ -45,30 +44,22 @@
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
   <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-    <a href="#bookItem" class="w3-bar-item w3-button" style="width:25% !important">BOOK</a>
-    <a href="#magazineItem" class="w3-bar-item w3-button" style="width:25% !important">MAGAZINE</a>
-    <a href="#musicItem" class="w3-bar-item w3-button" style="width:25% !important">MUSIC</a>
-    <a href="#movieItem" class="w3-bar-item w3-button" style="width:25% !important">MOVIE</a>
-    <a [routerLink]="" (click)="logout()" class="w3-bar-item w3-button" style="width:25% !important">Logout</a>
+    <a href="/search/book" class="w3-bar-item w3-button" style="width:25% !important">BOOK</a>
+    <a href="/search/magazine" class="w3-bar-item w3-button" style="width:25% !important">MAGAZINE</a>
+    <a href="/search/music" class="w3-bar-item w3-button" style="width:25% !important">MUSIC</a>
+    <a href="/search/movie" class="w3-bar-item w3-button" style="width:25% !important">MOVIE</a>
+    <a href="/catalog" class="w3-bar-item w3-button" style="width:25% !important">LOGOUT</a>
   </div>
 </div>
+
 
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
   <header class="w3-container w3-padding-32 w3-center w3-black" id="home" style="padding-bottom: 210px !important;">
-    <h3 class="w3-jumbo">Welcome to Library Catalog</h3> <br>
-    <h2>What would you like to search for today?</h2><br><br>
-    <h2>
-      <form action="">
-        <label>To search in all categories, enter the item title</label><br>
-        <input type="text" size="30" name="keywordSearch" style="line-height: 50px; padding-bottom: 6px;" placeholder="Enter item title">
-        <a href="#" class="w3-bar-item w3-button"><i class="fa fa-search"></i></a>
-      </form>
-    </h2><br><br><br>
-
-
-    <h3>To search in a specific category, please click on the desired <br>item icon on the left to perform a filter search</h3>
+    <h2 class="w3-jumbo">What would you like to search<br>in <span style="font-size: 115%;"><i>music</i></span> items?</h2>
+    <h3>Please enter the item information that you would like to search for.</h3>
+    <hr style="width:100%" class="w3-opacity">
   </header>
 
   <!-- Footer -->

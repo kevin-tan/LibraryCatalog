@@ -4,7 +4,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -18,9 +18,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -28,12 +26,12 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class ItemRepository implements Repository<Item> {
+public class ItemGateway implements Gateway<Item> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public ItemRepository(Scheduler scheduler) {
+    public ItemGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -82,24 +80,38 @@ public class ItemRepository implements Repository<Item> {
     }
 
     @Override
+    public List<Item> findByAttribute(Map<String, String> attributeValue) {
+        //Not required at the moment
+        return null;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<Item> findAll() {
         scheduler.reader_p();
         List<Item> list = (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), (rs, statement) -> {
             List<DatabaseEntity> listTemp = new ArrayList<>();
-            LinkedHashMultimap<Long, Item> itemTempInfo = LinkedHashMultimap.create();
+            Map<String, LinkedHashMultimap<Long, Item>> itemTempInfo = new HashMap<>();
 
             while (rs.next()) {
-                Item item = new Item(rs.getLong(ID), rs.getString(TYPE));
-                itemTempInfo.put(rs.getLong(ITEMSPECID), item);
+                String itemType = rs.getString(TYPE);
+                Item item = new Item(rs.getLong(ID), itemType);
+                if (itemTempInfo.get(itemType) == null) {
+                    itemTempInfo.put(itemType, LinkedHashMultimap.create());
+                }
+                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), item);
             }
 
-            for (Long itemSpecId : itemTempInfo.keySet()) {
-                Set<Item> items = itemTempInfo.get(itemSpecId);
-                for (Item item : items) {
-                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(item.getType(), itemSpecId));
-                    item.setSpec(getItemSpec(item.getType(), itemSpecRS, statement, itemSpecId));
-                    listTemp.add(item);
+            for (String itemType : itemTempInfo.keySet()) {
+                LinkedHashMultimap<Long, Item> map = itemTempInfo.get(itemType);
+                for (Long itemSpecId : map.keySet()) {
+                    Set<Item> items = map.get(itemSpecId);
+                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemType, itemSpecId));
+                    ItemSpecification itemSpecification = getItemSpec(itemType, itemSpecRS, statement, itemSpecId);
+                    for (Item item : items) {
+                        item.setSpec(itemSpecification);
+                        listTemp.add(item);
+                    }
                 }
             }
             return listTemp;

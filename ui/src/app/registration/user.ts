@@ -1,11 +1,21 @@
 export class User {
+  id: number;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  physicalAddress: string;
+
   constructor(
-    public id: string,
-    public email: string,
-    public password: string,
-    public firstName: string,
-    public lastName: string,
-    public phoneNumber: string,
-    public address: string
-    ) {}
+    id: number
+  ) {
+    this.id = id;
+    this.email = null;
+    this.password = null;
+    this.firstName = null;
+    this.lastName = null;
+    this.phoneNumber = null;
+    this.physicalAddress = null;
+  }
 }

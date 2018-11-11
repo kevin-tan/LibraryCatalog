@@ -6,5 +6,5 @@ public interface Subject <E>{
 
     void removeObserver(Observer observer);
 
-    void notifyObservers(E data);
+    void notifyObservers(E data, boolean toggle);
 }

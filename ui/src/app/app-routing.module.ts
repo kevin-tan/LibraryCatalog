@@ -5,6 +5,11 @@ import { RegistrationComponent } from "./registration/registration.component";
 import { LoginComponent } from "./login/login.component";
 import {CatalogComponent} from "./catalog/catalog.component";
 import {HomeComponent} from "./home/home.component";
+import {SearchCatalogComponent} from "./search-catalog/search-catalog.component";
+import {movieSearchComponent} from "./movieSearch/movieSearch.component";
+import {musicSearchComponent} from "./musicSearch/musicSearch.component";
+import {bookSearchComponent} from "./bookSearch/bookSearch.component";
+import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
 
 
 const routes: Routes = [
@@ -12,7 +17,12 @@ const routes: Routes = [
   { path: 'register', component: RegistrationComponent},
   { path: 'login', component: LoginComponent},
   { path: 'catalog', component: CatalogComponent},
-  { path: 'home', component: HomeComponent}
+  { path: 'home', component: HomeComponent},
+  { path:'search', component: SearchCatalogComponent},
+  { path:'search/magazine', component: magazineSearchComponent},
+  { path:'search/movie', component: movieSearchComponent},
+  { path:'search/music', component: musicSearchComponent},
+  { path:'search/book', component: bookSearchComponent}
 ];
 
 @NgModule({

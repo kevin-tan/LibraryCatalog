@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class UserRegistryController {
@@ -21,8 +20,8 @@ public class UserRegistryController {
     /**
      * Use case: View active registry
      */
-    @GetMapping("/admin/{id}/viewActiveUsers")
-    public ResponseEntity<?> viewActiveUserRegistry(@PathVariable Long id) {
-        return new ResponseEntity<>(userRegistry.viewActiveUserRegistry(id), HttpStatus.OK);
+    @GetMapping("/admin/viewActiveUsers")
+    public ResponseEntity<?> viewActiveUserRegistry() {
+        return new ResponseEntity<>(userRegistry.viewActiveUserRegistry(), HttpStatus.OK);
     }
 }

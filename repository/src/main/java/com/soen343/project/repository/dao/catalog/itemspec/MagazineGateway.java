@@ -1,7 +1,8 @@
 package com.soen343.project.repository.dao.catalog.itemspec;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Repository;
+import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -17,12 +19,13 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class MagazineRepository implements Repository<Magazine> {
+@SuppressWarnings("ALL")
+public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public MagazineRepository(Scheduler scheduler) {
+    public MagazineGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -69,19 +72,18 @@ public class MagazineRepository implements Repository<Magazine> {
     }
 
     @Override
+    public List<Magazine> findByAttribute(Map<String, String> attributeValue) {
+        scheduler.reader_p();
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributesQuery(MAGAZINE_TABLE, attributeValue), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<Magazine> findAll() {
         scheduler.reader_p();
-        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createFindAllQuery(MAGAZINE_TABLE), (rs, statement) -> {
-            List<Magazine> magazines = new ArrayList<>();
-            while (rs.next()) {
-                magazines.add(Magazine.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
-                        .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
-                        .publisher(rs.getString(PUBLISHER)).build());
-            }
-
-            return magazines;
-        });
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createFindAllQuery(MAGAZINE_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -91,5 +93,26 @@ public class MagazineRepository implements Repository<Magazine> {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(magazine.getTable(), magazine.sqlUpdateValues(), magazine.getId()));
         scheduler.writer_v();
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
+            List<Magazine> magazines = new ArrayList<>();
+            while (rs.next()) {
+                magazines.add(Magazine.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
+                        .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
+                        .publisher(rs.getString(PUBLISHER)).build());
+            }
+
+            return magazines;
+        };
+    }
+
+    @Override
+    public List<Magazine> findByTitle(String title) {
+        scheduler.reader_p();
+        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributeQuery(MAGAZINE_TABLE, TITLE, title), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 }
