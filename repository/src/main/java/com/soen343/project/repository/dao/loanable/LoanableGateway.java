@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.soen343.project.database.connection.DatabaseConnector.executeForeignKeyTableQuery;
-import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
-import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
 import static com.soen343.project.repository.entity.EntityConstants.*;
@@ -71,8 +71,8 @@ public class LoanableGateway implements Gateway<Loan> {
             rs.next();// Move to query result
             Long loanId = rs.getLong(ID);
             Long itemId = rs.getLong(ITEMID);
-            Date checkoutDate = rs.getDate(CHECKOUTDATE);
-            Date dueDate = rs.getDate(DUEDATE);
+            Date checkoutDate = convertToDate(rs.getString(CHECKOUTDATE));
+            Date dueDate = convertToDate(rs.getString(DUEDATE));
 
             rs.next();
             ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
@@ -111,7 +111,7 @@ public class LoanableGateway implements Gateway<Loan> {
             while (rs.next()) {
                 String itemType = rs.getString(TYPE);
                 Item item = new Item(rs.getLong(ITEMID), itemType);
-                Loan loan = new Loan(rs.getLong(ID), item, rs.getDate(CHECKOUTDATE), rs.getDate(DUEDATE));
+                Loan loan = new Loan(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
                 loans.add(loan);
                 if (itemTempInfo.get(itemType) == null) {
                     itemTempInfo.put(itemType, LinkedHashMultimap.create());
@@ -157,5 +157,17 @@ public class LoanableGateway implements Gateway<Loan> {
             return movie;
         }
         return null;
+    }
+
+    private Date convertToDate(String sqlTimestamp) {
+        SimpleDateFormat sqlTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sqlTimestampFormat.parse(sqlTimestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return date;
     }
 }

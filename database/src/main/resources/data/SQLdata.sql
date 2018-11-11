@@ -92,3 +92,8 @@ INSERT INTO Item (itemSpecId, type) VALUES
 (4, 'Book'),
 (5, 'Book');
 
+INSERT INTO Loan (itemId, checkoutDate, dueDate) VALUES
+(1, DateTime('now'), DateTime('now')),
+(2, DateTime('now'), DateTime('now')),
+(11, DateTime('now'), DateTime('now')),
+(16, DateTime('now'), DateTime('now'));
