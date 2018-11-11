@@ -1,5 +1,7 @@
 package com.soen343.project.repository.dao.loanable;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -15,11 +17,10 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.executeForeignKeyTableQuery;
+import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
 import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
@@ -100,18 +101,40 @@ public class LoanableGateway implements Gateway<Loan> {
     @Override
     @SuppressWarnings("unchecked")
     public List<Loan> findAll() {
-//        return (List<Loan>) executeQueryExpectMultiple(createFindAllQuery(LOAN_TABLE), (rs, statement) -> {
-//            List<Loan> loans = new ArrayList<>();
-//
-//            while (rs.next()) {
-//
-//                loans.add(Loan.builder().id(rs.getLong(ID)).item(getItem(rs.getLong(ITEMID))).loanTime(rs.getString(LOANTIME))
-//                        .checkoutDate(rs.getString(CHECKOUTDATE)).dueDate(rs.getString(DUEDATE)).build());
-//            }
-//
-//            return loans;
-//        });
-        return null;
+        scheduler.reader_p();
+        List<Loan> list = (List<Loan>) executeQueryExpectMultiple(createFindAllQuery(LOAN_TABLE, ITEM_TABLE, ID, ITEMID),(rs,statement)->{
+            List<DatabaseEntity> listTemp = new ArrayList<>();
+            Map<String, LinkedHashMultimap<Long,Item>> itemTempInfo = new HashMap<>();
+//           Map<Long, Item> loanTempInfo = new HashMap<>();
+            List<Loan> loans = new ArrayList<>();
+
+            while (rs.next()) {
+                String itemType = rs.getString(TYPE);
+                Item item = new Item(rs.getLong(ITEMID), itemType);
+                Loan loan = new Loan(rs.getLong(ID), item, rs.getDate(CHECKOUTDATE), rs.getDate(DUEDATE));
+                loans.add(loan);
+                if (itemTempInfo.get(itemType) == null) {
+                    itemTempInfo.put(itemType, LinkedHashMultimap.create());
+                }
+                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), item);
+            }
+
+            for (String itemType : itemTempInfo.keySet()) {
+                LinkedHashMultimap<Long, Item> map = itemTempInfo.get(itemType);
+                for (Long itemSpecId : map.keySet()) {
+                    Set<Item> items = map.get(itemSpecId);
+                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemType, itemSpecId));
+                    ItemSpecification itemSpecification = getItemSpec(itemType, itemSpecRS, statement, itemSpecId);
+                    for (Item item : items) {
+                        item.setSpec(itemSpecification);
+                    }
+                }
+            }
+
+            return loans;
+        });
+        scheduler.reader_v();
+        return list;
     }
 
     @Override
