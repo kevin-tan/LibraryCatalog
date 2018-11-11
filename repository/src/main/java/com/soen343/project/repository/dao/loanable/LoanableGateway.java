@@ -60,7 +60,6 @@ public class LoanableGateway implements Gateway<Loan> {
         scheduler.writer_p();
         executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
         scheduler.writer_v();
-
     }
 
     @Override
@@ -103,9 +102,7 @@ public class LoanableGateway implements Gateway<Loan> {
     public List<Loan> findAll() {
         scheduler.reader_p();
         List<Loan> list = (List<Loan>) executeQueryExpectMultiple(createFindAllQuery(LOAN_TABLE, ITEM_TABLE, ID, ITEMID),(rs,statement)->{
-            List<DatabaseEntity> listTemp = new ArrayList<>();
             Map<String, LinkedHashMultimap<Long,Item>> itemTempInfo = new HashMap<>();
-//           Map<Long, Item> loanTempInfo = new HashMap<>();
             List<Loan> loans = new ArrayList<>();
 
             while (rs.next()) {

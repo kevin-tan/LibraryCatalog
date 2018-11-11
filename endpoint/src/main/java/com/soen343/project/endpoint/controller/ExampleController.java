@@ -194,6 +194,11 @@ public class ExampleController {
         return new ResponseEntity<>(userRepository.findById(1L), HttpStatus.OK);
     }
 
+    @GetMapping("/test/getLoan")
+    public ResponseEntity<?> getLoan() {
+        return new ResponseEntity<>(loanableGateway.findById(3L), HttpStatus.OK);
+    }
+
     /**
      * Clear DB after this request
      */
