@@ -6,3 +6,45 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 #main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+Textarea{
+  float: right;
+}
+input {
+  display: none;
+  visibility: hidden;
+}
+td{
+  width: 200px;
+}
+label {
+  display: block;
+  padding: 5px;
+  float: left;
+}
+label::before {
+  /*font-family: Consolas, monaco, monospace;*/
+  /*font-weight: bold;*/
+  /*font-size: 15px;*/
+  content: "+";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+#expandTitle, #expandArtist, #expandRelease, #expandType,
+#expandLabel, #expandASIN{
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+#toggleTitle:checked ~ #expandTitle, #toggleArtist:checked ~ #expandArtist,
+#toggleRelease:checked ~ #expandRelease, #toggleType:checked ~ #expandType,
+#toggleLabel:checked ~ #expandLabel, #toggleASIN:checked ~ #expandASIN{
+  height: 50px;
+}
+
+#toggleTitle:checked ~ label::before, #toggleArtist:checked ~ label::before,
+#toggleRelease:checked ~label::before, #toggleType:checked ~ label::before,
+#toggleLabel:checked ~ label::before, #toggleASIN:checked ~ label::before{
+  content: "-";
+}
