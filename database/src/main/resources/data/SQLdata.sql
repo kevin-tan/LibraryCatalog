@@ -92,6 +92,6 @@ INSERT INTO Item (itemSpecId, type) VALUES
 (4, 'Book'),
 (5, 'Book');
 
-INSERT INTO Loan (itemId)
+INSERT INTO Loanable (itemId)
 SELECT id FROM Item
 WHERE Item.type != 'Magazine';
