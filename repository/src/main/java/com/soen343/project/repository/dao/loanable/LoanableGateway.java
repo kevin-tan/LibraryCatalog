@@ -1,7 +1,6 @@
 package com.soen343.project.repository.dao.loanable;
 
 import com.google.common.collect.LinkedHashMultimap;
-import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -9,7 +8,7 @@ import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
-import com.soen343.project.repository.entity.loanable.Loan;
+import com.soen343.project.repository.entity.loanable.Loanable;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class LoanableGateway implements Gateway<Loan> {
+public class LoanableGateway implements Gateway<Loanable> {
 
     private final Scheduler scheduler;
 
@@ -37,18 +36,18 @@ public class LoanableGateway implements Gateway<Loan> {
     }
 
     @Override
-    public void save(Loan entity) {
+    public void save(Loanable entity) {
         scheduler.writer_p();
         executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         scheduler.writer_v();
     }
 
     @Override
-    public void saveAll(Loan... entities) {
+    public void saveAll(Loanable... entities) {
         UnitOfWork uow = new UnitOfWork();
-        for (Loan loan : entities) {
+        for (Loanable loanable : entities) {
             uow.registerOperation(
-                    statement -> executeUpdate(createSaveQuery(loan.getTableWithColumns(), loan.toSQLValue())));
+                    statement -> executeUpdate(createSaveQuery(loanable.getTableWithColumns(), loanable.toSQLValue())));
         }
         scheduler.writer_p();
         uow.commit();
@@ -56,18 +55,17 @@ public class LoanableGateway implements Gateway<Loan> {
     }
 
     @Override
-    public void delete(Loan entity) {
+    public void delete(Loanable entity) {
         scheduler.writer_p();
         executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
         scheduler.writer_v();
-
     }
 
     @Override
-    public Loan findById(Long id) {
+    public Loanable findById(Long id) {
 
         scheduler.reader_p();
-        Loan loan = (Loan) executeForeignKeyTableQuery(createFindByIdQuery(LOAN_TABLE, id), (rs, statement) -> {
+        Loanable loanable = (Loanable) executeForeignKeyTableQuery(createFindByIdQuery(LOANABLE_TABLE, id), (rs, statement) -> {
             rs.next();// Move to query result
             Long loanId = rs.getLong(ID);
             Long itemId = rs.getLong(ITEMID);
@@ -86,33 +84,31 @@ public class LoanableGateway implements Gateway<Loan> {
 
             Item item = new Item(itemId, itemSpecification);
 
-            return new Loan(loanId, item, checkoutDate, dueDate);
+            return new Loanable(loanId, item, checkoutDate, dueDate);
 
         });
         scheduler.reader_v();
-        return loan;
+        return loanable;
     }
 
     @Override
-    public List<Loan> findByAttribute(Map<String, String> attributeValue) {
+    public List<Loanable> findByAttribute(Map<String, String> attributeValue) {
         return null;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Loan> findAll() {
+    public List<Loanable> findAll() {
         scheduler.reader_p();
-        List<Loan> list = (List<Loan>) executeQueryExpectMultiple(createFindAllQuery(LOAN_TABLE, ITEM_TABLE, ID, ITEMID),(rs,statement)->{
-            List<DatabaseEntity> listTemp = new ArrayList<>();
+        List<Loanable> list = (List<Loanable>) executeQueryExpectMultiple(createFindAllQuery(LOANABLE_TABLE, ITEM_TABLE, ID, ITEMID),(rs, statement)->{
             Map<String, LinkedHashMultimap<Long,Item>> itemTempInfo = new HashMap<>();
-//           Map<Long, Item> loanTempInfo = new HashMap<>();
-            List<Loan> loans = new ArrayList<>();
+            List<Loanable> loanables = new ArrayList<>();
 
             while (rs.next()) {
                 String itemType = rs.getString(TYPE);
                 Item item = new Item(rs.getLong(ITEMID), itemType);
-                Loan loan = new Loan(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
-                loans.add(loan);
+                Loanable loanable = new Loanable(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
+                loanables.add(loanable);
                 if (itemTempInfo.get(itemType) == null) {
                     itemTempInfo.put(itemType, LinkedHashMultimap.create());
                 }
@@ -131,14 +127,14 @@ public class LoanableGateway implements Gateway<Loan> {
                 }
             }
 
-            return loans;
+            return loanables;
         });
         scheduler.reader_v();
         return list;
     }
 
     @Override
-    public void update(Loan entity) {
+    public void update(Loanable entity) {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
         scheduler.writer_v();
