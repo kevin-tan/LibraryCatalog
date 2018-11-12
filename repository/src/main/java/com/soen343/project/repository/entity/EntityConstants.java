@@ -80,4 +80,5 @@ public final class EntityConstants {
     //Transaction
     public static final String LOANABLEID = "loanableId";
     public static final String USERID = "userId";
+    public static final String TRANSACTIONTYPE = "transactionType";
 }
