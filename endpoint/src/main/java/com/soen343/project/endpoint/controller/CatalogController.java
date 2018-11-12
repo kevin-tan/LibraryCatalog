@@ -36,7 +36,7 @@ public class CatalogController {
         return new ResponseEntity<>(catalogSearch.searchAllByTitle(titleValue), HttpStatus.OK);
     }
 
-    @GetMapping("/catalog/search/{itemType}")
+    @PostMapping("/catalog/search/{itemType}")
     public ResponseEntity<?> searchCatalogByAttribute(@PathVariable String itemType, @RequestBody ObjectNode objectNode) {
         Map<String, String> attributeValue = new HashMap<>();
         objectNode.fieldNames().forEachRemaining(key ->

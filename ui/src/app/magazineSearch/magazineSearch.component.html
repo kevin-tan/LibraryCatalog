@@ -60,11 +60,85 @@
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-32 w3-center w3-black" id="home" style="padding-bottom: 210px !important;">
+  <header class="w3-container w3-padding-32 w3-center w3-black">
     <h2 class="w3-jumbo">What would you like to search<br>in <span style="font-size: 115%;"><i>magazine</i></span> items?</h2>
     <h3>Please enter the item information that you would like to search for.</h3>
     <hr style="width:100%" class="w3-opacity">
   </header>
+  <h4>Check the item detail to enter the keyword for searching</h4>
+  <div>
+    <form>
+      <table>
+        <tr>
+          <th>
+            <input id="toggleTitle" type="checkbox" >
+            <label for="toggleTitle">Title</label>
+            <div id="expandTitle">
+              <textarea rows="1" cols="47" #title title.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleLang" type="checkbox" >
+            <label for="toggleLang">Language</label>
+            <div id="expandLang">
+              <textarea rows="1" cols="47" #language language.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <input id="togglePublisher" type="checkbox" >
+            <label for="togglePublisher">Publisher</label>
+            <div id="expandPublisher">
+              <textarea rows="1" cols="47" #publisher publisher.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="togglePubDate" type="checkbox" >
+            <label for="togglePubDate">Publish Date</label>
+            <div id="expandPubDate">
+              <textarea rows="1" cols="47" #pubDate pubDate.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <input id="toggleISNB" type="checkbox" >
+            <label for="toggleISNB">ISBN</label>
+            <div id="expandISBN">
+              <textarea rows="1" cols="47" #isbn10 isbn10.value></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleISNBLong" type="checkbox" >
+            <label for="toggleISNBLong">ISBN13</label>
+            <div id="expandISBNLong">
+              <textarea rows="1" cols="47" #isbn13 isbn13.value></textarea>
+            </div>
+          </th>
+        </tr>
+      </table>
+      <button class="w3-bar-item w3-button" (click)="searchMagazines(title.value, publisher.value, pubDate.value, language.value, isbn10.value, isbn13.value)">
+        Search <i class="fa fa-search"></i>
+      </button>
+    </form>
+  </div>
+
+    <div>
+      <table>
+        <tr><h4><i>Magazines</i></h4><hr></tr>
+        <td *ngFor="let book of magazineList">
+          {{book.title}}<br/>
+          {{book.publisher}}<br/>
+          {{book.isbn10}}<br/>
+          {{book.isbn13}}<br/>
+          {{book.pubDate}}<br/>
+          {{book.language}}<br/>
+        </td>
+      </table>
+    </div>
 
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
