@@ -125,14 +125,17 @@
   </div>
 
     <div>
-      <p *ngFor="let music of musicList">
-        {{music.title}}<br/>
-        {{music.artist}}<br/>
-        {{music.label}}<br/>
-        {{music.type}}<br/>
-        {{music.asin}}<br/>
-        {{music.releaseDate}}<br/>
-      </p>
+      <table>
+        <tr><h4><i>Music</i></h4><hr></tr>
+        <td *ngFor="let music of musicList">
+          {{music.title}}<br/>
+          {{music.artist}}<br/>
+          {{music.label}}<br/>
+          {{music.type}}<br/>
+          {{music.asin}}<br/>
+          {{music.releaseDate}}<br/>
+        </td>
+      </table>
     </div>
 
   <!-- Footer -->

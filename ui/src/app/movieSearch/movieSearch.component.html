@@ -144,22 +144,25 @@
   </div>
 
     <div>
-      <p *ngFor="let movie of movieList">
-        {{movie.title}}<br/>
-        {{movie.language}}<br/>
-        <span *ngFor="let prod of movie.producers">
+      <table>
+        <tr><h4><i>Movies</i></h4><hr></tr>
+        <td *ngFor="let movie of movieList">
+          {{movie.title}}<br/>
+          {{movie.language}}<br/>
+          <span *ngFor="let prod of movie.producers">
           {{prod}}<br/>
         </span>
-        <span *ngFor="let actor of movie.actors">
+          <span *ngFor="let actor of movie.actors">
           {{actor}}<br/>
         </span>
-        <span *ngFor="let dub of movie.dubbed">
+          <span *ngFor="let dub of movie.dubbed">
           {{dub}}<br/>
         </span>
-        {{movie.subtitles}}<br/>
-        {{movie.releaseDate}}<br/>
-        {{movie.runTime}}<br/>
-      </p>
+          {{movie.subtitles}}<br/>
+          {{movie.releaseDate}}<br/>
+          {{movie.runTime}}<br/>
+        </td>
+      </table>
     </div>
 
   <!-- Footer -->

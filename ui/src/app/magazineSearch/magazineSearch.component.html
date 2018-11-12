@@ -127,14 +127,17 @@
   </div>
 
     <div>
-      <p *ngFor="let book of magazineList">
-        {{book.title}}<br/>
-        {{book.publisher}}<br/>
-        {{book.isbn10}}<br/>
-        {{book.isbn13}}<br/>
-        {{book.pubDate}}<br/>
-        {{book.language}}<br/>
-      </p>
+      <table>
+        <tr><h4><i>Magazines</i></h4><hr></tr>
+        <td *ngFor="let book of magazineList">
+          {{book.title}}<br/>
+          {{book.publisher}}<br/>
+          {{book.isbn10}}<br/>
+          {{book.isbn13}}<br/>
+          {{book.pubDate}}<br/>
+          {{book.language}}<br/>
+        </td>
+      </table>
     </div>
 
   <!-- Footer -->

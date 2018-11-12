@@ -13,6 +13,9 @@ input {
   display: none;
   visibility: hidden;
 }
+td{
+  width: 200px;
+}
 label {
   display: block;
   padding: 5px;
