@@ -34,7 +34,9 @@ public final class EntityConstants {
     public static final String DUBBED_TABLE = "Dubbed";
     public static final String DUBBED_TABLE_WITH_COLUMNS =
             DUBBED_TABLE + "(movieId, dub)";
-
+    public static final String LOANABLE_TABLE = "Loanable";
+    public static final String LOANABLE_TABLE_WITH_COLUMNS =
+            LOANABLE_TABLE + "(itemId, checkoutDate, dueDate)";
     //User
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
@@ -65,4 +67,9 @@ public final class EntityConstants {
     public static final String LABEL = "label";
     public static final String ASIN = "asin";
     public static final String MOVIEID = "movieId";
+
+    //Loanable
+    public static final String ITEMID = "itemId";
+    public static final String CHECKOUTDATE = "checkoutDate";
+    public static final String DUEDATE = "dueDate";
 }

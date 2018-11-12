@@ -10,6 +10,7 @@ import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
+import com.soen343.project.repository.dao.loanable.LoanableGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -52,11 +53,12 @@ public class ExampleController {
     private final BookGateway bookRepository;
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
+    private final LoanableGateway loanableGateway;
 
     @Autowired
     public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CatalogSearch catalogSearch,
                              MovieGateway movieRepository, ItemGateway itemRepository, BookGateway bookRepository,
-                             MagazineGateway magazineRepository, MusicGateway musicRepository) {
+                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableGateway loanableGateway) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.catalogSearch = catalogSearch;
@@ -65,11 +67,18 @@ public class ExampleController {
         this.bookRepository = bookRepository;
         this.magazineRepository = magazineRepository;
         this.musicRepository = musicRepository;
+
+        this.loanableGateway = loanableGateway;
     }
 
-    @GetMapping("/text/findAll")
+    @GetMapping("/test/findAll")
     public ResponseEntity<?> findAllTest(){
         return new ResponseEntity<>(itemRepository.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/findAllLoans")
+    public ResponseEntity<?> findAllLoansTest(){
+        return new ResponseEntity<>(loanableGateway.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/test/concurrency")
@@ -183,6 +192,11 @@ public class ExampleController {
     @GetMapping("/test/getUser")
     public ResponseEntity<?> getUser() {
         return new ResponseEntity<>(userRepository.findById(1L), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/getLoan")
+    public ResponseEntity<?> getLoan() {
+        return new ResponseEntity<>(loanableGateway.findById(3L), HttpStatus.OK);
     }
 
     /**
