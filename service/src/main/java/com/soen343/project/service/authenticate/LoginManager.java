@@ -1,7 +1,7 @@
 package com.soen343.project.service.authenticate;
 
 import com.soen343.project.repository.entity.user.User;
-import com.soen343.project.service.database.RecordDatabase;
+import com.soen343.project.service.database.Library;
 import com.soen343.project.service.notification.Observer;
 import com.soen343.project.service.notification.Subject;
 import com.soen343.project.service.registry.UserRegistry;
@@ -14,18 +14,18 @@ import java.util.List;
 @Service
 public class LoginManager implements Subject<User> {
 
-    private RecordDatabase recordDatabase;
+    private Library library;
     private List<Observer> observers;
 
     @Autowired
-    LoginManager(UserRegistry userRegistry, RecordDatabase recordDatabase) {
-        this.recordDatabase = recordDatabase;
+    LoginManager(UserRegistry userRegistry, Library library) {
+        this.library = library;
         observers = new LinkedList<>();
         addObserver(userRegistry);
     }
 
     public boolean loginUser(String email){
-        User user = recordDatabase.getUserByEmail(email);
+        User user = library.getUserByEmail(email);
         if (user != null){
             notifyObservers(user, true);
             return true;
@@ -34,7 +34,7 @@ public class LoginManager implements Subject<User> {
     }
 
     public boolean logoutUser(String email) {
-        User user = recordDatabase.getUserByEmail(email);
+        User user = library.getUserByEmail(email);
         if (user != null){
             notifyObservers(user, false);
             return true;

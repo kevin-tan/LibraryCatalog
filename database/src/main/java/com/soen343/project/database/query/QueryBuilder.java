@@ -22,6 +22,9 @@ public class QueryBuilder {
     private final static String SET = " SET ";
     private final static String DELETE = "DELETE ";
     private final static String LIKE = " LIKE ";
+    private final static String INNER_JOIN = " INNER JOIN ";
+    private final static String ON = " ON ";
+    private final static String DOT = ".";
     public final static String GET_ID_MOST_RECENT = "SELECT LAST_INSERT_ROWID();";
     public final static int MOST_RECENT_ID_COL = 1;
 
@@ -43,6 +46,10 @@ public class QueryBuilder {
 
     public static String createFindAllQuery(String table) {
         return SELECT + ALL + FROM + table + END_QUERY;
+    }
+
+    public static String createFindAllQuery(String table1, String table2, String id, String foreign_id){
+        return SELECT + ALL + FROM + table1 + INNER_JOIN + table2 + ON + table2+ DOT + id + EQUAL + table1 + DOT + foreign_id + END_QUERY;
     }
 
     public static String createFindByIdQuery(String table, Long id) {
@@ -96,4 +103,5 @@ public class QueryBuilder {
         return DELETE + FROM + table + WHERE + attribute1 + EQUAL + QUOTE + value1 + QUOTE +
                 AND + attribute2 + EQUAL + QUOTE + value2 + QUOTE + END_QUERY;
     }
+
 }

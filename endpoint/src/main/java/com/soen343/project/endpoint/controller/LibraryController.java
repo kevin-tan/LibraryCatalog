@@ -1,13 +1,12 @@
 package com.soen343.project.endpoint.controller;
 
 
-import com.soen343.project.service.database.RecordDatabase;
 import com.soen343.project.repository.entity.user.User;
+import com.soen343.project.service.database.Library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/app/v1")
-public class RecordDatabaseController {
+@RequestMapping("/admin")
+public class LibraryController {
 
-    private final RecordDatabase recordDatabase;
+    private final Library library;
 
     @Autowired
-    public RecordDatabaseController(RecordDatabase recordDatabase) {
-        this.recordDatabase = recordDatabase;
+    public LibraryController(Library library) {
+        this.library = library;
     }
 
     /**
@@ -32,7 +31,7 @@ public class RecordDatabaseController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        return new ResponseEntity<>(recordDatabase.register(user), HttpStatus.OK);
-    }
+        return new ResponseEntity<>(library.register(user), HttpStatus.OK);
 
+    }
 }
