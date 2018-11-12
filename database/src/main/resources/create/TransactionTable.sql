@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS Transaction;
+CREATE TABLE Transaction (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ loanId INTEGER NOT NULL UNIQUE,
+ userId INTEGER NOT NULL UNIQUE,
+ transactionType varchar(255),
+ FOREIGN KEY (loanId) REFERENCES Loan(id),
+ FOREIGN KEY (userId) REFERENCES User(id)
+ );
