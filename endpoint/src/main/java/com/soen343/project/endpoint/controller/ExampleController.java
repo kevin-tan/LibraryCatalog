@@ -11,6 +11,7 @@ import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.dao.loanable.LoanableGateway;
+import com.soen343.project.repository.dao.transaction.TransactionGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -54,11 +55,12 @@ public class ExampleController {
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
     private final LoanableGateway loanableGateway;
+    private final TransactionGateway transactionGateway;
 
     @Autowired
     public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CatalogSearch catalogSearch,
                              MovieGateway movieRepository, ItemGateway itemRepository, BookGateway bookRepository,
-                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableGateway loanableGateway) {
+                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableGateway loanableGateway, TransactionGateway transactionGateway) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.catalogSearch = catalogSearch;
@@ -69,6 +71,7 @@ public class ExampleController {
         this.musicRepository = musicRepository;
 
         this.loanableGateway = loanableGateway;
+        this.transactionGateway = transactionGateway;
     }
 
     @GetMapping("/test/findAll")
@@ -196,7 +199,12 @@ public class ExampleController {
 
     @GetMapping("/test/getLoan")
     public ResponseEntity<?> getLoan() {
-        return new ResponseEntity<>(loanableGateway.findById(3L), HttpStatus.OK);
+        return new ResponseEntity<>(loanableGateway.findById(1L), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/getTransaction")
+    public ResponseEntity<?> getTransaction() {
+        return new ResponseEntity<>(transactionGateway.findById(1L), HttpStatus.OK);
     }
 
     /**

@@ -47,12 +47,12 @@ public class Transaction implements DatabaseEntity {
 
     @Override
     @JsonIgnore
-    public String getTable() { return TRANSACTION_TABLE; }
+    public String getTable() { return TRANSAC_TABLE; }
 
     @Override
     @JsonIgnore
     public String getTableWithColumns() {
-        return TRANSACTION_TABLE_WITH_COLUMNS;
+        return TRANSAC_TABLE_WITH_COLUMNS;
     }
 
 }

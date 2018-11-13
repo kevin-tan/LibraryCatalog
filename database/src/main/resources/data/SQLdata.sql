@@ -92,6 +92,12 @@ INSERT INTO Item (itemSpecId, type) VALUES
 (4, 'Book'),
 (5, 'Book');
 
-INSERT INTO Loanable (itemId)
-SELECT id FROM Item
-WHERE Item.type != 'Magazine';
+-- INSERT INTO Loanable (itemId)
+-- SELECT id FROM Item
+-- WHERE Item.type != 'Magazine';
+
+INSERT INTO Loanable (itemId, checkoutDate, dueDate) VALUES
+(1,DateTime('now'),DateTime('now'));
+
+INSERT INTO Transac (loanableId, userId, transactionType) VALUES
+(1,2,'Loan');

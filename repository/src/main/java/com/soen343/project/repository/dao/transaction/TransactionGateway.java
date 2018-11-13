@@ -1,6 +1,5 @@
 package com.soen343.project.repository.dao.transaction;
 
-import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -33,23 +32,23 @@ public class TransactionGateway implements Gateway<Transaction> {
     private final Scheduler scheduler;
 
     @Autowired
-    public LoanableGateway(Scheduler scheduler) {
+    public TransactionGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     @Override
-    public void save(Loanable entity) {
+    public void save(Transaction entity) {
         scheduler.writer_p();
         executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         scheduler.writer_v();
     }
 
     @Override
-    public void saveAll(Loanable... entities) {
+    public void saveAll(Transaction... entities) {
         UnitOfWork uow = new UnitOfWork();
-        for (Loanable loanable : entities) {
+        for (Transaction transaction : entities) {
             uow.registerOperation(
-                    statement -> executeUpdate(createSaveQuery(loanable.getTableWithColumns(), loanable.toSQLValue())));
+                    statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
         }
         scheduler.writer_p();
         uow.commit();
@@ -57,7 +56,7 @@ public class TransactionGateway implements Gateway<Transaction> {
     }
 
     @Override
-    public void delete(Loanable entity) {
+    public void delete(Transaction entity) {
         scheduler.writer_p();
         executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
         scheduler.writer_v();
@@ -67,7 +66,7 @@ public class TransactionGateway implements Gateway<Transaction> {
     public Transaction findById(Long id) {
 
         scheduler.reader_p();
-        Transaction transaction = (Transaction) executeForeignKeyTableQuery(createFindByIdQuery(TRANSACTION_TABLE, id), (rs, statement) -> {
+        Transaction transaction = (Transaction) executeForeignKeyTableQuery(createFindByIdQuery(TRANSAC_TABLE, id), (rs, statement) -> {
             rs.next();// Move to query result
             Long transactionId = rs.getLong(ID);
             Long loanableId = rs.getLong(LOANABLEID);
@@ -113,49 +112,18 @@ public class TransactionGateway implements Gateway<Transaction> {
 
 
     @Override
-    public List<Loanable> findByAttribute(Map<String, String> attributeValue) {
+    public List<Transaction> findByAttribute(Map<String, String> attributeValue) {
         return null;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Loanable> findAll() {
-        scheduler.reader_p();
-        List<Loanable> list = (List<Loanable>) executeQueryExpectMultiple(createFindAllQuery(LOANABLE_TABLE, ITEM_TABLE, ID, ITEMID),(rs, statement)->{
-            Map<String, LinkedHashMultimap<Long,Item>> itemTempInfo = new HashMap<>();
-            List<Loanable> loanables = new ArrayList<>();
-
-            while (rs.next()) {
-                String itemType = rs.getString(TYPE);
-                Item item = new Item(rs.getLong(ITEMID), itemType);
-                Loanable loanable = new Loanable(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
-                loanables.add(loanable);
-                if (itemTempInfo.get(itemType) == null) {
-                    itemTempInfo.put(itemType, LinkedHashMultimap.create());
-                }
-                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), item);
-            }
-
-            for (String itemType : itemTempInfo.keySet()) {
-                LinkedHashMultimap<Long, Item> map = itemTempInfo.get(itemType);
-                for (Long itemSpecId : map.keySet()) {
-                    Set<Item> items = map.get(itemSpecId);
-                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemType, itemSpecId));
-                    ItemSpecification itemSpecification = getItemSpec(itemType, itemSpecRS, statement, itemSpecId);
-                    for (Item item : items) {
-                        item.setSpec(itemSpecification);
-                    }
-                }
-            }
-
-            return loanables;
-        });
-        scheduler.reader_v();
-        return list;
+    public List<Transaction> findAll() {
+    return null;
     }
 
     @Override
-    public void update(Loanable entity) {
+    public void update(Transaction entity) {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
         scheduler.writer_v();

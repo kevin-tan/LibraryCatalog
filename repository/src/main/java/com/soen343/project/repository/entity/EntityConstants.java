@@ -37,9 +37,9 @@ public final class EntityConstants {
     public static final String LOANABLE_TABLE = "Loanable";
     public static final String LOANABLE_TABLE_WITH_COLUMNS =
             LOANABLE_TABLE + "(itemId, checkoutDate, dueDate)";
-    public static final String TRANSACTION_TABLE = "Transaction";
-    public static final String TRANSACTION_TABLE_WITH_COLUMNS =
-            TRANSACTION_TABLE + "(loanableId, userId, transactionType)";
+    public static final String TRANSAC_TABLE = "Transac";
+    public static final String TRANSAC_TABLE_WITH_COLUMNS =
+            TRANSAC_TABLE + "(loanableId, userId, transactionType)";
 
     //User
     public static final String FIRST_NAME = "firstName";
