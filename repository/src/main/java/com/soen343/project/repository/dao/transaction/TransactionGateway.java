@@ -8,7 +8,6 @@ import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
-import com.soen343.project.repository.entity.loanable.Loanable;
 import com.soen343.project.repository.entity.transaction.LoanTransaction;
 import com.soen343.project.repository.entity.transaction.ReturnTransaction;
 import com.soen343.project.repository.entity.transaction.Transaction;
@@ -118,16 +117,17 @@ public class TransactionGateway implements Gateway<Transaction> {
             List<Transaction> transactions = new ArrayList<>();
 
             while (rs.next()) {
-                Long loanableId = rs.getLong(LOANABLEID);
+                Long transactionId = rs.getLong(ID);
                 Long userId = rs.getLong(USERID);
 
-                ResultSet loanableRS = statement.executeQuery(createFindByIdQuery(LOANABLE_TABLE, loanableId));
-                loanableRS.next();
-                Long itemId = loanableRS.getLong(ITEMID);
-                Date checkoutDate = convertToDate(loanableRS.getString(CHECKOUTDATE));
-                Date dueDate = convertToDate(loanableRS.getString(DUEDATE));
+                ResultSet transactionRS = statement.executeQuery(createFindByIdQuery(TRANSAC_TABLE, transactionId));
+                transactionRS.next();
+                Long itemId = rs.getLong(ITEMID);
+                Date checkoutDate = convertToDate(rs.getString(CHECKOUTDATE));
+                Date dueDate = convertToDate(rs.getString(DUEDATE));
+                String transactionType = rs.getString(TRANSACTIONTYPE);
 
-                loanableRS.next();
+                transactionRS.next();
                 ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
                 itemRS.next();
                 String itemType = itemRS.getString(TYPE);
@@ -138,9 +138,10 @@ public class TransactionGateway implements Gateway<Transaction> {
                         userRS.getString(EMAIL),userRS.getString(PHONE_NUMBER),userRS.getString(PASSWORD));
 
                 Item item = new Item(itemRS.getLong(ITEMID), itemType);
-                Loanable loanable = new Loanable(loanableId, item, checkoutDate, dueDate );
-                Transaction transaction = new Transaction(rs.getLong(ID), loanable, client, rs.getString(TRANSACTIONTYPE));
-                transactions.add(transaction);
+                Transaction Ltransaction = new LoanTransaction(transactionId, client, item, checkoutDate, dueDate);
+                Transaction Rtransaction = new ReturnTransaction(transactionId, client, item, checkoutDate);
+                transactions.add(Ltransaction);
+                transactions.add(Rtransaction);
 
                 if (itemTempInfo.get(itemType) == null) {
                     itemTempInfo.put(itemType, LinkedHashMultimap.create());
