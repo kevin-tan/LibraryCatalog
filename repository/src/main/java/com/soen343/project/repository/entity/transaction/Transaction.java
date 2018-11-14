@@ -2,42 +2,47 @@ package com.soen343.project.repository.entity.transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soen343.project.database.base.DatabaseEntity;
-import com.soen343.project.repository.entity.loanable.Loanable;
+import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.user.Client;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
 @NoArgsConstructor
-public class Transaction implements DatabaseEntity {
+public abstract class Transaction implements DatabaseEntity {
     private Long id;
-    private Loanable loanable;
     private Client client;
+    private Item item;
     private String transactionType;
+    private Date checkoutDate;
 
     @Builder
-    public Transaction(Long id, Loanable loanable, Client client, String transactionType) {
+    public Transaction(Long id, Client client, Item item, String transactionType, Date checkoutDate) {
         this.id = id;
-        this.loanable = loanable;
         this.client = client;
+        this.item = item;
         this.transactionType = transactionType;
+        this.checkoutDate = checkoutDate;
     }
 
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = LOANABLEID + " = '" + loanable.getId() + "', ";
+        String columnValues = ITEMID + " = '" + item.getId() + "', ";
         columnValues += USERID + " = '" + client.getId() + "'";
         columnValues += TRANSACTIONTYPE + " = '" + transactionType + "'";
+        columnValues += CHECKOUTDATE + " = '" + checkoutDate + "'";
         return columnValues;
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + loanable.getId() + "','" + client.getId() +  "','" + transactionType + "')";
+        return "('" + item.getId() + "','" + client.getId() +  "','" + transactionType + "','" + checkoutDate + "')";
     }
 
     @Override
