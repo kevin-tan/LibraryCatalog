@@ -1,9 +1,11 @@
 DROP TABLE IF EXISTS Transac;
 CREATE TABLE Transac (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
- loanableId INTEGER NOT NULL UNIQUE,
+ itemId INTEGER NOT NULL UNIQUE,
  userId INTEGER NOT NULL UNIQUE,
  transactionType varchar(255),
- FOREIGN KEY (loanableId) REFERENCES Loanable(id),
- FOREIGN KEY (userId) REFERENCES User(id)
+ checkoutDate TIMESTAMP,
+ dueDate TIMESTAMP,
+ FOREIGN KEY (userId) REFERENCES User(id),
+ FOREIGN KEY (itemId) REFERENCES Item(id)
  );
