@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.user.Client;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +19,6 @@ public abstract class Transaction implements DatabaseEntity {
     private Item item;
     private Date checkoutDate;
 
-    @Builder
     public Transaction(Long id, Client client, Item item, Date checkoutDate) {
         this.id = id;
         this.client = client;

@@ -71,6 +71,8 @@ public final class EntityConstants {
     public static final String LABEL = "label";
     public static final String ASIN = "asin";
     public static final String MOVIEID = "movieId";
+    public static final String AVAILABLE = "available";
+
 
     //Loanable
     public static final String ITEMID = "itemId";
