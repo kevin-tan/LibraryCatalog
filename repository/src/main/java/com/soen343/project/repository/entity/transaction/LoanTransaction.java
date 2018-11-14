@@ -18,8 +18,8 @@ public class LoanTransaction extends Transaction {
     private Date dueDate;
 
     @Builder
-    public LoanTransaction(Long id, Client client, Item item, String transactionType, Date checkoutDate, Date dueDate) {
-        super(id, client, item, transactionType, checkoutDate);
+    public LoanTransaction(Long id, Client client, Item item, Date checkoutDate, Date dueDate) {
+        super(id, client, item, checkoutDate);
         this.dueDate = dueDate;
 
     }

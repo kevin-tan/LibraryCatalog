@@ -13,8 +13,8 @@ import java.util.Date;
 public class ReturnTransaction extends Transaction {
 
     @Builder
-    public ReturnTransaction(Long id, Client client, Item item, String transactionType, Date checkoutDate) {
-        super(id, client, item, transactionType, checkoutDate);
+    public ReturnTransaction(Long id, Client client, Item item,  Date checkoutDate) {
+        super(id, client, item, checkoutDate);
 
     }
 }

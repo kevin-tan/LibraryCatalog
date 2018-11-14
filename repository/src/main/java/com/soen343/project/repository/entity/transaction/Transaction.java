@@ -18,15 +18,13 @@ public abstract class Transaction implements DatabaseEntity {
     private Long id;
     private Client client;
     private Item item;
-    private String transactionType;
     private Date checkoutDate;
 
     @Builder
-    public Transaction(Long id, Client client, Item item, String transactionType, Date checkoutDate) {
+    public Transaction(Long id, Client client, Item item, Date checkoutDate) {
         this.id = id;
         this.client = client;
         this.item = item;
-        this.transactionType = transactionType;
         this.checkoutDate = checkoutDate;
     }
 
@@ -34,7 +32,6 @@ public abstract class Transaction implements DatabaseEntity {
     public String sqlUpdateValues() {
         String columnValues = ITEMID + " = '" + item.getId() + "', ";
         columnValues += USERID + " = '" + client.getId() + "'";
-        columnValues += TRANSACTIONTYPE + " = '" + transactionType + "'";
         columnValues += CHECKOUTDATE + " = '" + checkoutDate + "'";
         return columnValues;
     }
@@ -42,7 +39,8 @@ public abstract class Transaction implements DatabaseEntity {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + item.getId() + "','" + client.getId() +  "','" + transactionType + "','" + checkoutDate + "')";
+        return "('" + item.getId() + "','" + client.getId() +  "','" + checkoutDate + "','" +
+                getClass().getSimpleName() + "')";
     }
 
     @Override
