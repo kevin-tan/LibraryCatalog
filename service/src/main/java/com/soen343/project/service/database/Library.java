@@ -44,6 +44,10 @@ public class Library {
         return userRepository.findByEmail(email);
     }
 
+    public User getUserByID(Long id){
+        return userRepository.findById(id);
+    }
+
     public Item createItem(ItemSpecification itemSpec) {
         return new Item(itemSpec);
     }
