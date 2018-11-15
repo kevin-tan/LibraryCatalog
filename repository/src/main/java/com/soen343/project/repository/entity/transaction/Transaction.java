@@ -15,45 +15,34 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 @NoArgsConstructor
 public abstract class Transaction implements DatabaseEntity {
     private Long id;
-    private Client client;
     private Item item;
-    private Date checkoutDate;
+    private Client client;
+    private Date transactionDate;
 
-    public Transaction(Long id, Client client, Item item, Date checkoutDate) {
+    public Transaction(Long id, Item item, Client client, Date transactionDate) {
         this.id = id;
-        this.client = client;
         this.item = item;
-        this.checkoutDate = checkoutDate;
+        this.client = client;
+        this.transactionDate = transactionDate;
     }
 
     @JsonIgnore
     public String sqlUpdateValues() {
         String columnValues = ITEMID + " = '" + item.getId() + "', ";
         columnValues += USERID + " = '" + client.getId() + "'";
-        columnValues += CHECKOUTDATE + " = '" + checkoutDate + "'";
+        columnValues += TRANSACTIONDATE + " = '" + transactionDate + "'";
         return columnValues;
     }
 
-    @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + item.getId() + "','" + client.getId() +  "','" + checkoutDate + "','" +
-                getClass().getSimpleName() + "')";
+        return "('" + item.getId() + "','" + client.getId() +  "','" + transactionDate + "','";
     }
 
-    @Override
+
     public Long getId() {
         return id;
     }
 
-    @Override
-    @JsonIgnore
-    public String getTable() { return TRANSAC_TABLE; }
-
-    @Override
-    @JsonIgnore
-    public String getTableWithColumns() {
-        return TRANSAC_TABLE_WITH_COLUMNS;
-    }
 
 }

@@ -18,8 +18,8 @@ public class LoanTransaction extends Transaction {
     private Date dueDate;
 
     @Builder
-    public LoanTransaction(Long id, Client client, Item item, Date checkoutDate, Date dueDate) {
-        super(id, client, item, checkoutDate);
+    public LoanTransaction(Long id, Item item, Client client, Date checkoutDate, Date dueDate) {
+        super(id, item, client, checkoutDate);
         this.dueDate = dueDate;
 
     }
@@ -37,6 +37,16 @@ public class LoanTransaction extends Transaction {
     @JsonIgnore
     public String toSQLValue() {
         return "('" + super.toSQLValue() + dueDate + "')";
+    }
+
+    @Override
+    @JsonIgnore
+    public String getTable() { return LOANTRANSACTION_TABLE; }
+
+    @Override
+    @JsonIgnore
+    public String getTableWithColumns() {
+        return LOANTRANSACTION_TABLE_WITH_COLUMNS;
     }
 
 }
