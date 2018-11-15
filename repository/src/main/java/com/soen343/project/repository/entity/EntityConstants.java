@@ -36,7 +36,7 @@ public final class EntityConstants {
             DUBBED_TABLE + "(movieId, dub)";
     public static final String LOANABLEITEM_TABLE = "LoanableItem";
     public static final String LOANABLEITEM_TABLE_WITH_COLUMNS =
-            LOANABLEITEM_TABLE + "(itemId, itemSpecId, clientId)";
+            LOANABLEITEM_TABLE + "(itemSpecId, clientId)";
     public static final String LOANTRANSACTION_TABLE = "LoanTransaction";
     public static final String LOANTRANSACTION_TABLE_WITH_COLUMNS =
             LOANTRANSACTION_TABLE + "(itemId, userId, transactionDate, dueDate)";
@@ -79,7 +79,7 @@ public final class EntityConstants {
 
     //LoanableItem
     public static final String ITEMID = "itemId";
-    public static final String CLIENTID = "clientId";
+    public static final String USERID = "userId";
 
     //LoanTransaction
     public static final String TRANSACTIONDATE = "transactionDate";

@@ -1,7 +1,7 @@
 package com.soen343.project.repository.entity.transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.user.Client;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +17,21 @@ import static com.soen343.project.repository.entity.EntityConstants.RETURNTRANSA
 public class ReturnTransaction extends Transaction {
 
     @Builder
-    public ReturnTransaction(Long id, Item item, Client client, Date transactionDate) {
-        super(id, item, client, transactionDate);
+    public ReturnTransaction(Long id, LoanableItem loanableItem, Client client, Date transactionDate) {
+        super(id, loanableItem, client, transactionDate);
+    }
 
+    @Override
+    @JsonIgnore
+    public String sqlUpdateValues() {
+        String columnValues = super.sqlUpdateValues();
+        return columnValues;
+    }
+
+    @Override
+    @JsonIgnore
+    public String toSQLValue() {
+        return  super.toSQLValue() + "')";
     }
 
     @Override

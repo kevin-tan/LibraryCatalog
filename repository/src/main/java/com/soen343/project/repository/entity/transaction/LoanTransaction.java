@@ -1,7 +1,7 @@
 package com.soen343.project.repository.entity.transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.user.Client;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +18,8 @@ public class LoanTransaction extends Transaction {
     private Date dueDate;
 
     @Builder
-    public LoanTransaction(Long id, Item item, Client client, Date checkoutDate, Date dueDate) {
-        super(id, item, client, checkoutDate);
+    public LoanTransaction(Long id, LoanableItem loanableItem, Client client, Date transactionDate, Date dueDate) {
+        super(id, loanableItem, client, transactionDate);
         this.dueDate = dueDate;
 
     }
@@ -36,7 +36,7 @@ public class LoanTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + super.toSQLValue() + dueDate + "')";
+        return  super.toSQLValue() + dueDate + "')";
     }
 
     @Override
