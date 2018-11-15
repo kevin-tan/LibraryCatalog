@@ -8,7 +8,6 @@ import { LoginComponent } from './login/login.component';
 import { CatalogComponent } from './catalog/catalog.component';
 import { HomeComponent } from './home/home.component';
 import {LoginRedirectService} from "./login/login-redirect.service";
-import { SearchCatalogComponent } from './search-catalog/search-catalog.component';
 import {bookSearchComponent} from "./bookSearch/bookSearch.component";
 import {musicSearchComponent} from "./musicSearch/musicSearch.component";
 import {movieSearchComponent} from "./movieSearch/movieSearch.component";
@@ -22,7 +21,6 @@ import {HomeRedirectService} from "./home/home-redirect.service";
     LoginComponent,
     CatalogComponent,
     HomeComponent,
-    SearchCatalogComponent,
     bookSearchComponent,
     musicSearchComponent,
     movieSearchComponent,

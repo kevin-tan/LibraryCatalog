@@ -6,3 +6,47 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 #main {margin-left: 120px}
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+Textarea{
+  float: right;
+}
+input {
+  display: none;
+  visibility: hidden;
+}
+td{
+  width: 200px;
+}
+label {
+  display: block;
+  padding: 5px;
+  float: left;
+}
+label::before {
+  /*font-family: Consolas, monaco, monospace;*/
+  /*font-weight: bold;*/
+  /*font-size: 15px;*/
+  content: "+";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+#expandTitle, #expandDirector, #expandRelease, #expandLang,
+#expandSub, #expandDub, #expandActor, #expandProducer {
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+#toggleTitle:checked ~ #expandTitle, #toggleDirector:checked ~ #expandDirector,
+#toggleRelease:checked ~ #expandRelease, #toggleLang:checked ~ #expandLang,
+#toggleSub:checked ~ #expandSub, #toggleDub:checked ~ #expandDub,
+#toggleActor:checked ~ #expandActor, #toggleProducer:checked ~ #expandProducer {
+  height: 50px;
+}
+
+#toggleTitle:checked ~ label::before, #toggleDirector:checked ~ label::before,
+#toggleRelease:checked ~label::before, #toggleLang:checked ~ label::before,
+#toggleSub:checked ~ label::before, #toggleDub:checked ~ label::before,
+#toggleActor:checked ~ label::before, #toggleProducer:checked ~ label::before{
+  content: "-";
+}

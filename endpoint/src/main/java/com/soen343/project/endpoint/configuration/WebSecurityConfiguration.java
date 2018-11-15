@@ -30,10 +30,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
     private final LoginManager loginManager;
 
     @Autowired
-    public WebSecurityConfiguration(BasicAuthEntryPoint basicAuthEntryPoint,
-                                    SimpleUrlAuthenticationFailureHandler myFailureHandler,
-                                    MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler,
-                                    LoginManager loginManager) {
+    public WebSecurityConfiguration(BasicAuthEntryPoint basicAuthEntryPoint, SimpleUrlAuthenticationFailureHandler myFailureHandler,
+                                    MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler, LoginManager loginManager) {
         this.basicAuthEntryPoint = basicAuthEntryPoint;
         this.myFailureHandler = myFailureHandler;
         this.mySuccessHandler = mySuccessHandler;
@@ -43,17 +41,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().exceptionHandling()
+        http.cors()
+                .and()
+                .csrf()
+                .disable()
+                .exceptionHandling()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasAuthority("Admin")
-                .antMatchers("/user/**").hasAnyAuthority("Admin", "Client")
+                .antMatchers("/admin/**")
+                .hasAuthority("Admin")
+                .antMatchers("/user/**")
+                .hasAnyAuthority("Admin", "Client")
                 .anyRequest()
                 .authenticated()
-                .and()
-                .formLogin()
-                .successHandler(mySuccessHandler)
-                .failureHandler(myFailureHandler)
                 .and()
                 .logout()
                 .addLogoutHandler(getLogoutHandler())
@@ -73,21 +73,28 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
-                .allowedHeaders("Authorization", "Cache-Control", "Content-Type");
+        registry.addMapping("/**")
+                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
+                .allowedHeaders("Authorization", "Cache-Control", "Content-Type")
+                .allowCredentials(true);
     }
 
-    private LogoutHandler getLogoutHandler(){
+    private LogoutHandler getLogoutHandler() {
         return (request, response, authentication) -> {
             try {
-                String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                String body = request.getReader()
+                        .lines()
+                        .collect(Collectors.joining(System.lineSeparator()));
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonBody = mapper.readTree(body);
-                String email = jsonBody.get("email").asText();
+                String email = jsonBody.get("email")
+                        .asText();
                 loginManager.logoutUser(email);
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("");
-                response.getWriter().close();
+                response.getWriter()
+                        .write("");
+                response.getWriter()
+                        .close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

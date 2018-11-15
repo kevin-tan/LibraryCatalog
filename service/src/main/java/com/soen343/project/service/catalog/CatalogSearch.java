@@ -1,7 +1,6 @@
 package com.soen343.project.service.catalog;
 
 import com.google.common.collect.ImmutableMap;
-import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
@@ -39,9 +38,7 @@ public class CatalogSearch {
 
 
     public List<?> searchCatalogByAttribute(String itemType, Map<String, String> attributeValue) {
-        Gateway gateway = gatewayMapper.getGateway(itemType);
-
-        return gateway.findByAttribute(attributeValue);
+        return gatewayMapper.getGateway(itemType).findByAttribute(attributeValue);
     }
 
     public Map<String, List<?>> searchAllByTitle(String titleValue) {
@@ -52,5 +49,9 @@ public class CatalogSearch {
     public Map<String, List<?>> getAllItemSpecs() {
         return ImmutableMap.of(MOVIE, movieRepository.findAll(), BOOK, bookRepository.findAll(), MUSIC,
                 musicRepository.findAll(), MAGAZINE, magazineRepository.findAll());
+    }
+
+    public List<?> getAllOfType(String itemType) {
+        return gatewayMapper.getGateway(itemType).findAll();
     }
 }
