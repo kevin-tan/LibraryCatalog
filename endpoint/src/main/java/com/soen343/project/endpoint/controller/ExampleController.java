@@ -11,7 +11,7 @@ import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.dao.loanable.LoanableGateway;
-import com.soen343.project.repository.dao.transaction.TransactionGateway;
+import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -55,12 +55,12 @@ public class ExampleController {
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
     private final LoanableGateway loanableGateway;
-    private final TransactionGateway transactionGateway;
+    private final ReturnTransactionGateway transactionGateway;
 
     @Autowired
     public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CatalogSearch catalogSearch,
                              MovieGateway movieRepository, ItemGateway itemRepository, BookGateway bookRepository,
-                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableGateway loanableGateway, TransactionGateway transactionGateway) {
+                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableGateway loanableGateway, ReturnTransactionGateway transactionGateway) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.catalogSearch = catalogSearch;

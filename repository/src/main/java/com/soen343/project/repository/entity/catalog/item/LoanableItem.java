@@ -5,6 +5,7 @@ import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.Client;
 
 import static com.soen343.project.repository.entity.EntityConstants.AVAILABLE;
+import static com.soen343.project.repository.entity.EntityConstants.USERID;
 
 
 public class LoanableItem extends Item {
@@ -20,14 +21,15 @@ public class LoanableItem extends Item {
 
     @Override
     public String sqlUpdateValues() {
-        String columnValues = super.sqlUpdateValues() + (AVAILABLE + " = '" + available + "'");
+        String columnValues = USERID + " = '" + client.getId() + "', ";
+        columnValues += AVAILABLE + " = '" + available + "'";
         return columnValues;
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + super.toSQLValue() + available + "')";
+        return "('" + this.getId() + "','" + client.getId() + "','" + available + "')";
     }
 
 }

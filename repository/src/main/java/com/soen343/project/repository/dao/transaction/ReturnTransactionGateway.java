@@ -4,6 +4,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
@@ -30,12 +31,12 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 import static com.soen343.project.repository.entity.transaction.types.TransactionType.LOANTRANSACTION;
 
 @Component
-public class TransactionGateway implements Gateway<Transaction> {
+public class ReturnTransactionGateway implements Gateway<Transaction> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public TransactionGateway(Scheduler scheduler) {
+    public ReturnTransactionGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -69,35 +70,32 @@ public class TransactionGateway implements Gateway<Transaction> {
     public Transaction findById(Long id) {
 
         scheduler.reader_p();
-        Transaction transaction = (Transaction) executeForeignKeyTableQuery(createFindByIdQuery(TRANSAC_TABLE, id), (rs, statement) -> {
+        ReturnTransaction transaction = (ReturnTransaction) executeForeignKeyTableQuery(createFindByIdQuery(RETURNTRANSACTION_TABLE, id), (rs, statement) -> {
             rs.next();// Move to query result
             Long transactionId = rs.getLong(ID);
             Long itemId = rs.getLong(ITEMID);
             Long userId = rs.getLong(USERID);
-            Date checkoutDate = convertToDate(rs.getString(CHECKOUTDATE));
-            Date dueDate = convertToDate(rs.getString(DUEDATE));
-            String transactionType = rs.getString(TRANSACTIONTYPE);
+            Date transactionDate = convertToDate(rs.getString(TRANSACTIONDATE));
 
-            rs.next();
             ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
             itemRS.next();
             Long itemSpecId = itemRS.getLong(ITEMSPECID);
             String itemSpecType = itemRS.getString(TYPE);
 
-            itemRS.next();
+            ResultSet LoanableItemRS = statement.executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, itemId));
+            LoanableItemRS.next();
+            Boolean available = itemRS.getBoolean(AVAILABLE);
+
             ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
             ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
-
-            Item item = new Item(itemId, itemSpecification);
 
             ResultSet userRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, userId));
             Client client = new Client(userId, userRS.getString(FIRST_NAME), userRS.getString(LAST_NAME), userRS.getString(PHYSICAL_ADDRESS),
                     userRS.getString(EMAIL), userRS.getString(PHONE_NUMBER), userRS.getString(PASSWORD));
 
-            if (transactionType.equalsIgnoreCase(LOANTRANSACTION)) {
-                return new LoanTransaction(transactionId, client, item, checkoutDate, dueDate);
-            }
-            return new ReturnTransaction(transactionId, client, item, checkoutDate);
+
+            LoanableItem loanableItem = new LoanableItem(itemId, itemSpecification, available, client);
+            return new ReturnTransaction(transactionId, loanableItem, client, transactionDate);
         });
         scheduler.reader_v();
         return transaction;
@@ -112,7 +110,7 @@ public class TransactionGateway implements Gateway<Transaction> {
     @SuppressWarnings("unchecked")
     public List<Transaction> findAll() {
         scheduler.reader_p();
-        List<Transaction> list = (List<Transaction>) executeQueryExpectMultiple(createFindAllQuery(TRANSAC_TABLE), (rs, statement) -> {
+        List<Transaction> list = (List<Transaction>) executeQueryExpectMultiple(createFindAllQuery(RETURNTRANSACTION_TABLE), (rs, statement) -> {
             Map<String, LinkedHashMultimap<Long, Item>> itemTempInfo = new HashMap<>();
             List<Transaction> transactions = new ArrayList<>();
 
@@ -120,33 +118,32 @@ public class TransactionGateway implements Gateway<Transaction> {
                 Long transactionId = rs.getLong(ID);
                 Long userId = rs.getLong(USERID);
 
-                ResultSet transactionRS = statement.executeQuery(createFindByIdQuery(TRANSAC_TABLE, transactionId));
+                ResultSet transactionRS = statement.executeQuery(createFindByIdQuery(RETURNTRANSACTION_TABLE, transactionId));
                 transactionRS.next();
                 Long itemId = rs.getLong(ITEMID);
-                Date checkoutDate = convertToDate(rs.getString(CHECKOUTDATE));
-                Date dueDate = convertToDate(rs.getString(DUEDATE));
-                String transactionType = rs.getString(TRANSACTIONTYPE);
+                Date transactionDate = convertToDate(rs.getString(TRANSACTIONDATE));
 
-                transactionRS.next();
                 ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
                 itemRS.next();
                 String itemType = itemRS.getString(TYPE);
+
+                ResultSet LoanableItemRS = statement.executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, itemId));
+                LoanableItemRS.next();
+                Boolean available = itemRS.getBoolean(AVAILABLE);
 
                 ResultSet userRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, userId));
                 userRS.next();
                 Client client = new Client(userId,userRS.getString(FIRST_NAME),userRS.getString(LAST_NAME), userRS.getString(PHYSICAL_ADDRESS),
                         userRS.getString(EMAIL),userRS.getString(PHONE_NUMBER),userRS.getString(PASSWORD));
 
-                Item item = new Item(itemRS.getLong(ITEMID), itemType);
-                Transaction Ltransaction = new LoanTransaction(transactionId, client, item, checkoutDate, dueDate);
-                Transaction Rtransaction = new ReturnTransaction(transactionId, client, item, checkoutDate);
-                transactions.add(Ltransaction);
-                transactions.add(Rtransaction);
+                LoanableItem loanableItem = new loanableItem(itemRS.getLong(ITEMID), itemType);
+                Transaction ReturnTransaction = new ReturnTransaction(transactionId, loanableItem, client, transactionDate);
+                transactions.add(ReturnTransaction);
 
                 if (itemTempInfo.get(itemType) == null) {
                     itemTempInfo.put(itemType, LinkedHashMultimap.create());
                 }
-                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), item);
+                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), loanableItem);
             }
 
             for (String itemType : itemTempInfo.keySet()) {
