@@ -16,7 +16,10 @@
 <div>
   <!-- Side Bar -->
   <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
-
+    <a href="/home" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-home w3-xxlarge"></i>
+      <p>HOME</p>
+    </a>
     <a href="/search/book" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-book w3-xxlarge"></i>
       <p>BOOK</p>
@@ -29,7 +32,7 @@
       <i class="fa fa-music w3-xxlarge"></i>
       <p>MUSIC</p>
     </a>
-    <a href="/search/movie" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/movie" class="w3-bar-item w3-button w3-padding-large w3-black">
       <i class="fa fa-compact-disc w3-xxlarge"></i>
       <p>MOVIE</p>
     </a>
@@ -44,6 +47,7 @@
 <!-- Navbar on small screens (Hidden on medium and large screens) -->
 <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
   <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="/home" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
     <a href="/search/book" class="w3-bar-item w3-button" style="width:25% !important">BOOK</a>
     <a href="/search/magazine" class="w3-bar-item w3-button" style="width:25% !important">MAGAZINE</a>
     <a href="/search/music" class="w3-bar-item w3-button" style="width:25% !important">MUSIC</a>
@@ -56,11 +60,110 @@
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
-  <header class="w3-container w3-padding-32 w3-center w3-black" id="home" style="padding-bottom: 210px !important;">
+  <header class="w3-container w3-padding-32 w3-center w3-black">
     <h2 class="w3-jumbo">What would you like to search<br>in <span style="font-size: 115%;"><i>movie</i></span> items?</h2>
     <h3>Please enter the item information that you would like to search for.</h3>
     <hr style="width:100%" class="w3-opacity">
   </header>
+  <h4>Check the item detail to enter the keyword for searching</h4>
+  <div>
+    <form>
+      <table>
+        <tr>
+          <th>
+            <input id="toggleTitle" type="checkbox" >
+            <label for="toggleTitle">Title</label>
+            <div id="expandTitle">
+              <textarea rows="1" cols="47" #title title.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleDirector" type="checkbox" >
+            <label for="toggleDirector">Director</label>
+            <div id="expandDirector">
+              <textarea rows="1" cols="47" #director director.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <input id="toggleRelease" type="checkbox" >
+            <label for="toggleRelease">Release Date</label>
+            <div id="expandRelease">
+              <textarea rows="1" cols="47" #releaseDate releaseDate.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleLang" type="checkbox" >
+            <label for="toggleLang">Language</label>
+            <div id="expandLang">
+              <textarea rows="1" cols="47" #language language.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <input id="toggleSub" type="checkbox" >
+            <label for="toggleSub">Subtitle Language</label>
+            <div id="expandSub">
+              <textarea rows="1" cols="47" #subtitles subtitles.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleDub" type="checkbox" >
+            <label for="toggleDub">Dubbed Language</label>
+            <div id="expandDub">
+              <textarea rows="1" cols="47" #dubbed dubbed.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <input id="toggleActor" type="checkbox" >
+            <label for="toggleActor">Actor</label>
+            <div id="expandActor">
+              <textarea rows="1" cols="47" #actors actors.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleProducer" type="checkbox" >
+            <label for="toggleProducer">Producer</label>
+            <div id="expandProducer">
+              <textarea rows="1" cols="47" #producers producers.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+      </table>
+      <button class="w3-bar-item w3-button" (click)="searchMovies(title.value, director.value, releaseDate.value, language.value, subtitles.value, dubbed.value, actors.value, producers.value)">
+        Search <i class="fa fa-search"></i>
+      </button>
+    </form>
+  </div>
+
+    <div>
+      <table>
+        <tr><h4><i>Movies</i></h4><hr></tr>
+        <td *ngFor="let movie of movieList">
+          {{movie.title}}<br/>
+          {{movie.language}}<br/>
+          <span *ngFor="let prod of movie.producers">
+          {{prod}}<br/>
+        </span>
+          <span *ngFor="let actor of movie.actors">
+          {{actor}}<br/>
+        </span>
+          <span *ngFor="let dub of movie.dubbed">
+          {{dub}}<br/>
+        </span>
+          {{movie.subtitles}}<br/>
+          {{movie.releaseDate}}<br/>
+          {{movie.runTime}}<br/>
+        </td>
+      </table>
+    </div>
 
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">

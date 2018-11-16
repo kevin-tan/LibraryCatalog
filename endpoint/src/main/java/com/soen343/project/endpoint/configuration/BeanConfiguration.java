@@ -33,12 +33,13 @@ public class BeanConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         // Configure CORS Configuration
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(false);
         corsConfiguration.setAllowedOrigins(ImmutableList.of("*"));
         // Allows cross-origin on following methods
         corsConfiguration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH"));
         // Allow front-end to pass in Header with the following list
         corsConfiguration.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+        // Allow front-end to use JSESSIONID to do request after authenticated
+        corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
