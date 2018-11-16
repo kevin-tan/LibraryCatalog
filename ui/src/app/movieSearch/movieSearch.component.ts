@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Movie} from "../catalog/dto/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HomeRedirectService} from "../home/home-redirect.service";
 
 @Component({
   selector: 'app-catalog',
@@ -11,10 +12,21 @@ export class movieSearchComponent implements OnInit {
 
   movieList: Array<Movie> = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
   ngOnInit() {
     this.getAllMovies();
+  }
+
+  logout(){
+    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
+    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
+      this.homeRedirectService.redirect();
+      sessionStorage.setItem('loggedIn', 'false');
+      sessionStorage.setItem('email', '');
+    }, error => {
+      console.log(error);
+    });
   }
 
   getAllMovies(): void {
