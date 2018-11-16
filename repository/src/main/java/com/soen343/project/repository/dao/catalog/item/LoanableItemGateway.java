@@ -1,6 +1,5 @@
 package com.soen343.project.repository.dao.catalog.item;
 
-import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -17,13 +16,11 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import static com.soen343.project.database.connection.DatabaseConnector.executeForeignKeyTableQuery;
-import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
-import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
 import static com.soen343.project.repository.entity.EntityConstants.*;
@@ -41,6 +38,13 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     public void save(LoanableItem entity) {
         scheduler.writer_p();
+        Item item = new Item(entity.getSpec());
+        executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
+        executeQuery("SELECT id FROM item ORDER BY id DESC LIMIT 1", ((rs, statement) -> {
+            rs.next();
+            entity.setId(rs.getLong(ID));
+            return null;
+        }));
         executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         scheduler.writer_v();
     }
@@ -60,6 +64,8 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     public void delete(LoanableItem entity) {
         scheduler.writer_p();
+        Item item = new Item(entity.getSpec());
+        executeUpdate(createDeleteQuery(item.getTable(), item.getId()));
         executeUpdate(createDeleteQuery(entity.getTable(), entity.getId()));
         scheduler.writer_v();
     }
@@ -71,7 +77,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             rs.next();// Move to query result
             Long loanableItemId = rs.getLong(ID);
             Long userId = rs.getLong(USERID);
-            Boolean available = rs.getBoolean(AVAILABLE);
+            Boolean available = Boolean.valueOf(rs.getString(AVAILABLE));
 
             ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItemId));
             itemRS.next();
@@ -82,9 +88,10 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
 
             ResultSet userRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, userId));
-            userRS.next();
-            Client client = new Client(userId, userRS.getString(FIRST_NAME), userRS.getString(LAST_NAME), userRS.getString(PHYSICAL_ADDRESS),
-                    userRS.getString(EMAIL), userRS.getString(PHONE_NUMBER), userRS.getString(PASSWORD));
+            Client client = null;
+            if (userRS.next())
+                client = new Client(userId, userRS.getString(FIRST_NAME), userRS.getString(LAST_NAME), userRS.getString(PHYSICAL_ADDRESS),
+                        userRS.getString(EMAIL), userRS.getString(PHONE_NUMBER), userRS.getString(PASSWORD));
 
             return new LoanableItem(loanableItemId, itemSpecification, available, client);
         });
@@ -100,44 +107,53 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     @SuppressWarnings("unchecked")
     public List<LoanableItem> findAll() {
-//        scheduler.reader_p();
-//        List<LoanableItem> list = (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE, ITEM_TABLE, ID, ID),(rs, statement)->{
-//            Map<String, LinkedHashMultimap<Long, Item>> itemTempInfo = new HashMap<>();
-//            List<LoanableItem> loanableItems = new ArrayList<>();
-//
-//            while (rs.next()) {
-//                String itemType = rs.getString(TYPE);
-//
-//                Item item = new Item(rs.getLong(ITEMID), itemType);
-//                LoanableItem loanableItem = new LoanableItem(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
-//                loanableItems.add(loanableItem);
-//                if (itemTempInfo.get(itemType) == null) {
-//                    itemTempInfo.put(itemType, LinkedHashMultimap.create());
-//                }
-//                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), item);
-//            }
-//
-//            for (String itemType : itemTempInfo.keySet()) {
-//                LinkedHashMultimap<Long, Item> map = itemTempInfo.get(itemType);
-//                for (Long itemSpecId : map.keySet()) {
-//                    Set<Item> items = map.get(itemSpecId);
-//                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemType, itemSpecId));
-//                    ItemSpecification itemSpecification = getItemSpec(itemType, itemSpecRS, statement, itemSpecId);
-//                    for (Item item : items) {
-//                        item.setSpec(itemSpecification);
-//                    }
-//                }
-//            }
-//
-//            return loanableItems;
-//        });
-//        scheduler.reader_v();
-        return null;
+        scheduler.reader_p();
+        List<LoanableItem> list = (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), (rs, statement) -> {
+            List<LoanableItem> loanableItems = new ArrayList<>();
+
+            while (rs.next()) {
+                Long loanableItemId = rs.getLong(ID);
+                Long userId = rs.getLong(USERID);
+                Boolean available = Boolean.valueOf(rs.getString(AVAILABLE));
+
+                final Long[] itemSpecId = {null};
+                final String[] itemSpecType = {null};
+                executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItemId), (rs1, statement1) -> {
+                    rs1.next();
+                    itemSpecId[0] = rs1.getLong(ITEMSPECID);
+                    itemSpecType[0] = rs1.getString(TYPE);
+                    return null;
+                });
+
+                ItemSpecification itemSpecification = (ItemSpecification) executeQuery(createFindByIdQuery(itemSpecType[0], itemSpecId[0]), (rs2, statement2) -> {
+                    return getItemSpec(itemSpecType[0], rs2, statement2, itemSpecId[0]);
+                });
+
+                final Client[] client = {null};
+                executeQuery(createFindByIdQuery(USER_TABLE, userId), (rs3, statement3) -> {
+                    if (rs3.next())
+                        client[0] = new Client(userId, rs3.getString(FIRST_NAME), rs3.getString(LAST_NAME), rs3.getString(PHYSICAL_ADDRESS),
+                                rs3.getString(EMAIL), rs3.getString(PHONE_NUMBER), rs3.getString(PASSWORD));
+                    else
+                        client[0] = null;
+                    return null;
+                });
+
+                LoanableItem loanableItem = new LoanableItem(loanableItemId, itemSpecification, available, client[0]);
+                loanableItems.add(loanableItem);
+            }
+
+            return loanableItems;
+        });
+        scheduler.reader_v();
+        return list;
     }
 
     @Override
     public void update(LoanableItem entity) {
         scheduler.writer_p();
+        Item item = new Item(entity.getSpec());
+        executeUpdate(createUpdateQuery(item.getTable(), item.sqlUpdateValues(), item.getId()));
         executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
         scheduler.writer_v();
     }
@@ -155,18 +171,6 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             return movie;
         }
         return null;
-    }
-
-    private Date convertToDate(String sqlTimestamp) {
-        SimpleDateFormat sqlTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        try {
-            date = sqlTimestampFormat.parse(sqlTimestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return date;
     }
 }
 

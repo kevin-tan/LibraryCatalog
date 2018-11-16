@@ -92,11 +92,13 @@ INSERT INTO Item (itemSpecId, type) VALUES
 (4, 'Book'),
 (5, 'Book');
 
-INSERT INTO LoanableItem (userId, available) VALUES
-(2,FALSE),
-(2,FALSE),
-(2,FALSE);
+INSERT INTO LoanableItem (id, available)
+SELECT id, TRUE FROM Item
+WHERE Item.type != 'Magazine';
 
+UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 1;
+UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 11;
+UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 16;
 
 INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
 (1,2, DateTime('now')),

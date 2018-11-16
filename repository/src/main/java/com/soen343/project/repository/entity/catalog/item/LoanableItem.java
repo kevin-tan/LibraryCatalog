@@ -3,10 +3,11 @@ package com.soen343.project.repository.entity.catalog.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.Client;
+import lombok.Data;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
-
+@Data
 public class LoanableItem extends Item {
 
     private Boolean available;
@@ -28,7 +29,7 @@ public class LoanableItem extends Item {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + this.getId() + "','" + client.getId() + "','" + available + "')";
+        return "('" + this.getId() + "','" + (client == null ? "NULL" : client.getId()) + "','" + available + "')";
     }
 
     @Override

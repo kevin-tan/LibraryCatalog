@@ -11,16 +11,16 @@ import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
-import com.soen343.project.repository.dao.loanable.LoanableGateway;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
+import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
-import com.soen343.project.repository.entity.transaction.LoanTransaction;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -85,7 +85,7 @@ public class ExampleController {
         return new ResponseEntity<>(itemRepository.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/test/findAllLoans")
+    @GetMapping("/test/findAllLoanableItems")
     public ResponseEntity<?> findAllLoanableItemTest() {
         return new ResponseEntity<>(loanableItemGateway.findAll(), HttpStatus.OK);
     }
@@ -228,6 +228,13 @@ public class ExampleController {
         return new ResponseEntity<>(loanTransactionGateway.findById(2L), HttpStatus.OK);
     }
 
+    @GetMapping("/test/addLoanableItem")
+    public  ResponseEntity<?> addLoanableItem(){
+        ItemSpecification itemSpecification = new Music(1L,"","","","","","");
+        LoanableItem loanableItem = new LoanableItem(1L, itemSpecification,true,null);
+        loanableItemGateway.save(loanableItem);
+        return new ResponseEntity<>(loanableItemGateway.findById(21L), HttpStatus.OK);
+    }
     /**
      * Clear DB after this request
      */
