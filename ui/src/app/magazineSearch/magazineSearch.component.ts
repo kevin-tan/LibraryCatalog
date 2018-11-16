@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Magazine} from "../catalog/dto/Magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HomeRedirectService} from "../home/home-redirect.service";
 
 @Component({
   selector: 'app-catalog',
@@ -11,11 +12,22 @@ export class magazineSearchComponent implements OnInit {
 
   magazineList: Array<Magazine> = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
   }
 
   ngOnInit() {
     this.getAllMagazines();
+  }
+
+  logout(){
+    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
+    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
+      this.homeRedirectService.redirect();
+      sessionStorage.setItem('loggedIn', 'false');
+      sessionStorage.setItem('email', '');
+    }, error => {
+      console.log(error);
+    });
   }
 
   getAllMagazines(): void {
