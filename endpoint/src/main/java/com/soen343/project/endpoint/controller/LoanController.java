@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/client")
-public class CartController {
+public class LoanController {
 
     private final CartHandler cartHandler;
 
     @Autowired
-    public CartController(CartHandler cartHandler) {
+    public LoanController(CartHandler cartHandler) {
         this.cartHandler = cartHandler;
     }
 
