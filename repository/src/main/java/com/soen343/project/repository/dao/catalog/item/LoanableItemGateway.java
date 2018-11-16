@@ -1,7 +1,9 @@
-package com.soen343.project.repository.dao.loanable;
+package com.soen343.project.repository.dao.catalog.item;
 
+import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -17,23 +19,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.executeForeignKeyTableQuery;
+import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
 import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class LoanableGateway implements Gateway<LoanableItem> {
+public class LoanableItemGateway implements Gateway<LoanableItem> {
 
     private final Scheduler scheduler;
 
     @Autowired
-    public LoanableGateway(Scheduler scheduler) {
+    public LoanableItemGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -47,9 +48,9 @@ public class LoanableGateway implements Gateway<LoanableItem> {
     @Override
     public void saveAll(LoanableItem... entities) {
         UnitOfWork uow = new UnitOfWork();
-        for (LoanableItem loanable : entities) {
+        for (LoanableItem loanableItem : entities) {
             uow.registerOperation(
-                    statement -> executeUpdate(createSaveQuery(loanable.getTableWithColumns(), loanable.toSQLValue())));
+                    statement -> executeUpdate(createSaveQuery(loanableItem.getTableWithColumns(), loanableItem.toSQLValue())));
         }
         scheduler.writer_p();
         uow.commit();
@@ -65,22 +66,18 @@ public class LoanableGateway implements Gateway<LoanableItem> {
 
     @Override
     public LoanableItem findById(Long id) {
-
         scheduler.reader_p();
-        LoanableItem loanable = (LoanableItem) executeForeignKeyTableQuery(createFindByIdQuery(LOANABLEITEM_TABLE, id), (rs, statement) -> {
+        LoanableItem loanableItem = (LoanableItem) executeForeignKeyTableQuery(createFindByIdQuery(LOANABLEITEM_TABLE, id), (rs, statement) -> {
             rs.next();// Move to query result
-            Long loanId = rs.getLong(ID);
-            Long itemId = rs.getLong(ITEMID);
+            Long loanableItemId = rs.getLong(ID);
             Long userId = rs.getLong(USERID);
             Boolean available = rs.getBoolean(AVAILABLE);
 
-            rs.next();
-            ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
+            ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItemId));
             itemRS.next();
             Long itemSpecId = itemRS.getLong(ITEMSPECID);
             String itemSpecType = itemRS.getString(TYPE);
 
-            itemRS.next();
             ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
             ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
 
@@ -89,11 +86,10 @@ public class LoanableGateway implements Gateway<LoanableItem> {
             Client client = new Client(userId, userRS.getString(FIRST_NAME), userRS.getString(LAST_NAME), userRS.getString(PHYSICAL_ADDRESS),
                     userRS.getString(EMAIL), userRS.getString(PHONE_NUMBER), userRS.getString(PASSWORD));
 
-            return new LoanableItem(loanId, itemSpecification, available, client);
-
+            return new LoanableItem(loanableItemId, itemSpecification, available, client);
         });
         scheduler.reader_v();
-        return loanable;
+        return loanableItem;
     }
 
     @Override
@@ -105,15 +101,16 @@ public class LoanableGateway implements Gateway<LoanableItem> {
     @SuppressWarnings("unchecked")
     public List<LoanableItem> findAll() {
 //        scheduler.reader_p();
-//        List<LoanableItem> list = (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE, ITEM_TABLE, ID, ITEMID),(rs, statement)->{
-//            Map<String, LinkedHashMultimap<Long,Item>> itemTempInfo = new HashMap<>();
-//            List<LoanableItem> loanables = new ArrayList<>();
+//        List<LoanableItem> list = (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE, ITEM_TABLE, ID, ID),(rs, statement)->{
+//            Map<String, LinkedHashMultimap<Long, Item>> itemTempInfo = new HashMap<>();
+//            List<LoanableItem> loanableItems = new ArrayList<>();
 //
 //            while (rs.next()) {
 //                String itemType = rs.getString(TYPE);
+//
 //                Item item = new Item(rs.getLong(ITEMID), itemType);
-//                LoanableItem loanable = new LoanableItem(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
-//                loanables.add(loanable);
+//                LoanableItem loanableItem = new LoanableItem(rs.getLong(ID), item, convertToDate(rs.getString(CHECKOUTDATE)), convertToDate(rs.getString(DUEDATE)));
+//                loanableItems.add(loanableItem);
 //                if (itemTempInfo.get(itemType) == null) {
 //                    itemTempInfo.put(itemType, LinkedHashMultimap.create());
 //                }
@@ -132,7 +129,7 @@ public class LoanableGateway implements Gateway<LoanableItem> {
 //                }
 //            }
 //
-//            return loanables;
+//            return loanableItems;
 //        });
 //        scheduler.reader_v();
         return null;
@@ -172,3 +169,4 @@ public class LoanableGateway implements Gateway<LoanableItem> {
         return date;
     }
 }
+
