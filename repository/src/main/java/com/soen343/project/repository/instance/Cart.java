@@ -21,4 +21,11 @@ public class Cart {
         this.loanableItems.removeIf(cartItem -> cartItem.getId().equals(loanableItem.getId()));
     }
 
+    public void clear(){
+        int size = loanableItems.size();
+        for(int i = 0; i < size; i++){
+            this.loanableItems.remove(i);
+        }
+    }
+
 }

@@ -51,4 +51,10 @@ public class CartHandler implements Observer<User> {
         cart.removeItemFromCart(loanableItem);
         return cart;
     }
+
+    public Cart clear(Long clientId){
+        Cart cart = carts.get(clientId);
+        cart.clear();
+        return cart;
+    }
 }
