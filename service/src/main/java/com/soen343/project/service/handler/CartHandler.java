@@ -1,5 +1,6 @@
 package com.soen343.project.service.handler;
 
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.instance.Cart;
@@ -33,5 +34,11 @@ public class CartHandler implements Observer<User> {
         } else {
             carts.remove(user.getId());
         }
+    }
+
+    public Cart addItemToCart(Long clientId, LoanableItem loanableItem) {
+        Cart cart = carts.get(clientId);
+        cart.addItemToCart(loanableItem);
+        return cart;
     }
 }
