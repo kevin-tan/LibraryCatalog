@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
@@ -21,6 +22,10 @@ public class LoanTransaction extends Transaction {
     public LoanTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate, LocalDateTime dueDate) {
         super(id, loanableItem, client, transactionDate);
         this.dueDate = dueDate;
+    }
+
+    public LoanTransaction(Long id, LoanableItem loanableItem, Client client) {
+        super(id, loanableItem, client, LocalDateTime.now());
 
     }
 
