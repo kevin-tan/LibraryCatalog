@@ -26,7 +26,7 @@ public class GatewayMapper {
                          MusicGateway musicRepository) {
         gatewayMap = ImmutableMap.of(BOOK, bookRepository, MAGAZINE, magazineRepository, MOVIE, movieRepository, MUSIC, musicRepository);
     }
-
+    
     public ItemSpecificationGateway getGateway(String itemType) {
 
         return gatewayMap.get(itemType.toLowerCase());
