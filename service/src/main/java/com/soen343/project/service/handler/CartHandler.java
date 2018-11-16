@@ -4,7 +4,9 @@ import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.instance.Cart;
+import com.soen343.project.service.authenticate.LoginManager;
 import com.soen343.project.service.notification.Observer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,7 +17,9 @@ public class CartHandler implements Observer<User> {
 
     private Map<Long, Cart> carts;
 
-    public CartHandler() {
+    @Autowired
+    public CartHandler(LoginManager loginManager) {
+        loginManager.addObserver(this);
         this.carts = new HashMap<>();
     }
 
@@ -39,6 +43,12 @@ public class CartHandler implements Observer<User> {
     public Cart addItemToCart(Long clientId, LoanableItem loanableItem) {
         Cart cart = carts.get(clientId);
         cart.addItemToCart(loanableItem);
+        return cart;
+    }
+
+    public Cart removeItemFromCart(Long clientId, LoanableItem loanableItem) {
+        Cart cart = carts.get(clientId);
+        cart.removeItemFromCart(loanableItem);
         return cart;
     }
 }

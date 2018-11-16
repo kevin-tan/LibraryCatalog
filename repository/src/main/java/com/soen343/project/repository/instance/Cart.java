@@ -18,7 +18,7 @@ public class Cart {
     }
 
     public void removeItemFromCart(LoanableItem loanableItem) {
-        this.loanableItems.remove(loanableItem);
+        this.loanableItems.removeIf(cartItem -> cartItem.getId().equals(loanableItem.getId()));
     }
 
 }

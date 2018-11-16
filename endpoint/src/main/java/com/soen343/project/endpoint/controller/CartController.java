@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/client")
 public class CartController {
 
     private final CartHandler cartHandler;
@@ -25,5 +25,10 @@ public class CartController {
     @PostMapping("/cart/{clientId}/add")
     public ResponseEntity<?> addItemToCart(@PathVariable Long clientId, @RequestBody LoanableItem loanableItem) {
         return new ResponseEntity<>(cartHandler.addItemToCart(clientId, loanableItem), HttpStatus.OK);
+    }
+
+    @PostMapping("/cart/{clientId}/remove")
+    public ResponseEntity<?> removeItemFromCart(@PathVariable Long clientId, @RequestBody LoanableItem loanableItem) {
+        return new ResponseEntity<>(cartHandler.removeItemFromCart(clientId, loanableItem), HttpStatus.OK);
     }
 }
