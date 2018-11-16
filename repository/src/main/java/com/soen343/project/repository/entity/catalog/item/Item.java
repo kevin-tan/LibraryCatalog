@@ -18,7 +18,7 @@ public class Item implements DatabaseEntity {
     public Item(Long id, ItemSpecification spec) {
         this.id = id;
         this.spec = spec;
-        this.type = spec.getClass().getSimpleName();
+        this.type = (spec == null) ? "" : spec.getClass().getSimpleName();
     }
 
 

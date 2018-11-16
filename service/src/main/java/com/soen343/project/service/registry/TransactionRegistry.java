@@ -5,7 +5,6 @@ import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.dao.mapper.GatewayMapper;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
-import com.sun.org.apache.bcel.internal.generic.RET;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -43,6 +42,7 @@ public class TransactionRegistry {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(dueDate));
     }
 
+    // TODO: Fix implementation
     public List<?> searchTransactionByAttribute(String itemType, Map<String, String> attributeValue) {
         Gateway gateway = gatewayMapper.getGateway(itemType);
 

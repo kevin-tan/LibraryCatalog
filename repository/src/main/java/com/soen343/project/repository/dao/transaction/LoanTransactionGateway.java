@@ -5,9 +5,6 @@ import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
-import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
-import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
-import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.transaction.LoanTransaction;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -15,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +21,7 @@ import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
-import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.findAllFromForeignKey;
+import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
@@ -164,21 +159,6 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
         scheduler.writer_p();
         executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
         scheduler.writer_v();
-    }
-
-    private ItemSpecification getItemSpec(String type, ResultSet rs, Statement statement, Long id) throws SQLException {
-        if (type.equalsIgnoreCase(Music.class.getSimpleName())) {
-            return Music.buildMusic(rs);
-        } else if (type.equalsIgnoreCase(Book.class.getSimpleName())) {
-            return Book.buildBook(rs);
-        } else if (type.equalsIgnoreCase(Movie.class.getSimpleName())) {
-            Movie movie = Movie.buildMovie(rs, null, null, null);
-            movie.setProducers(findAllFromForeignKey(statement, PRODUCERS_TABLE, id));
-            movie.setActors(findAllFromForeignKey(statement, ACTORS_TABLE, id));
-            movie.setDubbed(findAllFromForeignKey(statement, DUBBED_TABLE, id));
-            return movie;
-        }
-        return null;
     }
 
     private Date convertToDate(String sqlTimestamp) {
