@@ -80,6 +80,11 @@ public class ExampleController {
         this.loanTransactionGateway = loanTransactionGateway;
     }
 
+    @PostMapping("/text/loanableItem")
+    public ResponseEntity<?> loanableitemTest(@RequestBody Item item) {
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
     @GetMapping("/test/findAll")
     public ResponseEntity<?> findAllTest() {
         return new ResponseEntity<>(itemRepository.findAll(), HttpStatus.OK);
@@ -189,8 +194,7 @@ public class ExampleController {
         DatabaseConnector.executeBatchUpdate((statement -> {
             statement.executeUpdate(
                     "INSERT INTO Movie (title, releaseDate, director, language, subtitles, runTime) VALUES ('Test', 'Test', 'Test', 'Test', 'Test', '50');");
-            long id = statement.executeQuery("SELECT LAST_INSERT_ROWID();")
-                    .getInt(1);
+            long id = statement.executeQuery("SELECT LAST_INSERT_ROWID();").getInt(1);
             statement.executeUpdate("INSERT INTO Producers (movieId, producer) VALUES (" + id + " , 'Test');");
             statement.executeUpdate("INSERT INTO Actors (movieId, actor) VALUES (" + id + ", 'Test');");
             statement.executeUpdate("INSERT INTO Dubbed (movieId, dub) VALUES (" + id + ", 'Test');");
@@ -229,25 +233,20 @@ public class ExampleController {
     }
 
     @GetMapping("/test/addLoanableItem")
-    public  ResponseEntity<?> addLoanableItem(){
-        ItemSpecification itemSpecification = new Music(1L,"","","","","","");
-        LoanableItem loanableItem = new LoanableItem(1L, itemSpecification,true,null);
+    public ResponseEntity<?> addLoanableItem() {
+        ItemSpecification itemSpecification = new Music(1L, "", "", "", "", "", "");
+        LoanableItem loanableItem = new LoanableItem(1L, itemSpecification, true, null);
         loanableItemGateway.save(loanableItem);
         return new ResponseEntity<>(loanableItemGateway.findById(21L), HttpStatus.OK);
     }
+
     /**
      * Clear DB after this request
      */
     @GetMapping("/test/addNewUser")
     public ResponseEntity<?> addNewUser() {
-        Admin admin = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test@hotmail.com")
-                .phoneNumber("514-Test")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         userRepository.save(admin);
         return new ResponseEntity<>(userRepository.findById(2L), HttpStatus.OK);
     }
@@ -258,22 +257,10 @@ public class ExampleController {
      */
     @GetMapping("/test/populateUsers")
     public ResponseEntity<?> populateUsers() {
-        Admin admin = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test@hotmail.com")
-                .phoneNumber("514-Test")
-                .physicalAddress("888 Test")
-                .password("bigboss")
-                .build();
-        Client client = Client.builder()
-                .firstName("John")
-                .lastName("Wick")
-                .email("john@wick.com")
-                .phoneNumber("1234567")
-                .physicalAddress("John Wicks House")
-                .password("johnwicksdog")
-                .build();
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").password("bigboss").build();
+        Client client = Client.builder().firstName("John").lastName("Wick").email("john@wick.com").phoneNumber("1234567")
+                .physicalAddress("John Wicks House").password("johnwicksdog").build();
         userRepository.saveAll(admin, client);
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
@@ -284,15 +271,9 @@ public class ExampleController {
     @GetMapping("/test/updateUser/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id) {
         User oldAdmin = userRepository.findById(id);
-        Admin admin = Admin.builder()
-                .firstName("Test First2")
-                .lastName("Test Last2")
-                .email("Tes2t@hotmail.com32")
-                .phoneNumber("51324-Tes32t")
-                .physicalAddress("88832 Test32")
-                .password("testtest")
-                .id(oldAdmin.getId())
-                .build();
+        Admin admin =
+                Admin.builder().firstName("Test First2").lastName("Test Last2").email("Tes2t@hotmail.com32").phoneNumber("51324-Tes32t")
+                        .physicalAddress("88832 Test32").password("testtest").id(oldAdmin.getId()).build();
         userRepository.update(admin);
         return new ResponseEntity<>(userRepository.findById(oldAdmin.getId()), HttpStatus.OK);
     }
@@ -311,26 +292,13 @@ public class ExampleController {
     @GetMapping("/test/batch")
     public ResponseEntity<?> batch() {
         UnitOfWork uow = new UnitOfWork();
-        Admin admin = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test@hotmail.com")
-                .phoneNumber("514-Test")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
-        Admin admin1 = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test1@hotmail.com")
-                .phoneNumber("514-Test1")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin1 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test1@hotmail.com").phoneNumber("514-Test1")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         uow.registerOperation(statement -> executeUpdate((QueryBuilder.createSaveQuery(admin.getTableWithColumns(), admin.toSQLValue()))));
         uow.registerOperation(statement -> executeUpdate(QueryBuilder.createSaveQuery(admin1.getTableWithColumns(), admin1.toSQLValue())));
-        User user = userRepository.findAll()
-                .get(0);
+        User user = userRepository.findAll().get(0);
         uow.registerOperation(statement -> executeUpdate(QueryBuilder.createDeleteQuery(user.getTable(), user.getId())));
         uow.commit();
         return new ResponseEntity<>("It worked.", HttpStatus.OK);
@@ -338,38 +306,14 @@ public class ExampleController {
 
     @GetMapping("/test/saveAll")
     public ResponseEntity<?> saveAll() {
-        Admin admin = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test@hotmail.com")
-                .phoneNumber("514-Test")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
-        Admin admin1 = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test1@hotmail.com")
-                .phoneNumber("514-Test1")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
-        Admin admin2 = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test2@hotmail.com")
-                .phoneNumber("514-Test2")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
-        Admin admin3 = Admin.builder()
-                .firstName("Test First")
-                .lastName("Test Last")
-                .email("Test3@hotmail.com")
-                .phoneNumber("514-Test3")
-                .physicalAddress("888 Test")
-                .password(bCryptPasswordEncoder.encode("bigboss"))
-                .build();
+        Admin admin = Admin.builder().firstName("Test First").lastName("Test Last").email("Test@hotmail.com").phoneNumber("514-Test")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin1 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test1@hotmail.com").phoneNumber("514-Test1")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin2 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test2@hotmail.com").phoneNumber("514-Test2")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
+        Admin admin3 = Admin.builder().firstName("Test First").lastName("Test Last").email("Test3@hotmail.com").phoneNumber("514-Test3")
+                .physicalAddress("888 Test").password(bCryptPasswordEncoder.encode("bigboss")).build();
         userRepository.saveAll(admin, admin1, admin2, admin3);
         return new ResponseEntity<>("It worked.", HttpStatus.OK);
     }
@@ -426,9 +370,7 @@ public class ExampleController {
     @PostMapping("/testmulti/{itemType}")
     public ResponseEntity<?> testmulti(@PathVariable String itemType, @RequestBody ObjectNode objectNode) {
         Map<String, String> attributeValue = new HashMap<>();
-        objectNode.fieldNames()
-                .forEachRemaining(key -> attributeValue.put(key, objectNode.get(key)
-                        .asText()));
+        objectNode.fieldNames().forEachRemaining(key -> attributeValue.put(key, objectNode.get(key).asText()));
 
         return new ResponseEntity<>(catalogSearch.searchCatalogByAttribute(itemType, attributeValue), HttpStatus.OK);
     }

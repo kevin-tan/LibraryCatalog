@@ -1,6 +1,7 @@
 package com.soen343.project.repository.entity.catalog.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
@@ -10,15 +11,18 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonSubTypes({@JsonSubTypes.Type(value = LoanableItem.class, name = "LoanableItem")})
 public class Item implements DatabaseEntity {
     private Long id;
     private ItemSpecification spec;
     private String type;
 
+    public Item(){}
+
     public Item(Long id, ItemSpecification spec) {
         this.id = id;
         this.spec = spec;
-        this.type = spec.getClass().getSimpleName();
+        this.type = (spec == null) ? "" : spec.getClass().getSimpleName();
     }
 
 

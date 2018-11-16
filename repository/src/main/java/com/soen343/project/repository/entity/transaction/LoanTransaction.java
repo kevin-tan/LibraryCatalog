@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -15,10 +15,10 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 @NoArgsConstructor
 public class LoanTransaction extends Transaction {
 
-    private Date dueDate;
+    private LocalDateTime dueDate;
 
     @Builder
-    public LoanTransaction(Long id, LoanableItem loanableItem, Client client, Date transactionDate, Date dueDate) {
+    public LoanTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate, LocalDateTime dueDate) {
         super(id, loanableItem, client, transactionDate);
         this.dueDate = dueDate;
 
