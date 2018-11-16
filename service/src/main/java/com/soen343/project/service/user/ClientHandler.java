@@ -5,6 +5,7 @@ import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.transaction.Transaction;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.instance.Cart;
+import com.soen343.project.service.database.Library;
 import com.soen343.project.service.handler.CartHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,13 @@ import java.util.List;
 public class ClientHandler{
 
     private CartHandler cartHandler;
-    private final UserGateway userRepository;
+    private UserGateway userGateway;
     private User client;
 
     @Autowired
-    public ClientHandler(CartHandler cartHandler, UserGateway userRepository) {
+    public ClientHandler(CartHandler cartHandler, UserGateway userGateway) {
         this.cartHandler = cartHandler;
-        this.userRepository = userRepository;
+        this.userGateway = userGateway;
     }
 
     public Cart cancelLoan(Long clientId){
@@ -42,6 +43,6 @@ public class ClientHandler{
     }
 
     private void setClient(Long clientId){
-        client = userRepository.findById(clientId);
+        client = userGateway.findById(clientId);
     }
 }
