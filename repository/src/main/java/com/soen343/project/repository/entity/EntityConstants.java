@@ -34,9 +34,16 @@ public final class EntityConstants {
     public static final String DUBBED_TABLE = "Dubbed";
     public static final String DUBBED_TABLE_WITH_COLUMNS =
             DUBBED_TABLE + "(movieId, dub)";
-    public static final String LOANABLE_TABLE = "Loanable";
-    public static final String LOANABLE_TABLE_WITH_COLUMNS =
-            LOANABLE_TABLE + "(itemId, checkoutDate, dueDate)";
+    public static final String LOANABLEITEM_TABLE = "LoanableItem";
+    public static final String LOANABLEITEM_TABLE_WITH_COLUMNS =
+            LOANABLEITEM_TABLE + "(id, userId, available)";
+    public static final String LOANTRANSACTION_TABLE = "LoanTransaction";
+    public static final String LOANTRANSACTION_TABLE_WITH_COLUMNS =
+            LOANTRANSACTION_TABLE + "(itemId, userId, transactionDate, dueDate)";
+    public static final String RETURNTRANSACTION_TABLE = "ReturnTransaction";
+    public static final String RETURNTRANSACTION_TABLE_WITH_COLUMNS =
+            RETURNTRANSACTION_TABLE + "(itemId, userId, transactionDate,)";
+
     //User
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
@@ -67,9 +74,15 @@ public final class EntityConstants {
     public static final String LABEL = "label";
     public static final String ASIN = "asin";
     public static final String MOVIEID = "movieId";
+    public static final String AVAILABLE = "available";
 
-    //Loanable
+
+    //LoanableItem
     public static final String ITEMID = "itemId";
-    public static final String CHECKOUTDATE = "checkoutDate";
+    public static final String USERID = "userId";
+
+    //LoanTransaction
+    public static final String TRANSACTIONDATE = "transactionDate";
     public static final String DUEDATE = "dueDate";
+
 }
