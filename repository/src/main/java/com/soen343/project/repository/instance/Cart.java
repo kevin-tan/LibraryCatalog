@@ -22,10 +22,7 @@ public class Cart {
     }
 
     public void clear(){
-        int size = loanableItems.size();
-        for(int i = 0; i < size; i++){
-            this.loanableItems.remove(i);
-        }
+        loanableItems.clear();
     }
 
     public List<LoanableItem> getAll(){
