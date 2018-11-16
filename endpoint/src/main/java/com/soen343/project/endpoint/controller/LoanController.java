@@ -32,8 +32,16 @@ public class LoanController {
         return new ResponseEntity<>(cartHandler.removeItemFromCart(clientId, loanableItem), HttpStatus.OK);
     }
 
-    @PostMapping("/cart/{clientId}/clear")
-    public ResponseEntity<?> clear(@PathVariable Long clientId) {
+    @PostMapping("/{clientId}/cancelLoan")
+    public ResponseEntity<?> cancelLoan(@PathVariable Long clientId) {
         return new ResponseEntity<>(cartHandler.clear(clientId), HttpStatus.OK);
     }
+
+    @PostMapping("/{clientId}/loan")
+    public ResponseEntity<?> loanItems(@PathVariable Long clientId) {
+        //return new ResponseEntity<>(cartHandler.clear(clientId), HttpStatus.OK);
+    }
+
+
+
 }
