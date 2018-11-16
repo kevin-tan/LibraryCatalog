@@ -5,12 +5,14 @@ import com.google.common.collect.Lists;
 import com.soen343.project.database.connection.DatabaseConnector;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.catalog.item.ItemGateway;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.dao.loanable.LoanableGateway;
+import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -18,6 +20,7 @@ import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
+import com.soen343.project.repository.entity.transaction.LoanTransaction;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -54,13 +57,15 @@ public class ExampleController {
     private final BookGateway bookRepository;
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
-    private final LoanableGateway loanableGateway;
-    private final ReturnTransactionGateway transactionGateway;
+    private final LoanableItemGateway loanableItemGateway;
+    private final ReturnTransactionGateway returnTransactionGateway;
+    private final LoanTransactionGateway loanTransactionGateway;
 
     @Autowired
     public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CatalogSearch catalogSearch,
                              MovieGateway movieRepository, ItemGateway itemRepository, BookGateway bookRepository,
-                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableGateway loanableGateway, ReturnTransactionGateway transactionGateway) {
+                             MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableItemGateway loanableItemGateway,
+                             ReturnTransactionGateway returnTransactionGateway, LoanTransactionGateway loanTransactionGateway) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.catalogSearch = catalogSearch;
@@ -70,18 +75,29 @@ public class ExampleController {
         this.magazineRepository = magazineRepository;
         this.musicRepository = musicRepository;
 
-        this.loanableGateway = loanableGateway;
-        this.transactionGateway = transactionGateway;
+        this.loanableItemGateway = loanableItemGateway;
+        this.returnTransactionGateway = returnTransactionGateway;
+        this.loanTransactionGateway = loanTransactionGateway;
     }
 
     @GetMapping("/test/findAll")
-    public ResponseEntity<?> findAllTest(){
+    public ResponseEntity<?> findAllTest() {
         return new ResponseEntity<>(itemRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/test/findAllLoans")
-    public ResponseEntity<?> findAllLoansTest(){
-        return new ResponseEntity<>(loanableGateway.findAll(), HttpStatus.OK);
+    public ResponseEntity<?> findAllLoanableItemTest() {
+        return new ResponseEntity<>(loanableItemGateway.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/findAllReturnTransactions")
+    public ResponseEntity<?> findAllReturnTransactionsTest() {
+        return new ResponseEntity<>(returnTransactionGateway.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/findAllLoanTransactions")
+    public ResponseEntity<?> findAllLoanTransactionsTest() {
+        return new ResponseEntity<>(loanTransactionGateway.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/test/concurrency")
@@ -197,14 +213,19 @@ public class ExampleController {
         return new ResponseEntity<>(userRepository.findById(1L), HttpStatus.OK);
     }
 
-    @GetMapping("/test/getLoan")
-    public ResponseEntity<?> getLoan() {
-        return new ResponseEntity<>(loanableGateway.findById(1L), HttpStatus.OK);
+    @GetMapping("/test/getLoanableItem")
+    public ResponseEntity<?> getLoanableItem() {
+        return new ResponseEntity<>(loanableItemGateway.findById(1L), HttpStatus.OK);
     }
 
-    @GetMapping("/test/getTransaction")
-    public ResponseEntity<?> getTransaction() {
-        return new ResponseEntity<>(transactionGateway.findById(1L), HttpStatus.OK);
+    @GetMapping("/test/getReturnTransaction")
+    public ResponseEntity<?> getReturnTransaction() {
+        return new ResponseEntity<>(returnTransactionGateway.findById(1L), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/getLoanTransaction")
+    public ResponseEntity<?> getLoanTransaction() {
+        return new ResponseEntity<>(loanTransactionGateway.findById(2L), HttpStatus.OK);
     }
 
     /**

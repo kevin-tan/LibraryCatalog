@@ -92,9 +92,18 @@ INSERT INTO Item (itemSpecId, type) VALUES
 (4, 'Book'),
 (5, 'Book');
 
--- INSERT INTO Loanable (itemId)
--- SELECT id FROM Item
--- WHERE Item.type != 'Magazine';
+INSERT INTO LoanableItem (userId, available) VALUES
+(2,FALSE),
+(2,FALSE),
+(2,FALSE);
 
-INSERT INTO Transac (itemId, userId, transactionType, checkoutDate, dueDate) VALUES
-(1,2,'LoanTransaction', DateTime('now'),DateTime('now'));
+
+INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
+(1,2, DateTime('now')),
+(2,2, DateTime('now')),
+(3,2, DateTime('now'));
+
+INSERT INTO LoanTransaction (itemId, userId, transactionDate, dueDate) VALUES
+ (1,2, DateTime('now'),DateTime('now')),
+ (2,2, DateTime('now'),DateTime('now')),
+ (3,2, DateTime('now'),DateTime('now'));
