@@ -28,4 +28,8 @@ public class Cart {
         }
     }
 
+    public List<LoanableItem> getAll(){
+        return loanableItems;
+    }
+
 }

@@ -52,7 +52,7 @@ public class CartHandler implements Observer<User> {
         return cart;
     }
 
-    public Cart clear(Long clientId){
+    public Cart clear(Long clientId) {
         Cart cart = carts.get(clientId);
         cart.clear();
         return cart;
