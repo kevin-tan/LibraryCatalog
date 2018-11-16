@@ -37,8 +37,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             Item item = new Item(entity.getSpec());
             statement.executeQuery(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
             ResultSet rs = statement.executeQuery("SELECT id FROM Item ORDER BY id DESC LIMIT 1");
-            rs.next(); // Move cursor
-            entity.setId(rs.getLong(ID));
+            if(rs.next()) entity.setId(rs.getLong(ID));
             statement.execute(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         });
         scheduler.writer_v();

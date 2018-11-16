@@ -2,30 +2,32 @@ package com.soen343.project.repository.dao.transaction;
 
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.transaction.com.TransactionGateway;
+import com.soen343.project.repository.dao.transaction.com.TransactionOperations;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.transaction.LoanTransaction;
+import com.soen343.project.repository.entity.transaction.Transaction;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
+import static com.soen343.project.repository.dao.transaction.com.DateConverter.convertToDate;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class LoanTransactionGateway implements Gateway<LoanTransaction> {
+@SuppressWarnings("unchecked")
+public class LoanTransactionGateway implements TransactionGateway<LoanTransaction> {
 
     private final Scheduler scheduler;
 
@@ -68,8 +70,8 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
                     Long transactionId = rs.getLong(ID);
                     Long itemId = rs.getLong(ITEMID);
                     Long userId = rs.getLong(USERID);
-                    Date transactionDate = convertToDate(rs.getString(TRANSACTIONDATE));
-                    Date dueDate = convertToDate(rs.getString(DUEDATE));
+                    LocalDateTime transactionDate = convertToDate(rs.getString(TRANSACTIONDATE));
+                    LocalDateTime dueDate = convertToDate(rs.getString(DUEDATE));
 
                     ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, itemId));
                     itemRS.next();
@@ -103,57 +105,10 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<LoanTransaction> findAll() {
         scheduler.reader_p();
         List<LoanTransaction> list =
-                (List<LoanTransaction>) executeQueryExpectMultiple(createFindAllQuery(LOANTRANSACTION_TABLE), (rs, statement) -> {
-                    List<LoanTransaction> loanTransactions = new ArrayList<>();
-
-                    // Long id, LoanableItem loanableItem, Client client, Date transactionDate, Date dueDate
-                    while (rs.next()) {
-                        Long transactionId = rs.getLong(ID);
-                        Long itemId = rs.getLong(ITEMID);
-                        Long userId = rs.getLong(USERID);
-                        Date transactionDate = convertToDate(rs.getString(TRANSACTIONDATE));
-                        Date dueDate = convertToDate(rs.getString(DUEDATE));
-                        loanTransactions
-                                .add(new LoanTransaction(transactionId, new LoanableItem(itemId, null, null, null), new Client(userId),
-                                        transactionDate, dueDate));
-                    }
-
-                    for (LoanTransaction loanTransaction : loanTransactions) {
-                        // LoanableItem
-                        ResultSet loanableRS =
-                                statement.executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, loanTransaction.getLoanableItem().getId()));
-                        while (loanableRS.next()) {
-                            loanTransaction.getLoanableItem().setAvailable(Boolean.valueOf(loanableRS.getString(AVAILABLE)));
-                        }
-
-                        // Item + ItemSpecification
-                        ResultSet itemRS =
-                                statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanTransaction.getLoanableItem().getId()));
-                        String itemType = null;
-                        while (itemRS.next()) {
-                            itemType = itemRS.getString(TYPE);
-                        }
-                        ResultSet itemSpecRs =
-                                statement.executeQuery(createFindByIdQuery(itemType, loanTransaction.getLoanableItem().getId()));
-                        loanTransaction.getLoanableItem()
-                                .setSpec(getItemSpec(itemType, itemSpecRs, statement, loanTransaction.getLoanableItem().getId()));
-
-                        // Client
-                        ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanTransaction.getClient().getId()));
-                        while (clientRS.next()) {
-                            Client client = new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
-                                    clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL), clientRS.getString(PHONE_NUMBER),
-                                    clientRS.getString(PASSWORD));
-                            loanTransaction.setClient(client);
-                            loanTransaction.getLoanableItem().setClient(client);
-                        }
-                    }
-                    return loanTransactions;
-                });
+                (List<LoanTransaction>) executeQueryExpectMultiple(createFindAllQuery(LOANTRANSACTION_TABLE), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
@@ -165,41 +120,53 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
         scheduler.writer_v();
     }
 
-    private Date convertToDate(String sqlTimestamp) {
-        SimpleDateFormat sqlTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        try {
-            date = sqlTimestampFormat.parse(sqlTimestamp);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return date;
+    @Override
+    public List<?> findByTransactionDate(String transactionDate) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, TRANSACTIONDATE, transactionDate),
+                findAllTransaction());
+        scheduler.reader_v();
+        return list;
     }
 
-    private DatabaseQueryOperation databaseQueryOperation() {
+    @Override
+    public List<?> findByUserId(Long userId) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, USERID, userId), findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @Override
+    public List<?> findByItemType(String itemType) {
+        scheduler.reader_p();
+        List loanTransactions =
+                executeQueryExpectMultiple(createDoubleTableQuery(LOANTRANSACTION_TABLE, ITEM_TABLE, ITEMID, TYPE, itemType),
+                        findAllTransaction());
+        scheduler.reader_v();
+        return loanTransactions;
+    }
+
+    public List<?> findByDueDate(String dueDate) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, DUEDATE, dueDate), findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
+
+
+    private DatabaseQueryOperation findAllTransaction() {
         return (rs, statement) -> {
-            return findAll();
+            List<Transaction> loanTransactions = new ArrayList<>();
+            // Long id, LoanableItem loanableItem, Client client, Date transactionDate, Date dueDate
+            while (rs.next()) {
+                loanTransactions.add(new LoanTransaction(rs.getLong(ID), new LoanableItem(rs.getLong(ITEMID), null, null, null),
+                        new Client(rs.getLong(USERID)), convertToDate(rs.getString(TRANSACTIONDATE)),
+                        convertToDate(rs.getString(DUEDATE))));
+            }
+            TransactionOperations.createTransactions(loanTransactions, statement);
+            return loanTransactions;
         };
     }
 
-    @SuppressWarnings("unchecked")
-    public List<LoanTransaction> findByDueDate(Date dueDate) {
-        scheduler.reader_p();
-        List<LoanTransaction> list =
-                (List<LoanTransaction>) executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, DUEDATE, dueDate),
-                        databaseQueryOperation());
-        scheduler.reader_v();
-        return list;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<LoanTransaction> findByUserId(Long userId) {
-        scheduler.reader_p();
-        List<LoanTransaction> list =
-                (List<LoanTransaction>) executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, USERID, userId),
-                        databaseQueryOperation());
-        scheduler.reader_v();
-        return list;
-    }
 }

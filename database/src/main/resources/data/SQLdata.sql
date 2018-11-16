@@ -100,12 +100,12 @@ UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 1;
 UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 11;
 UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 16;
 
-INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
-(1,2, DateTime('now')),
-(2,2, DateTime('now')),
-(3,2, DateTime('now'));
-
 INSERT INTO LoanTransaction (itemId, userId, transactionDate, dueDate) VALUES
- (1,2, DateTime('now'),DateTime('now')),
- (2,2, DateTime('now'),DateTime('now')),
- (3,2, DateTime('now'),DateTime('now'));
+(1,2, DateTime('now'),DateTime('now')),
+(11,2, DateTime('now'),DateTime('now')),
+(16,2, DateTime('now'),DateTime('now'));
+
+-- INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
+-- (1,2, DateTime('now')),
+-- (11,2, DateTime('now')),
+-- (16,2, DateTime('now'));

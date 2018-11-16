@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static com.soen343.project.repository.entity.EntityConstants.RETURNTRANSACTION_TABLE;
 import static com.soen343.project.repository.entity.EntityConstants.RETURNTRANSACTION_TABLE_WITH_COLUMNS;
@@ -17,7 +17,7 @@ import static com.soen343.project.repository.entity.EntityConstants.RETURNTRANSA
 public class ReturnTransaction extends Transaction {
 
     @Builder
-    public ReturnTransaction(Long id, LoanableItem loanableItem, Client client, Date transactionDate) {
+    public ReturnTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         super(id, loanableItem, client, transactionDate);
     }
 
