@@ -1,5 +1,6 @@
 package com.soen343.project.service.user;
 
+import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.transaction.Transaction;
 import com.soen343.project.repository.entity.user.User;
@@ -15,13 +16,13 @@ import java.util.List;
 public class ClientHandler{
 
     private CartHandler cartHandler;
-    private Library library;
+    private UserGateway userGateway;
     private User client;
 
     @Autowired
-    public ClientHandler(CartHandler cartHandler, Library library) {
+    public ClientHandler(CartHandler cartHandler, UserGateway userGateway) {
         this.cartHandler = cartHandler;
-        this.library = library;
+        this.userGateway = userGateway;             
     }
 
     public Cart cancelLoan(Long clientId){
@@ -42,6 +43,6 @@ public class ClientHandler{
     }
 
     private void setClient(Long clientId){
-        client = library.getUserByID(clientId);
+        client = userGateway.findById(clientId);
     }
 }
