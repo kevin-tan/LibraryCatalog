@@ -12,6 +12,7 @@ import {bookSearchComponent} from "./bookSearch/bookSearch.component";
 import {musicSearchComponent} from "./musicSearch/musicSearch.component";
 import {movieSearchComponent} from "./movieSearch/movieSearch.component";
 import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
+import {activeUsersComponent} from "./activeUsers/activeUsers.component";
 import {HomeRedirectService} from "./home/home-redirect.service";
 
 @NgModule({
@@ -24,7 +25,8 @@ import {HomeRedirectService} from "./home/home-redirect.service";
     bookSearchComponent,
     musicSearchComponent,
     movieSearchComponent,
-    magazineSearchComponent
+    magazineSearchComponent,
+    activeUsersComponent
   ],
   imports: [
     BrowserModule,
