@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -56,5 +57,10 @@ public class CartHandler implements Observer<User> {
         Cart cart = carts.get(clientId);
         cart.clear();
         return cart;
+    }
+
+    public List<LoanableItem> getLoanables(Long clientId){
+        Cart cart = carts.get(clientId);
+        return cart.getAll();
     }
 }
