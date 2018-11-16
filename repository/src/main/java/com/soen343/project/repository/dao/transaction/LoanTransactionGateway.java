@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.transaction;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
@@ -82,7 +83,7 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
 
             ResultSet loanableItemRS = statement.executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, itemId));
             loanableItemRS.next();
-            Boolean available = loanableItemRS.getBoolean(AVAILABLE);
+            Boolean available = Boolean.valueOf(loanableItemRS.getString(AVAILABLE));
 
             ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
             ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
@@ -131,7 +132,7 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
                 final Boolean[] available = {null};
                 executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, itemId), (rs2, statement2) -> {
                     rs2.next();
-                    available[0] = rs2.getBoolean(AVAILABLE);
+                    available[0] = Boolean.valueOf(rs2.getString(AVAILABLE));
                     return null;
                 });
 
@@ -190,5 +191,27 @@ public class LoanTransactionGateway implements Gateway<LoanTransaction> {
         }
 
         return date;
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
+            return findAll();
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<LoanTransaction> findByDueDate(Date dueDate) {
+        scheduler.reader_p();
+        List<LoanTransaction> list = (List<LoanTransaction>) executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, DUEDATE, dueDate), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<LoanTransaction> findByUserId(Long userId) {
+        scheduler.reader_p();
+        List<LoanTransaction> list = (List<LoanTransaction>) executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, USERID, userId), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
     }
 }
