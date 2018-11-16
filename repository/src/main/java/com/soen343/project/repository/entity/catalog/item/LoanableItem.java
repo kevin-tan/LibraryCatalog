@@ -13,6 +13,8 @@ public class LoanableItem extends Item {
     private Boolean available;
     private Client client;
 
+    public LoanableItem() {}
+
     public LoanableItem(Long id, ItemSpecification spec, Boolean available, Client client) {
         super(id, spec);
         this.available = available;

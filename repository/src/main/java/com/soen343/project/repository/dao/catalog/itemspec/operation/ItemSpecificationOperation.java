@@ -110,4 +110,22 @@ public final class ItemSpecificationOperation {
         }
     }
 
+    public static ItemSpecification getItemSpec(String type, ResultSet rs, Statement statement, Long id) throws SQLException {
+        if (type.equalsIgnoreCase(Music.class.getSimpleName())) {
+            return Music.buildMusic(rs);
+        } else if (type.equalsIgnoreCase(Magazine.class.getSimpleName())) {
+            return Magazine.buildMagazine(rs);
+        } else if (type.equalsIgnoreCase(Book.class.getSimpleName())) {
+            return Book.buildBook(rs);
+        } else if (type.equalsIgnoreCase(Movie.class.getSimpleName())) {
+            Movie movie = Movie.buildMovie(rs, null, null, null);
+            movie.setProducers(findAllFromForeignKey(statement, PRODUCERS_TABLE, id));
+            movie.setActors(findAllFromForeignKey(statement, ACTORS_TABLE, id));
+            movie.setDubbed(findAllFromForeignKey(statement, DUBBED_TABLE, id));
+            return movie;
+        }
+        return null;
+    }
 }
+
+

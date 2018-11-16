@@ -7,7 +7,7 @@ import com.soen343.project.repository.entity.user.Client;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -17,9 +17,9 @@ public abstract class Transaction implements DatabaseEntity {
     private Long id;
     private LoanableItem loanableItem;
     private Client client;
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
 
-    public Transaction(Long id, LoanableItem loanableItem, Client client, Date transactionDate) {
+    public Transaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         this.id = id;
         this.loanableItem = loanableItem;
         this.client = client;

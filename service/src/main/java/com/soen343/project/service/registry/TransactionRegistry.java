@@ -1,57 +1,89 @@
 package com.soen343.project.service.registry;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.soen343.project.repository.dao.Gateway;
-import com.soen343.project.repository.dao.mapper.GatewayMapper;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
-import com.sun.org.apache.bcel.internal.generic.RET;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import static com.soen343.project.repository.dao.transaction.com.DateConverter.DATE_FORMAT;
+import static com.soen343.project.repository.entity.EntityConstants.DUEDATE;
+import static com.soen343.project.repository.entity.EntityConstants.TRANSACTIONDATE;
+
 @Service
 public class TransactionRegistry {
-    private final GatewayMapper gatewayMapper;
-    private final LoanTransactionGateway loanTransactionGateway;
-    private final ReturnTransactionGateway returnTransactionGateway;
 
     private static final String LOAN_TRANSACTION = "loanTransaction";
     private static final String RETURN_TRANSACTION = "returnTransaction";
 
-    public TransactionRegistry(GatewayMapper gatewayMapper, LoanTransactionGateway loanTransactionGateway, ReturnTransactionGateway returnTransactionGateway){
-        this.gatewayMapper = gatewayMapper;
+    private final LoanTransactionGateway loanTransactionGateway;
+    private final ReturnTransactionGateway returnTransactionGateway;
+
+    @Autowired
+    public TransactionRegistry(LoanTransactionGateway loanTransactionGateway, ReturnTransactionGateway returnTransactionGateway) {
         this.loanTransactionGateway = loanTransactionGateway;
         this.returnTransactionGateway = returnTransactionGateway;
     }
 
-    public Map<String, List<?>> getAllTransactions(){
+    public Map<String, List<?>> getAllTransactions() {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findAll(), RETURN_TRANSACTION, returnTransactionGateway.findAll());
     }
 
-    public Map<String, List<?>> searchLoanTransactions(){
-        return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findAll());
+    public List<?> searchLoanTransactions() {
+        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findAll());
     }
 
-    public Map<String, List<?>> searchReturnTransactions(){
-        return ImmutableMap.of(RETURN_TRANSACTION, returnTransactionGateway.findAll());
+    public List<?> searchReturnTransactions() {
+        return ImmutableList.of(RETURN_TRANSACTION, returnTransactionGateway.findAll());
     }
 
-    public Map<String, List<?>> searchLoanByDueDate(Date dueDate){
-        return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(dueDate));
+    public Map<String, List<?>> searchAllByTransactionDate(ObjectNode transactionDate) {
+        return ImmutableMap.of(LOAN_TRANSACTION,
+                loanTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())),
+                RETURN_TRANSACTION,
+                returnTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
     }
 
-    public List<?> searchTransactionByAttribute(String itemType, Map<String, String> attributeValue) {
-        Gateway gateway = gatewayMapper.getGateway(itemType);
-
-        return gateway.findByAttribute(attributeValue);
+    public List<?> searchLoanByTransactionDate(ObjectNode transactionDate) {
+        return ImmutableList
+                .of(loanTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
     }
 
-    public Map<String, List<?>> searchTransactionsByUserId(Long userId){
-        return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByUserId(userId), RETURN_TRANSACTION, returnTransactionGateway.findByUserId(userId));
+    public List<?> searchLoanByDueDate(ObjectNode dueDate) {
+        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(formatDateString(dueDate.get(DUEDATE).asText())));
     }
 
+    public List<?> searchReturnByTransactionDate(ObjectNode transactionDate) {
+        return ImmutableList
+                .of(returnTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+    }
 
+    public Map<String, List<?>> searchTransactionsByUserId(Long userId) {
+        return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByUserId(userId), RETURN_TRANSACTION,
+                returnTransactionGateway.findByUserId(userId));
+    }
+
+    public List<?> searchLoanByUserId(Long userId) {
+        return ImmutableList.of(loanTransactionGateway.findByUserId(userId));
+    }
+
+    public List<?> searchReturnByUserId(Long userId) {
+        return ImmutableList.of(returnTransactionGateway.findByUserId(userId));
+    }
+
+    public Map<String, List<?>> searchTransactionByItemType(String itemType) {
+        return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByItemType(itemType), RETURN_TRANSACTION,
+                returnTransactionGateway.findByItemType(itemType));
+    }
+
+    private String formatDateString(String date) {
+        return LocalDateTime.parse(date).format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    }
 }

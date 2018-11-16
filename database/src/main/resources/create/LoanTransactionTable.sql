@@ -5,6 +5,6 @@ CREATE TABLE LoanTransaction (
  userId INTEGER NOT NULL,
  transactionDate TIMESTAMP,
  dueDate TIMESTAMP,
- FOREIGN KEY (itemId) REFERENCES Item(id),
+ FOREIGN KEY (itemId) REFERENCES LoanableItem(id),
  FOREIGN KEY (userId) REFERENCES User(id)
  );

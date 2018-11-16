@@ -6,17 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/transactionHistory")
 public class TransactionController {
     private final TransactionRegistry transactionRegistry;
 
@@ -25,39 +18,59 @@ public class TransactionController {
         this.transactionRegistry = transactionRegistry;
     }
 
-    @GetMapping("/transactionHistory/searchAll")
+    @GetMapping("/searchAll")
     public ResponseEntity<?> getAllTransactions() {
         return new ResponseEntity<>(transactionRegistry.getAllTransactions(), HttpStatus.OK);
     }
 
-    @GetMapping("/transactionHistory/searchAllLoanTransactions")
+    @GetMapping("/searchAllLoanTransactions")
     public ResponseEntity<?> getAllLoanTransactions() {
         return new ResponseEntity<>(transactionRegistry.searchLoanTransactions(), HttpStatus.OK);
     }
 
-    @GetMapping("/transactionHistory/searchAllReturnTransaction")
+    @GetMapping("/searchAllReturnTransaction")
     public ResponseEntity<?> getAllReturnTransactions() {
         return new ResponseEntity<>(transactionRegistry.searchReturnTransactions(), HttpStatus.OK);
     }
 
-    @GetMapping("/transactionHistory/searchByDueDate/{dueDate}")
-    public ResponseEntity<?> searchTransactionByDueDate(@PathVariable Date dueDate) {
+    @PostMapping("/searchAllByTransactionDate")
+    public ResponseEntity<?> searchTransactionByTransactionDate(@RequestBody ObjectNode transactionDate) {
+        return new ResponseEntity<>(transactionRegistry.searchAllByTransactionDate(transactionDate), HttpStatus.OK);
+    }
+
+    @PostMapping("/loanTransactions/searchByDueDate")
+    public ResponseEntity<?> searchTransactionByDueDate(@RequestBody ObjectNode dueDate) {
         return new ResponseEntity<>(transactionRegistry.searchLoanByDueDate(dueDate), HttpStatus.OK);
     }
 
-    @GetMapping("/transactionHistory/search/{itemType}")
-    public ResponseEntity<?> searchTransactionByAttribute(@PathVariable String itemType, @RequestBody ObjectNode objectNode) {
-        Map<String, String> attributeValue = new HashMap<>();
-        objectNode.fieldNames().forEachRemaining(key ->
-                attributeValue.put(key,objectNode.get(key).asText())
-        );
-
-        return new ResponseEntity<>(transactionRegistry.searchTransactionByAttribute(itemType, attributeValue), HttpStatus.OK);
+    @PostMapping("/loanTransactions/searchByTransactionDate")
+    public ResponseEntity<?> searchLoanTransactionByTransactionDate(@RequestBody ObjectNode transactionDate) {
+        return new ResponseEntity<>(transactionRegistry.searchLoanByTransactionDate(transactionDate), HttpStatus.OK);
     }
 
-    @GetMapping("/transactionHistory/searchByUserId/{userId}")
+    @PostMapping("/returnTransactions/searchByTransactionDate")
+    public ResponseEntity<?> searchReturnTransactionByTransactionDate(@RequestBody ObjectNode transactionDate) {
+        return new ResponseEntity<>(transactionRegistry.searchReturnByTransactionDate(transactionDate), HttpStatus.OK);
+    }
+
+    @GetMapping("/searchByUserId/{userId}")
     public ResponseEntity<?> searchTransactionsByUserId(@PathVariable Long userId) {
         return new ResponseEntity<>(transactionRegistry.searchTransactionsByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/loanTransaction/searchByUserId/{userId}")
+    public ResponseEntity<?> searchLoanTransactionsByUserId(@PathVariable Long userId) {
+        return new ResponseEntity<>(transactionRegistry.searchLoanByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/returnTransaction/searchByUserId/{userId}")
+    public ResponseEntity<?> searchReturnTransactionsByUserId(@PathVariable Long userId) {
+        return new ResponseEntity<>(transactionRegistry.searchReturnByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{itemType}")
+    public ResponseEntity<?> searchTransactionByAttribute(@PathVariable String itemType) {
+        return new ResponseEntity<>(transactionRegistry.searchTransactionByItemType(itemType), HttpStatus.OK);
     }
 
 }
