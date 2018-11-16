@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.transaction;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
@@ -7,6 +8,7 @@ import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
+import com.soen343.project.repository.entity.transaction.LoanTransaction;
 import com.soen343.project.repository.entity.transaction.ReturnTransaction;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -82,7 +84,7 @@ public class ReturnTransactionGateway implements Gateway<ReturnTransaction> {
 
             ResultSet loanableItemRS = statement.executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, itemId));
             loanableItemRS.next();
-            Boolean available = loanableItemRS.getBoolean(AVAILABLE);
+            Boolean available = Boolean.valueOf(loanableItemRS.getString(AVAILABLE));
 
             ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
             ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
@@ -129,7 +131,7 @@ public class ReturnTransactionGateway implements Gateway<ReturnTransaction> {
                 final Boolean[] available = {null};
                 executeQuery(createFindByIdQuery(LOANABLEITEM_TABLE, itemId), (rs2, statement2) -> {
                     rs2.next();
-                    available[0] = rs2.getBoolean(AVAILABLE);
+                    available[0] = Boolean.valueOf(rs2.getString(AVAILABLE));
                     return null;
                 });
 
@@ -189,5 +191,21 @@ public class ReturnTransactionGateway implements Gateway<ReturnTransaction> {
 
         return date;
     }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
+            return findAll();
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ReturnTransaction> findByUserId(Long userId) {
+        scheduler.reader_p();
+        List<ReturnTransaction> list = (List<ReturnTransaction>) executeQueryExpectMultiple(createSearchByAttributeQuery(RETURNTRANSACTION_TABLE, USERID, userId), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+
 }
 
