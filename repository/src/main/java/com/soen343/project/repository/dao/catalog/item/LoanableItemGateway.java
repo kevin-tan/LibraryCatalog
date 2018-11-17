@@ -161,7 +161,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
 
     // TODO: for return
     public List<?> findByUserIdAndIsLoaned(Long userId){
-        boolean avail = false; // TODO : remove
+        boolean avail = false; // TODO : remove; it's only to check
         scheduler.reader_p();
         List list = null;
         scheduler.reader_v();

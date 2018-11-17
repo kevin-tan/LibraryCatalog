@@ -22,11 +22,10 @@ public class TransactionService {
     }
 
     public ResponseEntity<?> createLoanTransactions(Client client, List<LoanableItem> loanables) {
-        return transactionRegistry.addTransactions(client, loanables);
+        return transactionRegistry.addLoanTransactions(client, loanables);
     }
 
-    // todo: implement
-    public void createReturnTransactions(User client, List<LoanableItem> loanableItems) {
-
+    public ResponseEntity<?> createReturnTransactions(Client client, List<LoanableItem> loanableItems) {
+        return transactionRegistry.addReturnTransactions(client, loanableItems);
     }
 }

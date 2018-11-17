@@ -2,6 +2,7 @@ package com.soen343.project.repository.dao.transaction;
 
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.transaction.com.TransactionGateway;
 import com.soen343.project.repository.dao.transaction.com.TransactionOperations;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
@@ -32,10 +33,12 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public class LoanTransactionGateway implements TransactionGateway<LoanTransaction> {
 
     private final Scheduler scheduler;
+    private final LoanableItemGateway loanableItemGateway;
 
     @Autowired
-    public LoanTransactionGateway(Scheduler scheduler) {
+    public LoanTransactionGateway(Scheduler scheduler, LoanableItemGateway loanableItemGateway) {
         this.scheduler = scheduler;
+        this.loanableItemGateway = loanableItemGateway;
     }
 
 
@@ -51,7 +54,10 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
 
             // Checking loanable items
             // TODO
-            entity.getLoanableItem()
+            statement.executeQuery(createSaveQuery(entity.getLoanableItem().getTableWithColumns(), entity.toSQLValue()));
+            ResultSet rs = statement.executeQuery("SELECT * FROM LoanableItem WHERE ");
+
+            //while();
 
             // if (){
             // Update loanable item if available

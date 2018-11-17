@@ -42,7 +42,7 @@ public class TransactionRegistry {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findAll(), RETURN_TRANSACTION, returnTransactionGateway.findAll());
     }
 
-    public ResponseEntity<?> addTransactions(Client client, List<LoanableItem> loanables) {
+    public ResponseEntity<?> addLoanTransactions(Client client, List<LoanableItem> loanables) {
         LocalDateTime transactionDate = LocalDateTime.now();
         String transactionDateFormatted = transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         List<LoanableItem> failedItems = new LinkedList<>();
@@ -71,6 +71,11 @@ public class TransactionRegistry {
             return new ResponseEntity<>(failedItems, HttpStatus.EXPECTATION_FAILED);
 
         }
+    }
+
+    //TODO
+    public ResponseEntity<?> addReturnTransactions(Client client, List<LoanableItem> loanables){
+        return null;
     }
 
     public List<?> searchLoanTransactions() {
