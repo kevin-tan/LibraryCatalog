@@ -76,8 +76,6 @@
         </form>
       </h2><br><br>
       <h3>To search in a specific category, please click on the desired <br>item icon on the left to perform a filter search</h3>
-      <h5>Reset filter</h5>
-      <button class="w3-bar-item w3-button w3-xlarge" (click)="getAllCatalog()"><i class="fa fa-refresh"></i></button>
       <hr style="width:100%" class="w3-opacity">
     </header>
     <h3>Here are the current items we have in our library</h3>
@@ -254,6 +252,11 @@
       <tr mat-header-row *matHeaderRowDef="displayMusicColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayMusicColumns;"></tr>
     </table>
+
+    <br>
+    <h5>Reset filter
+      <button class="w3-bar-item w3-button w3-xlarge" (click)="getAllCatalog()"><i class="fa fa-refresh"></i></button>
+    </h5>
 
     <!-- Footer -->
     <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
