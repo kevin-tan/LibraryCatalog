@@ -42,9 +42,8 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
             // TODO: Modify save and saveAll:
-            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem WHERE LoanableItem.client = " + entity.getLoanableItem().getClient() + " and LoanableItem.available = 0;");
-            while(rs.next()){
-            }
+
+            entity.getLoanableItem().setAvailable(true);
             //Set every item to available
             statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
             // }
@@ -58,7 +57,12 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     public void saveAll(ReturnTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (ReturnTransaction transaction : entities) {
-            uow.registerOperation(statement -> statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+
+            uow.registerOperation(
+                    statement -> {
+                        transaction.getLoanableItem().setAvailable(true);
+                        statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
+                    });
         }
         scheduler.writer_p();
         uow.commit();
