@@ -4,7 +4,7 @@ import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.transaction.Transaction;
-import com.soen343.project.repository.entity.user.User;
+import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.instance.Cart;
 import com.soen343.project.service.handler.CartHandler;
 import com.soen343.project.service.transaction.TransactionService;
@@ -22,7 +22,7 @@ public class ClientHandler {
     private UserGateway userGateway;
     private LoanableItemGateway loanableItemGateway;
     private TransactionService transactionService;
-    private User client;
+    private Client client;
 
     private final long MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN = 3;
 
@@ -38,10 +38,10 @@ public class ClientHandler {
         return cartHandler.clear(clientId);
     }
 
-    // TODO: COMPLETE TO CONSIDER ALREADY LOANED ITEMS
     public ResponseEntity<?> loanItems(Long clientId) {
         setClient(clientId);
         List<LoanableItem> loanables = cartHandler.getLoanables(clientId);
+        cartHandler.clear(clientId);
 
         long numberOfOwnedItems = loanableItemGateway.findAll().stream()
                 .filter(lItem -> lItem.getClient().getId().equals(clientId))
@@ -51,13 +51,10 @@ public class ClientHandler {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        transactionService.createLoanTransactions(client,loanables); // TODO: SHOULD GET A LIST OF ALREADY LOANED ITEMS ON FAILURE, THE SECOND ERROR CASE
-
-        cartHandler.clear(clientId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return transactionService.createLoanTransactions(client,loanables);
     }
 
-    // TODO: IMPLEMENT
+    // TODO: Done
     public Transaction returnItems(Long clientId, List<LoanableItem> loanableItems) {
         setClient(clientId);
         transactionService.createReturnTransactions(client,loanableItems);
@@ -65,6 +62,6 @@ public class ClientHandler {
     }
 
     private void setClient(Long clientId) {
-        client = userGateway.findById(clientId);
+        client = (Client) userGateway.findById(clientId);
     }
 }

@@ -50,7 +50,6 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
             // TODO:Done
             // Checking loanable items
             ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = "+ entity.getLoanableItem().getId() + " and Item.type  = " + entity.getLoanableItem().getType() + " and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
-            statement.executeUpdate(createSaveQuery(entity.getLoanableItem().getTableWithColumns(), entity.getLoanableItem().toSQLValue()));
             if(rs.next()) {
                 if (rs.getLong("id") != 0) {
                     entity.setId(rs.getLong("id"));
@@ -70,18 +69,15 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         for (LoanTransaction transaction : entities) {
             uow.registerOperation(
                     statement -> {
-                        // TODO: Modify save and saveAll:
-                        // Check if loanable item is available (search through all of the items until there is none left)
-                        // Then update loanable if available and mark it loaned and then create a transaction,
-                        // If not available return null so that you know it was unsuccessful
-
-                        // Checking loanable items if another one is available
-                        // TODO
-
-                        // if (){
-                        // Update loanable item if available
-                        // TODO
-
+                        // Checking loanable items
+                        ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = "+ transaction.getLoanableItem().getId() + " and Item.type  = " + transaction.getLoanableItem().getType() + " and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
+                        statement.executeUpdate(createSaveQuery(transaction.getLoanableItem().getTableWithColumns(), transaction.getLoanableItem().toSQLValue()));
+                        if(rs.next()) {
+                            if (rs.getLong("id") != 0) {
+                                transaction.setId(rs.getLong("id"));
+                                transaction.getLoanableItem().setAvailable(false);
+                            }
+                        }
                         // If found create loan transaction
                         statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
                         // }

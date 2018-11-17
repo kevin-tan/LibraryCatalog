@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -163,6 +164,12 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     public List<?> findByUserIdAndIsLoaned(Long userId){
         boolean avail = false; // TODO : remove; it's only to check
         scheduler.reader_p();
+       /* Map<String, String> userAndDates = new HashMap<>();
+        userAndDates.put(USERID, userId.toString());
+        userAndDates.put(AVAILABLE, avail);
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE, userAndDates), findAllTransaction());
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANABLEITEM_TABLE, userAndDates), findAllTransaction());
+        */
         List list = null;
         scheduler.reader_v();
         return list;

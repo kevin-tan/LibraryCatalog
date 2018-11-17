@@ -42,7 +42,9 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
             // TODO: Modify save and saveAll:
-            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem WHERE LoanableItem.C");
+            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem WHERE LoanableItem.client = " + entity.getLoanableItem().getClient() + " and LoanableItem.available = 0;");
+            while(rs.next()){
+            }
             //Set every item to available
             statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
             // }
