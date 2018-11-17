@@ -35,6 +35,8 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
         this.scheduler = scheduler;
     }
 
+
+    // TODO: modify so that it updates the loanable items as well
     @Override
     public void save(ReturnTransaction entity) {
         scheduler.writer_p();
@@ -42,11 +44,12 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
         scheduler.writer_v();
     }
 
+    // TODO: modify so that it updates the loanable items as well
     @Override
     public void saveAll(ReturnTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (ReturnTransaction transaction : entities) {
-            uow.registerOperation(statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+            uow.registerOperation(statement -> statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
         }
         scheduler.writer_p();
         uow.commit();

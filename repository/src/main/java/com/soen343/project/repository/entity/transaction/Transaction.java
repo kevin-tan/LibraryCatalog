@@ -33,6 +33,13 @@ public abstract class Transaction implements DatabaseEntity {
         this.transactionDate = LocalDateTime.now();
     }
 
+    Transaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
+        loanableItem.setClient(client);
+        this.loanableItem = loanableItem;
+        this.client = client;
+        this.transactionDate = transactionDate;
+    }
+
     @JsonIgnore
     public String sqlUpdateValues() {
         String columnValues = ITEMID + " = '" + loanableItem.getId() + "', ";

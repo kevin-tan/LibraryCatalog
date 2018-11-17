@@ -35,6 +35,12 @@ public class LoanTransaction extends Transaction {
         this.dueDate = this.transactionDate.plusDays(LoanDays.DAYS_UNTIL_DUE.get(loanableItem.getType()));
     }
 
+    public LoanTransaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
+        super(loanableItem, client, transactionDate);
+        this.loanableItem.setAvailable(false);
+        this.dueDate = this.transactionDate.plusDays(DAYS_UNTIL_DUE.get(loanableItem.getType()));
+    }
+
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
@@ -45,7 +51,7 @@ public class LoanTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return  super.toSQLValue() + dueDate + "')";
+        return super.toSQLValue() + dueDate + "')";
     }
 
     @Override
