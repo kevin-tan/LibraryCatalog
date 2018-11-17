@@ -106,7 +106,7 @@ public final class ItemSpecificationOperation {
         if (rs.next()) {
             itemSpecification.setId(rs.getLong(ID));
         } else {
-            executeUpdate(createSaveQuery(itemSpecification.getTableWithColumns(), itemSpecification.toSQLValue()));
+            statement.executeUpdate(createSaveQuery(itemSpecification.getTableWithColumns(), itemSpecification.toSQLValue()));
         }
     }
 
