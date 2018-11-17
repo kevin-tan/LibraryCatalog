@@ -18,7 +18,7 @@ export class ManageCatalogComponent implements OnInit {
   displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
   matBookList: MatTableDataSource<Book>;
 
-  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime'];
+  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate', 'runTime'];
   matMovieList: MatTableDataSource<Movie>;
 
   displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13'];
@@ -42,9 +42,9 @@ export class ManageCatalogComponent implements OnInit {
 
   }
 
-  logout(){
+  logout() {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
+    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
       this.homeRedirectService.redirect();
       sessionStorage.setItem('loggedIn', 'false');
       sessionStorage.setItem('email', '');
@@ -85,7 +85,53 @@ export class ManageCatalogComponent implements OnInit {
 
   startSession() {
     this.http.post<string>('http://localhost:8080/admin/catalog/edit', null, {withCredentials: true}).subscribe(response => {
-      sessionStorage.setItem("sessionId", response['sessionId']);
-    })
+      sessionStorage.setItem('sessionId', response['sessionId']);
+    });
+  }
+
+  //TODO Note that the method is always called even on invalid input, so verify before proceeding
+
+  searchBooks(title: string,
+              author: string,
+              publisher: string,
+              pubDate: string,
+              language: string,
+              format: string,
+              isbn10: string,
+              isbn13: string) {
+
+    console.log('Title: ' + title);
+  }
+
+  searchMovies(title: string,
+               director: string,
+               releaseDate: string,
+               language: string,
+               subtitles: string,
+               dubbed: string,
+               actors: string,
+               producers: string) {
+
+    console.log('Title: ' + title);
+  }
+
+  searchMagazines(title: string,
+                  publisher: string,
+                  pubDate: string,
+                  language: string,
+                  isbn10: string,
+                  isbn13: string) {
+
+    console.log('Title: ' + title);
+  }
+
+  searchMusics(title: string,
+               artist: string,
+               type: string,
+               releaseDate: string,
+               label: string,
+               asin: string) {
+
+    console.log('Title: ' + title);
   }
 }

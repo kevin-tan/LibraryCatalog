@@ -75,10 +75,13 @@
     <h2>
       <form action="">
         <label>To search in all categories, enter the item title</label><br>
-        <input type="text" size="30" name="keywordSearch" style="line-height: 50px; padding-bottom: 6px;" placeholder="Enter item title" #searchTitle searchTitle.value=''>
-        <button class="w3-bar-item w3-button" (click)="searchAllTitle(searchTitle.value)"><i class="fa fa-search"></i></button>
+        <input type="text" size="30" name="keywordSearch" style="line-height: 50px; padding-bottom: 6px;"
+               placeholder="Enter item title" #searchTitle searchTitle.value=''>
+        <button class="w3-bar-item w3-button" (click)="searchAllTitle(searchTitle.value)"><i class="fa fa-search"></i>
+        </button>
       </form>
-    </h2><br>
+    </h2>
+    <br>
     <h5>Reset filter</h5>
     <button class="w3-bar-item w3-button w3-xlarge" (click)="getAllCatalog()"><i class="fa fa-refresh"></i></button>
     <hr style="width:100%" class="w3-opacity">
@@ -87,22 +90,22 @@
   </header>
 
 
-
- <h2><i>Books</i></h2><hr>
+  <h2><i>Books</i></h2>
+  <hr>
   <div>
-    <form>
+    <form ngNativeValidate>
       <table width="60%">
         <tr>
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #title title.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_title mng_book_title.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Author</label>
             <div>
-              <textarea rows="1" cols="47" #author author.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_author mng_book_author.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -111,13 +114,13 @@
           <th>
             <label class="formLabel">Publisher</label>
             <div>
-              <textarea rows="1" cols="47" #publisher publisher.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_publisher mng_book_publisher.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Publish Date</label>
             <div>
-              <textarea rows="1" cols="47" #pubDate pubDate.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_pubDate mng_book_pubDate.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -126,13 +129,13 @@
           <th>
             <label class="formLabel">Language</label>
             <div>
-              <textarea rows="1" cols="47" #language language.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_language mng_book_language.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Format</label>
             <div>
-              <textarea rows="1" cols="47" #format format.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_format mng_book_format.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -140,68 +143,75 @@
         <tr>
           <th>
             <label class="formLabel">ISBN</label>
-            <div id="expandISBN">
-              <textarea rows="1" cols="47" #isbn10 isbn10.value=""></textarea>
+            <div>
+              <textarea rows="1" cols="47" #mng_book_isbn10 mng_book_isbn10.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">ISBN13</label>
             <div>
-              <textarea rows="1" cols="47" #isbn13 isbn13.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_book_isbn13 mng_book_isbn13.value="" required></textarea>
             </div>
           </th>
         </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round"
+                    (click)="searchBooks(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value)">
+              <b>Add Book</b>
+            </button>
+          </td>
+        </tr>
       </table>
-      <button class="w3-bar-item w3-button" (click)="searchBooks(title.value, author.value, publisher.value, pubDate.value, language.value, format.value, isbn10.value, isbn13.value)">
-        Search <i class="fa fa-search"></i>
-      </button>
     </form>
   </div>
 
+  <br>
   <table mat-table #bookSort="matSort" [dataSource]="matBookList" matSort class="mat-elevation-z8" width="100%">
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
     </ng-container>
 
     <ng-container matColumnDef="author">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
-      <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Author</th>
+      <td mat-cell *matCellDef="let element"> {{element.author}}</td>
     </ng-container>
 
     <ng-container matColumnDef="pages">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Pages </th>
-      <td mat-cell *matCellDef="let element"> {{element.pages}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Pages</th>
+      <td mat-cell *matCellDef="let element"> {{element.pages}}</td>
     </ng-container>
 
     <ng-container matColumnDef="format">
-      <th mat-header-cell *matHeaderCellDef> Format </th>
-      <td mat-cell *matCellDef="let element"> {{element.format}} </td>
+      <th mat-header-cell *matHeaderCellDef> Format</th>
+      <td mat-cell *matCellDef="let element"> {{element.format}}</td>
     </ng-container>
 
     <ng-container matColumnDef="publisher">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publisher </th>
-      <td mat-cell *matCellDef="let element"> {{element.publisher}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publisher</th>
+      <td mat-cell *matCellDef="let element"> {{element.publisher}}</td>
     </ng-container>
 
     <ng-container matColumnDef="isbn10">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-10 </th>
-      <td mat-cell *matCellDef="let element"> {{element.isbn10}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-10</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn10}}</td>
     </ng-container>
 
     <ng-container matColumnDef="isbn13">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-13 </th>
-      <td mat-cell *matCellDef="let element"> {{element.isbn13}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-13</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn13}}</td>
     </ng-container>
 
     <ng-container matColumnDef="pubDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publish Date </th>
-      <td mat-cell *matCellDef="let element"> {{element.pubDate}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publish Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.pubDate}}</td>
     </ng-container>
 
     <ng-container matColumnDef="language">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language </th>
-      <td mat-cell *matCellDef="let element"> {{element.language}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language</th>
+      <td mat-cell *matCellDef="let element"> {{element.language}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayBookColumns"></tr>
@@ -210,21 +220,22 @@
   <br>
 
 
-  <h2><i>Movies</i></h2><hr>
+  <h2><i>Movies</i></h2>
+  <hr>
   <div>
-    <form>
+    <form ngNativeValidate>
       <table width="65%">
         <tr>
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #title title.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_title mng_movie_title.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Director</label>
             <div>
-              <textarea rows="1" cols="47" #director director.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_director mng_movie_director.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -233,13 +244,13 @@
           <th>
             <label class="formLabel">Release Date</label>
             <div>
-              <textarea rows="1" cols="47" #releaseDate releaseDate.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_releaseDate mng_movie_releaseDate.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Language</label>
             <div>
-              <textarea rows="1" cols="47" #language language.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_language mng_movie_language.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -248,77 +259,83 @@
           <th>
             <label class="formLabel">Subtitle Language</label>
             <div>
-              <textarea rows="1" cols="47" #subtitles subtitles.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_subtitles mng_movie_subtitles.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Dubbed Language</label>
             <div>
-              <textarea rows="1" cols="47" #dubbed dubbed.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_dubbed mng_movie_dubbed.value="" required></textarea>
             </div>
           </th>
         </tr>
-
         <tr>
           <th>
             <label class="formLabel">Actor</label>
             <div>
-              <textarea rows="1" cols="47" #actors actors.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_actors mng_movie_actors.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Producer</label>
             <div>
-              <textarea rows="1" cols="47" #producers producers.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_movie_producers mng_movie_producers.value="" required></textarea>
             </div>
           </th>
         </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round"
+                    (click)="searchMovies(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value)">
+              <b>Add Movie</b>
+            </button>
+          </td>
+        </tr>
       </table>
-      <button class="w3-bar-item w3-button" (click)="searchMovies(title.value, director.value, releaseDate.value, language.value, subtitles.value, dubbed.value, actors.value, producers.value)">
-        Search <i class="fa fa-search"></i>
-      </button>
     </form>
   </div>
+  <br>
 
   <table mat-table #movieSort="matSort" [dataSource]="matMovieList" matSort class="mat-elevation-z8" width="100%">
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
     </ng-container>
 
     <ng-container matColumnDef="language">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language </th>
-      <td mat-cell *matCellDef="let element"> {{element.language}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language</th>
+      <td mat-cell *matCellDef="let element"> {{element.language}}</td>
     </ng-container>
 
     <ng-container matColumnDef="producers">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Producers </th>
-      <td mat-cell *matCellDef="let element"> {{element.producers}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Producers</th>
+      <td mat-cell *matCellDef="let element"> {{element.producers}}</td>
     </ng-container>
 
     <ng-container matColumnDef="actors">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Actors </th>
-      <td mat-cell *matCellDef="let element"> {{element.actors}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Actors</th>
+      <td mat-cell *matCellDef="let element"> {{element.actors}}</td>
     </ng-container>
 
     <ng-container matColumnDef="dubbed">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Dubbed </th>
-      <td mat-cell *matCellDef="let element"> {{element.dubbed}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Dubbed</th>
+      <td mat-cell *matCellDef="let element"> {{element.dubbed}}</td>
     </ng-container>
 
     <ng-container matColumnDef="subtitles">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subtitles </th>
-      <td mat-cell *matCellDef="let element"> {{element.subtitles}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subtitles</th>
+      <td mat-cell *matCellDef="let element"> {{element.subtitles}}</td>
     </ng-container>
 
     <ng-container matColumnDef="releaseDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date </th>
-      <td mat-cell *matCellDef="let element"> {{element.releaseDate}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.releaseDate}}</td>
     </ng-container>
 
     <ng-container matColumnDef="runTime">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Time </th>
-      <td mat-cell *matCellDef="let element"> {{element.runTime}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Time</th>
+      <td mat-cell *matCellDef="let element"> {{element.runTime}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayMovieColumns"></tr>
@@ -326,21 +343,22 @@
   </table>
   <br>
 
-  <h2><i>Magazine</i></h2><hr>
+  <h2><i>Magazine</i></h2>
+  <hr>
   <div>
-    <form>
+    <form ngNativeValidate>
       <table width="60%">
         <tr>
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #title title.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_title mng_magazine_title.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Language</label>
             <div>
-              <textarea rows="1" cols="47" #language language.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_language mng_magazine_language.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -349,13 +367,13 @@
           <th>
             <label class="formLabel">Publisher</label>
             <div>
-              <textarea rows="1" cols="47" #publisher publisher.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_publisher mng_magazine_publisher.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Publish Date</label>
             <div>
-              <textarea rows="1" cols="47" #pubDate pubDate.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_pubDate mng_magazine_pubDate.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -364,52 +382,59 @@
           <th>
             <label class="formLabel">ISBN</label>
             <div>
-              <textarea rows="1" cols="47" #isbn10 isbn10.value></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_isbn10 mng_magazine_isbn10.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">ISBN13</label>
             <div>
-              <textarea rows="1" cols="47" #isbn13 isbn13.value></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_isbn13 mng_magazine_isbn13.value="" required></textarea>
             </div>
           </th>
         </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round"
+                    (click)="searchMagazines(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value)">
+              <b>Add Magazine</b>
+            </button>
+          </td>
+        </tr>
       </table>
-      <button class="w3-bar-item w3-button" (click)="searchMagazines(title.value, publisher.value, pubDate.value, language.value, isbn10.value, isbn13.value)">
-        Search <i class="fa fa-search"></i>
-      </button>
     </form>
   </div>
+  <br>
 
   <table mat-table #magazineSort="matSort" [dataSource]="matMagazineList" matSort class="mat-elevation-z8" width="100%">
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
     </ng-container>
 
     <ng-container matColumnDef="publisher">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publisher </th>
-      <td mat-cell *matCellDef="let element"> {{element.publisher}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publisher</th>
+      <td mat-cell *matCellDef="let element"> {{element.publisher}}</td>
     </ng-container>
 
     <ng-container matColumnDef="pubDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publish Date </th>
-      <td mat-cell *matCellDef="let element"> {{element.pubDate}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publish Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.pubDate}}</td>
     </ng-container>
 
     <ng-container matColumnDef="language">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language </th>
-      <td mat-cell *matCellDef="let element"> {{element.language}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language</th>
+      <td mat-cell *matCellDef="let element"> {{element.language}}</td>
     </ng-container>
 
     <ng-container matColumnDef="isbn10">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-10 </th>
-      <td mat-cell *matCellDef="let element"> {{element.isbn10}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-10</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn10}}</td>
     </ng-container>
 
     <ng-container matColumnDef="isbn13">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-13 </th>
-      <td mat-cell *matCellDef="let element"> {{element.isbn13}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-13</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn13}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayMagazineColumns"></tr>
@@ -417,21 +442,22 @@
   </table>
   <br>
 
-  <h2><i>Music</i></h2><hr>
+  <h2><i>Music</i></h2>
+  <hr>
   <div>
-    <form>
+    <form ngNativeValidate>
       <table width="60%">
         <tr>
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #title title.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_music_title mng_music_title.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Artist</label>
             <div>
-              <textarea rows="1" cols="47" #artist artist.value=""></textarea>
+              <textarea rows="1" cols="47" #mng_music_artist mng_music_artist.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -440,13 +466,13 @@
           <th>
             <label class="formLabel">Release Date</label>
             <div>
-              <textarea rows="1" cols="47" #releaseDate releaseDate.value></textarea>
+              <textarea rows="1" cols="47" #mng_music_releaseDate mng_music_releaseDate.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Type</label>
             <div>
-              <textarea rows="1" cols="47" #type type.value></textarea>
+              <textarea rows="1" cols="47" #mng_music_type mng_music_type.value="" required></textarea>
             </div>
           </th>
         </tr>
@@ -455,57 +481,59 @@
           <th>
             <label class="formLabel">Label</label>
             <div>
-              <textarea rows="1" cols="47" #label label.value></textarea>
+              <textarea rows="1" cols="47" #mng_music_label mng_music_label.value="" required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">ASIN</label>
             <div>
-              <textarea rows="1" cols="47" #asin asin.value></textarea>
+              <textarea rows="1" cols="47" #mng_music_asin mng_music_asin.value="" required></textarea>
             </div>
           </th>
         </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round"
+                    (click)="searchMusics(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value)">
+              <b>Add Music</b>
+            </button>
+          </td>
+        </tr>
       </table>
-      <button class="w3-bar-item w3-button" (click)="searchMusics(title.value, artist.value, type.value, releaseDate.value, label.value, asin.value)">Search <i class="fa fa-search"></i></button>
     </form>
   </div>
-
-
-
-
-
-
-
+  <br>
 
   <table mat-table #musicSort="matSort" [dataSource]="matMusicList" matSort class="mat-elevation-z8" width="100%">
     <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
     </ng-container>
 
     <ng-container matColumnDef="artist">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist </th>
-      <td mat-cell *matCellDef="let element"> {{element.artist}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist</th>
+      <td mat-cell *matCellDef="let element"> {{element.artist}}</td>
     </ng-container>
 
     <ng-container matColumnDef="label">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Label </th>
-      <td mat-cell *matCellDef="let element"> {{element.label}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Label</th>
+      <td mat-cell *matCellDef="let element"> {{element.label}}</td>
     </ng-container>
 
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
-      <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Type</th>
+      <td mat-cell *matCellDef="let element"> {{element.type}}</td>
     </ng-container>
 
     <ng-container matColumnDef="asin">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> ASIN </th>
-      <td mat-cell *matCellDef="let element"> {{element.asin}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ASIN</th>
+      <td mat-cell *matCellDef="let element"> {{element.asin}}</td>
     </ng-container>
 
     <ng-container matColumnDef="releaseDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date </th>
-      <td mat-cell *matCellDef="let element"> {{element.releaseDate}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.releaseDate}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayMusicColumns"></tr>
