@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../catalog/dto/book';
 import {HomeRedirectService} from "../home/home-redirect.service";
+import {MatSort, MatTableDataSource} from '@angular/material';
 
 @Component({
   selector: 'app-catalog',
@@ -10,9 +11,12 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 })
 export class bookSearchComponent implements OnInit {
 
-  bookList: Array<Book> = [];
+  displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
+  matBookList: MatTableDataSource<Book>;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+
+  @ViewChild('bookSort') bookSort: MatSort;
 
   ngOnInit() {
     this.getAllBooks();
@@ -31,7 +35,8 @@ export class bookSearchComponent implements OnInit {
 
   getAllBooks(): void {
     this.http.get<Array<Book>>('http://localhost:8080/user/catalog/getAll/book', {withCredentials: true}).subscribe(response => {
-      this.bookList = response;
+      this.matBookList = new MatTableDataSource(response);
+      this.matBookList.sort = this.bookSort;
     }, error => {
       console.log(error);
     });
@@ -59,7 +64,8 @@ export class bookSearchComponent implements OnInit {
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Book>>('http://localhost:8080/user/catalog/search/book', body, options).subscribe(response => {
-      this.bookList = response;
+      this.matBookList = new MatTableDataSource(response);
+      this.matBookList.sort = this.bookSort;
     }, error => {
       console.log(error);
     });

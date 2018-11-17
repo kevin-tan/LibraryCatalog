@@ -14,6 +14,9 @@ import {movieSearchComponent} from "./movieSearch/movieSearch.component";
 import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
 import {activeUsersComponent} from "./activeUsers/activeUsers.component";
 import {HomeRedirectService} from "./home/home-redirect.service";
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,10 @@ import {HomeRedirectService} from "./home/home-redirect.service";
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatTableModule,
+    MatSortModule,
+    BrowserAnimationsModule
   ],
   providers: [LoginRedirectService, HomeRedirectService],
   bootstrap: [AppComponent]

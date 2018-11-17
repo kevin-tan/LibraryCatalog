@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Magazine} from "../catalog/dto/Magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
+import {MatSort, MatTableDataSource} from '@angular/material';
 
 @Component({
   selector: 'app-catalog',
@@ -10,7 +11,10 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 })
 export class magazineSearchComponent implements OnInit {
 
-  magazineList: Array<Magazine> = [];
+  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13'];
+  matMagazineList: MatTableDataSource<Magazine>;
+
+  @ViewChild('magazineSort') magazineSort: MatSort;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
   }
@@ -32,7 +36,8 @@ export class magazineSearchComponent implements OnInit {
 
   getAllMagazines(): void {
     this.http.get<Array<Magazine>>('http://localhost:8080/user/catalog/getAll/magazine', {withCredentials: true}).subscribe(response => {
-      this.magazineList = response;
+      this.matMagazineList = new MatTableDataSource(response);
+      this.matMagazineList.sort = this.magazineSort;
     }, error => {
       console.log(error);
     });
@@ -57,7 +62,8 @@ export class magazineSearchComponent implements OnInit {
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Magazine>>('http://localhost:8080/user/catalog/search/magazine', body, options).subscribe(response => {
-      this.magazineList = response;
+      this.matMagazineList = new MatTableDataSource(response);
+      this.matMagazineList.sort = this.magazineSort;
     }, error => {
       console.log(error);
     });

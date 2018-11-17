@@ -2,13 +2,18 @@ package com.soen343.project.repository.entity.transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.user.Client;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -18,24 +23,33 @@ public class LoanTransaction extends Transaction {
 
     private LocalDateTime dueDate;
 
+    @JsonIgnore
+    private static final Map<String, Integer> DAYS_UNTIL_DUE;
+    static {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(Book.class.getSimpleName(), Book.DAYS_UNTIL_DUE);
+        map.put(Movie.class.getSimpleName(), Movie.DAYS_UNTIL_DUE);
+        map.put(Music.class.getSimpleName(), Music.DAYS_UNTIL_DUE);
+        DAYS_UNTIL_DUE = Collections.unmodifiableMap(map);
+    }
+
     @Builder
     public LoanTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate, LocalDateTime dueDate) {
         super(id, loanableItem, client, transactionDate);
         this.dueDate = dueDate;
     }
 
-    public LoanTransaction(LoanableItem loanableItem, LocalDateTime transactionDate,LocalDateTime dueDate) {
-        super(0L, loanableItem, loanableItem.getClient(), transactionDate);
-        this.dueDate = dueDate;
+    public LoanTransaction(LoanableItem loanableItem, Client client) {
+        super(loanableItem, client);
+        this.loanableItem.setAvailable(false);
+        this.dueDate = this.transactionDate.plusDays(DAYS_UNTIL_DUE.get(loanableItem.getType()));
     }
 
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
         String columnValues = super.sqlUpdateValues() + (DUEDATE + " = '" + dueDate + "'");
-
         return columnValues;
-
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.util.Objects;
 public abstract class PrintedItem extends ItemSpecification {
 
     @JsonIgnore
-    public final static int MAX_LOAN_DAYS = 7;
+    public final static int DAYS_UNTIL_DUE = 7;
 
     private String publisher;
     private String pubDate;
