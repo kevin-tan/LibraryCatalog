@@ -10,6 +10,7 @@ import {musicSearchComponent} from "./musicSearch/musicSearch.component";
 import {bookSearchComponent} from "./bookSearch/bookSearch.component";
 import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
 import {activeUsersComponent} from "./activeUsers/activeUsers.component";
+import {ManageCatalogComponent} from './manageCatalog/manage.catalog.component';
 
 
 const routes: Routes = [
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path:'search/movie', component: movieSearchComponent},
   { path:'search/music', component: musicSearchComponent},
   { path:'search/book', component: bookSearchComponent},
-  { path:'activeUsers', component: activeUsersComponent}
+  { path:'activeUsers', component: activeUsersComponent},
+  { path:'manageCatalog', component: ManageCatalogComponent}
 ];
 
 @NgModule({

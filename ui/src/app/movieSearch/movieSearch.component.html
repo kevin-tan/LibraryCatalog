@@ -40,7 +40,12 @@
       <i class="fa fa-users w3-xxlarge"></i>
       <p>ACTIVEUSERS</p>
     </a>
-    <a href="/catalog" [routerLink]="" (click)="logout()" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/manageCatalog" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-bars w3-xxlarge"></i>
+      <p>MANAGE CATALOG</p>
+    </a>
+
+    <a [routerLink]="" (click)="logout()" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-sign-out-alt w3-xxlarge"></i>
       <p>LOGOUT</p>
     </a>
@@ -57,10 +62,10 @@
     <a href="/search/music" class="w3-bar-item w3-button" style="width:25% !important">MUSIC</a>
     <a href="/search/movie" class="w3-bar-item w3-button" style="width:25% !important">MOVIE</a>
     <a href="/activeUsers" class="w3-bar-item w3-button" style="width:25% !important">ACTIVEUSERS</a>
-    <a href="/catalog" class="w3-bar-item w3-button" style="width:25% !important">LOGOUT</a>
+    <a href="/manageCatalog" class="w3-bar-item w3-button" style="width:25% !important">MANAGE CATALOG</a>
+    <a [routerLink]="" (click)="logout()" class="w3-bar-item w3-button" style="width:25% !important">Logout</a>
   </div>
 </div>
-
 
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
