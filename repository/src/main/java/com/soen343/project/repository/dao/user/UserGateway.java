@@ -50,7 +50,7 @@ public class UserGateway implements Gateway<User> {
         UnitOfWork uow = new UnitOfWork();
         for (User entity : entities) {
             uow.registerOperation(
-                    statement -> executeUpdate(QueryBuilder.createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue())));
+                    statement -> statement.executeUpdate(QueryBuilder.createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue())));
         }
         scheduler.writer_p();
         uow.commit();
