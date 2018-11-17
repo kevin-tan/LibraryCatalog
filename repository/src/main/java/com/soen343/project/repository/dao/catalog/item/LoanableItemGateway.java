@@ -158,5 +158,14 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         });
         scheduler.writer_v();
     }
+
+    // TODO: for return
+    public List<?> findByUserIdAndIsLoaned(Long userId){
+        boolean avail = false; // TODO : remove
+        scheduler.reader_p();
+        List list = null;
+        scheduler.reader_v();
+        return list;
+    }
 }
 

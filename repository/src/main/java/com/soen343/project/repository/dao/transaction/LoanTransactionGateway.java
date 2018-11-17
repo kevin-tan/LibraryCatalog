@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
+import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.dao.transaction.com.DateConverter.convertToDate;
@@ -36,10 +37,28 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         this.scheduler = scheduler;
     }
 
+
+
     @Override
     public void save(LoanTransaction entity) {
         scheduler.writer_p();
-        executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
+        executeBatchUpdate(statement -> {
+            // TODO: Modify save and saveAll:
+            // Check if loanable item is available (search through all of the items until there is none left)
+            // Then update loanable if available and mark it loaned and then create a transaction,
+            // If not available return null so that you know it was unsuccessful
+
+            // Checking loanable items
+            // TODO
+
+            // if (){
+            // Update loanable item if available
+            // TODO
+
+            // If found create loan transaction
+            statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
+            // }
+        });
         scheduler.writer_v();
     }
 
@@ -47,7 +66,24 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     public void saveAll(LoanTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (LoanTransaction transaction : entities) {
-            uow.registerOperation(statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+            uow.registerOperation(
+                    statement -> {
+                        // TODO: Modify save and saveAll:
+                        // Check if loanable item is available (search through all of the items until there is none left)
+                        // Then update loanable if available and mark it loaned and then create a transaction,
+                        // If not available return null so that you know it was unsuccessful
+
+                        // Checking loanable items
+                        // TODO
+
+                        // if (){
+                        // Update loanable item if available
+                        // TODO
+
+                        // If found create loan transaction
+                        statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
+                        // }
+                    });
         }
         scheduler.writer_p();
         uow.commit();
@@ -150,6 +186,14 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     public List<?> findByDueDate(String dueDate) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, DUEDATE, dueDate), findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
+
+    //TODO: fill query
+    public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate){
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple("", findAllTransaction());
         scheduler.reader_v();
         return list;
     }
