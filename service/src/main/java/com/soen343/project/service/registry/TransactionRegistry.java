@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
+import com.soen343.project.repository.entity.transaction.LoanTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,10 @@ public class TransactionRegistry {
 
     public Map<String, List<?>> getAllTransactions() {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findAll(), RETURN_TRANSACTION, returnTransactionGateway.findAll());
+    }
+
+    public void addTransactions(List<LoanTransaction> loanTransactions) {
+        loanTransactionGateway.saveAll(loanTransactions);
     }
 
     public List<?> searchLoanTransactions() {

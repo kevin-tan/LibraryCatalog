@@ -54,6 +54,16 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         scheduler.writer_v();
     }
 
+    public void saveAll(List<LoanTransaction> loanTransactions) {
+        UnitOfWork uow = new UnitOfWork();
+        for (LoanTransaction transaction : loanTransactions) {
+            uow.registerOperation(statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+        }
+        scheduler.writer_p();
+        uow.commit();
+        scheduler.writer_v();
+    }
+
     @Override
     public void delete(LoanTransaction entity) {
         scheduler.writer_p();

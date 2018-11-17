@@ -1,5 +1,6 @@
 package com.soen343.project.repository.entity.catalog.itemspec.printed.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
@@ -13,6 +14,9 @@ import java.util.Objects;
 @JsonSubTypes({@JsonSubTypes.Type(value = Book.class, name = "Book"), @JsonSubTypes.Type(value = Magazine.class, name = "Magazine")})
 @NoArgsConstructor
 public abstract class PrintedItem extends ItemSpecification {
+
+    @JsonIgnore
+    public final static int MAX_LOAN_DAYS = 7;
 
     private String publisher;
     private String pubDate;
