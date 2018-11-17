@@ -9,9 +9,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 Textarea{
   float: right;
 }
-td{
-  width: 200px;
-}
+
 input {
   display: none;
   visibility: hidden;

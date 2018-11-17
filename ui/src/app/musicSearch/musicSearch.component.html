@@ -130,16 +130,40 @@
   </div>
 
     <div>
-      <table>
-        <tr><h4><i>Music</i></h4><hr></tr>
-        <td *ngFor="let music of musicList">
-          {{music.title}}<br/>
-          {{music.artist}}<br/>
-          {{music.label}}<br/>
-          {{music.type}}<br/>
-          {{music.asin}}<br/>
-          {{music.releaseDate}}<br/>
-        </td>
+      <h2><i>Music</i></h2><hr>
+      <table mat-table #musicSort="matSort" [dataSource]="matMusicList" matSort class="mat-elevation-z8" width="100%">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+          <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="artist">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist </th>
+          <td mat-cell *matCellDef="let element"> {{element.artist}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="label">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Label </th>
+          <td mat-cell *matCellDef="let element"> {{element.label}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="asin">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ASIN </th>
+          <td mat-cell *matCellDef="let element"> {{element.asin}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="releaseDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.releaseDate}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayMusicColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayMusicColumns;"></tr>
       </table>
     </div>
 
