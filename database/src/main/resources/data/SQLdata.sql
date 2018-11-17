@@ -1,6 +1,10 @@
 
 INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Alex', 'Baker', '7582 Rue Concordia', 'AlexBaker@hotmail.com', '514-895-9852', 'Admin', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
-INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Client', 'Client', '7582 Rue Concordia', 'Client@hotmail.com', '514-895-9851', 'Client', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
+INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Client0', 'Client', '7582 Rue Concordia', 'Client0@hotmail.com', '514-895-9851', 'Client', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
+INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Client1', 'Client', '7582 Rue Concordia', 'Client1@hotmail.com', '514-895-9853', 'Client', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
+INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Client2', 'Client', '7582 Rue Concordia', 'Client2@hotmail.com', '514-895-9854', 'Client', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
+INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Client3', 'Client', '7582 Rue Concordia', 'Client3@hotmail.com', '514-895-9855', 'Client', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
+INSERT INTO User (firstName, lastName, physicalAddress, email, phoneNumber, userType, password) VALUES ('Client4', 'Client', '7582 Rue Concordia', 'Client4@hotmail.com', '514-895-9856', 'Client', '$2a$10$rnd357ZZp4s7r39sR1VlXuB5zeh/0CD8nP8qNZSEgD9P30PZphNN.');
 
 INSERT INTO Music (title, releaseDate, type, artist, label, asin) VALUES
 ('Numb', '2003-09-08', 'CD', 'Linkin Park', 'Warner Bros', 'B008F6D458'),
