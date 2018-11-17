@@ -1,5 +1,6 @@
 package com.soen343.project.repository.entity.catalog.itemspec.media.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -13,6 +14,9 @@ import java.util.Objects;
 @JsonSubTypes({@JsonSubTypes.Type(value = Movie.class, name = "Movie"), @JsonSubTypes.Type(value = Music.class, name = "Music")})
 @NoArgsConstructor
 public abstract class MediaItem extends ItemSpecification {
+
+    @JsonIgnore
+    public final static int MAX_LOAN_DAYS = 2;
 
     //In the form 'Oct 20 2009'
     private String releaseDate;

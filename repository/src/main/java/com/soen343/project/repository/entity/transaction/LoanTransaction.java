@@ -24,9 +24,9 @@ public class LoanTransaction extends Transaction {
         this.dueDate = dueDate;
     }
 
-    public LoanTransaction(Long id, LoanableItem loanableItem, Client client) {
-        super(id, loanableItem, client, LocalDateTime.now());
-
+    public LoanTransaction(LoanableItem loanableItem, LocalDateTime transactionDate,LocalDateTime dueDate) {
+        super(0L, loanableItem, loanableItem.getClient(), transactionDate);
+        this.dueDate = dueDate;
     }
 
     @Override

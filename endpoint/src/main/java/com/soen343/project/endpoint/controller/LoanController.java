@@ -44,7 +44,7 @@ public class LoanController {
 
     @PostMapping("/{clientId}/loan")
     public ResponseEntity<?> loanItems(@PathVariable Long clientId) {
-        return new ResponseEntity<>(clientHandler.loanItems(clientId), HttpStatus.OK);
+        return clientHandler.loanItems(clientId);
     }
 
     @PostMapping("/{clientId}/return")
