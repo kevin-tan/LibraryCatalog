@@ -16,7 +16,7 @@ import java.util.Objects;
 public abstract class MediaItem extends ItemSpecification {
 
     @JsonIgnore
-    public final static int MAX_LOAN_DAYS = 2;
+    public final static int DAYS_UNTIL_DUE = 2;
 
     //In the form 'Oct 20 2009'
     private String releaseDate;

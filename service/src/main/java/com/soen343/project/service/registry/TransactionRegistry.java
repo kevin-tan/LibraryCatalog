@@ -3,9 +3,12 @@ package com.soen343.project.service.registry;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.transaction.LoanTransaction;
+import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +40,22 @@ public class TransactionRegistry {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findAll(), RETURN_TRANSACTION, returnTransactionGateway.findAll());
     }
 
+    /*TODO: CURRENTLY DON'T LOOK AT ITEM IS ALREADY LOANED CASE. MAYBE START WITH GET THAT CHECKS THAT QUERY FOR ALL CART WITH AVAILABLE RESTRICTED (OR CLIENT NULL). IF ONE OWNED SEND BACK FALSE, OR OWNED ITEMS.
+            THIS CAN BE DONE BY CHECKING QUERY SIZE. EX QUERY WHERE AVAILABLE = FALSE GIVES 0 IF ALL ITEMS ARE UNOWNED.
+     */
     public void addTransactions(List<LoanTransaction> loanTransactions) {
-        loanTransactionGateway.saveAll(loanTransactions);
+        UnitOfWork updateLoanablesAndAddTransactions = new UnitOfWork();
+        for (LoanTransaction loanTransaction : loanTransactions) {
+            LoanableItem itemToBeLoaned = loanTransaction.getLoanableItem();
+
+            updateLoanablesAndAddTransactions.registerOperation(statement ->
+                    statement.executeUpdate(QueryBuilder.createUpdateQuery(itemToBeLoaned.getTable(), itemToBeLoaned.sqlUpdateValues(), itemToBeLoaned.getId())));
+
+            updateLoanablesAndAddTransactions.registerOperation(statement ->
+                    statement.executeUpdate(QueryBuilder.createSaveQuery(loanTransaction.getTable(), loanTransaction.toSQLValue())));
+        }
+        updateLoanablesAndAddTransactions.commit(); // TODO: UNSURE WHETHER UOW SHOULD BE DONE HERE OR IN GATEWAY
+                                                    // TODO: ASK ABOUT USING WRAPPERS TO REDUCE SIZE OF UOW OPERATIONS
     }
 
     public List<?> searchLoanTransactions() {

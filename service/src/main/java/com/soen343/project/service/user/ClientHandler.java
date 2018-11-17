@@ -24,7 +24,7 @@ public class ClientHandler {
     private TransactionService transactionService;
     private User client;
 
-    private final long MAX_NUMBER_OF_ITEMS = 3;
+    private final long MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN = 3;
 
     @Autowired
     public ClientHandler(CartHandler cartHandler, UserGateway userGateway, LoanableItemGateway loanableItemGateway, TransactionService transactionService) {
@@ -38,7 +38,7 @@ public class ClientHandler {
         return cartHandler.clear(clientId);
     }
 
-    // TO DO
+    // TODO: COMPLETE TO CONSIDER ALREADY LOANED ITEMS
     public ResponseEntity<?> loanItems(Long clientId) {
         setClient(clientId);
         List<LoanableItem> loanables = cartHandler.getLoanables(clientId);
@@ -47,21 +47,19 @@ public class ClientHandler {
                 .filter(lItem -> lItem.getClient().getId().equals(clientId))
                 .count();
 
-        if (numberOfOwnedItems + loanables.size() >= MAX_NUMBER_OF_ITEMS) {
+        if (numberOfOwnedItems + loanables.size() >= MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        transactionService.createLoanTransactions(client,loanables);
+        transactionService.createLoanTransactions(client,loanables); // TODO: SHOULD GET A LIST OF ALREADY LOANED ITEMS ON FAILURE, THE SECOND ERROR CASE
         cartHandler.clear(clientId);
-
-
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // TO DO
+    // TODO: IMPLEMENT
     public Transaction returnItems(Long clientId, List<LoanableItem> loanableItems) {
         setClient(clientId);
+        transactionService.createReturnTransactions(client,loanableItems);
         return null;
     }
 
