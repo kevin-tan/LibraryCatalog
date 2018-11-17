@@ -33,6 +33,7 @@ export class ManageCatalogComponent implements OnInit {
   @ViewChild('musicSort') musicSort: MatSort;
 
   ngOnInit() {
+    this.startSession();
     //Gets all itemSpecs at beginning
     this.getAllCatalog();
   }
@@ -80,5 +81,11 @@ export class ManageCatalogComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  startSession() {
+    this.http.post<string>('http://localhost:8080/admin/catalog/edit', null, {withCredentials: true}).subscribe(response => {
+      sessionStorage.setItem("sessionId", response['sessionId']);
+    })
   }
 }

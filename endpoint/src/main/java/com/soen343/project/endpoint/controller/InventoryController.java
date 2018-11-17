@@ -1,5 +1,6 @@
 package com.soen343.project.endpoint.controller;
 
+import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.service.catalog.Catalog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class InventoryController {
 
     @PostMapping("/catalog/edit")
     public ResponseEntity<?> editCatalog(){
-        return new ResponseEntity<>(catalog.createNewSession(), HttpStatus.OK);
+        return new ResponseEntity<>(ImmutableMap.of("sessionId", catalog.createNewSession()), HttpStatus.OK);
     }
 
     @PostMapping("/catalog/{sessionID}/add")
