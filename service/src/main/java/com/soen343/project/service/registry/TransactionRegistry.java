@@ -7,6 +7,7 @@ import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.transaction.LoanTransaction;
+import com.soen343.project.repository.entity.transaction.ReturnTransaction;
 import com.soen343.project.repository.entity.user.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,6 @@ public class TransactionRegistry {
         List<?> allTransactions = loanTransactionGateway.findByUserIdAndTransactionDate(client.getId(), transactionDateFormatted);
 
         // Check between loanables vs. all successful transactions
-        //TODO:Done
         for(LoanTransaction t: transactions){
             if(!allTransactions.contains(t)){
                 failedItems.add(t.getLoanableItem());
@@ -73,9 +73,12 @@ public class TransactionRegistry {
         }
     }
 
-    //TODO
     public ResponseEntity<?> addReturnTransactions(Client client, List<LoanableItem> loanables){
-        return null;
+        LocalDateTime transactionDate = LocalDateTime.now();
+        List<ReturnTransaction> transactions = new LinkedList<>();
+        loanables.forEach(loanableItem -> transactions.add(new ReturnTransaction(loanableItem, client, transactionDate)));
+        returnTransactionGateway.saveAll(transactions.toArray(new ReturnTransaction[]{}));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public List<?> searchLoanTransactions() {

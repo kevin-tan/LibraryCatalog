@@ -1,10 +1,14 @@
 package com.soen343.project.repository.dao.catalog.item;
 
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.transaction.com.TransactionOperations;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.transaction.LoanTransaction;
+import com.soen343.project.repository.entity.transaction.Transaction;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import java.util.Map;
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
+import static com.soen343.project.repository.dao.transaction.com.DateConverter.convertToDate;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
@@ -160,19 +165,53 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         scheduler.writer_v();
     }
 
-    // TODO: for return
     public List<?> findByUserIdAndIsLoaned(Long userId){
-        boolean avail = false; // TODO : remove; it's only to check
         scheduler.reader_p();
-       /* Map<String, String> userAndDates = new HashMap<>();
-        userAndDates.put(USERID, userId.toString());
-        userAndDates.put(AVAILABLE, avail);
-        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE, userAndDates), findAllTransaction());
-        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANABLEITEM_TABLE, userAndDates), findAllTransaction());
-        */
-        List list = null;
+        Map<String, String> userIdAndLoaned = new HashMap<>();
+        userIdAndLoaned.put(USERID, userId.toString());
+        userIdAndLoaned.put(AVAILABLE, "0");
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANABLEITEM_TABLE, userIdAndLoaned), findAllTransaction());
         scheduler.reader_v();
         return list;
+    }
+
+    public DatabaseQueryOperation findAllTransaction() {
+        return (rs, statement) -> {
+            List<LoanableItem> loanableItems = new ArrayList<>();
+
+            while (rs.next()) {
+                Client client = (rs.getLong(USERID) == 0) ? null : new Client(rs.getLong(USERID));
+                loanableItems.add(new LoanableItem(rs.getLong(ID), null, Boolean.valueOf(rs.getString(AVAILABLE)), client));
+            }
+
+            for (LoanableItem loanableItem : loanableItems) {
+                Long itemSpecId = null;
+                String itemSpecType = null;
+
+                ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItem.getId()));
+                while (itemRS.next()) {
+                    itemSpecId = itemRS.getLong(ITEMSPECID);
+                    itemSpecType = itemRS.getString(TYPE);
+                }
+
+                ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
+                while (itemSpecRS.next()) {
+                    loanableItem.setSpec(getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId));
+                }
+
+                if (loanableItem.getClient() != null) {
+                    ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient().getId()));
+                    while (clientRS.next()) {
+                        loanableItem.setClient(
+                                new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
+                                        clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL), clientRS.getString(PHONE_NUMBER),
+                                        clientRS.getString(PASSWORD)));
+
+                    }
+                }
+            }
+            return loanableItems;
+        };
     }
 }
 

@@ -20,6 +20,9 @@ public class ReturnTransaction extends Transaction {
     public ReturnTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         super(id, loanableItem, client, transactionDate);
     }
+    public ReturnTransaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
+        super(loanableItem, client, transactionDate);
+    }
 
     @Override
     @JsonIgnore

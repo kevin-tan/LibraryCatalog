@@ -39,7 +39,6 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     public void save(ReturnTransaction entity) {
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
-
             entity.getLoanableItem().setAvailable(true);
             statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         });
@@ -50,7 +49,6 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     public void saveAll(ReturnTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (ReturnTransaction transaction : entities) {
-
             uow.registerOperation(
                     statement -> {
                         transaction.getLoanableItem().setAvailable(true);

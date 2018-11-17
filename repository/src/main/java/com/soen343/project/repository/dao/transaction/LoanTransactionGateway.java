@@ -35,7 +35,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     private final Scheduler scheduler;
 
     @Autowired
-    public LoanTransactionGateway(Scheduler scheduler, LoanableItemGateway loanableItemGateway) {
+    public LoanTransactionGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -45,14 +45,15 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     public void save(LoanTransaction entity) {
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
-            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = "+ entity.getLoanableItem().getId() + " and Item.type  = " + entity.getLoanableItem().getType() + " and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
+            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + entity.getLoanableItem().getSpec().getId()
+                    + " and Item.type  = '" + entity.getLoanableItem().getType() + "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
             if(rs.next()) {
                 if (rs.getLong("id") != 0) {
                     entity.setId(rs.getLong("id"));
                     entity.getLoanableItem().setAvailable(false);
+                    statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
                 }
             }
-            statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         });
         scheduler.writer_v();
     }
@@ -61,17 +62,17 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     public void saveAll(LoanTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (LoanTransaction transaction : entities) {
-            uow.registerOperation(
-                    statement -> {
+            uow.registerOperation(statement -> {
                         ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = "+ transaction.getLoanableItem().getId() + " and Item.type  = " + transaction.getLoanableItem().getType() + " and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
                         statement.executeUpdate(createSaveQuery(transaction.getLoanableItem().getTableWithColumns(), transaction.getLoanableItem().toSQLValue()));
                         if(rs.next()) {
                             if (rs.getLong("id") != 0) {
                                 transaction.setId(rs.getLong("id"));
                                 transaction.getLoanableItem().setAvailable(false);
+                                statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
                             }
                         }
-                        statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
+
                     });
         }
         scheduler.writer_p();
@@ -179,7 +180,6 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         return list;
     }
 
-    //TODO: Done
     public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate){
         scheduler.reader_p();
         Map<String, String> userAndDates = new HashMap<>();
