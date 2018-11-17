@@ -149,24 +149,50 @@
   </div>
 
     <div>
-      <table>
-        <tr><h4><i>Movies</i></h4><hr></tr>
-        <td *ngFor="let movie of movieList">
-          {{movie.title}}<br/>
-          {{movie.language}}<br/>
-          <span *ngFor="let prod of movie.producers">
-          {{prod}}<br/>
-        </span>
-          <span *ngFor="let actor of movie.actors">
-          {{actor}}<br/>
-        </span>
-          <span *ngFor="let dub of movie.dubbed">
-          {{dub}}<br/>
-        </span>
-          {{movie.subtitles}}<br/>
-          {{movie.releaseDate}}<br/>
-          {{movie.runTime}}<br/>
-        </td>
+      <h2><i>Movies</i></h2><hr>
+      <table mat-table #movieSort="matSort" [dataSource]="matMovieList" matSort class="mat-elevation-z8" width="100%">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+          <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="language">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Language </th>
+          <td mat-cell *matCellDef="let element"> {{element.language}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="producers">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Producers </th>
+          <td mat-cell *matCellDef="let element"> {{element.producers}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actors">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Actors </th>
+          <td mat-cell *matCellDef="let element"> {{element.actors}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dubbed">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Dubbed </th>
+          <td mat-cell *matCellDef="let element"> {{element.dubbed}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="subtitles">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Subtitles </th>
+          <td mat-cell *matCellDef="let element"> {{element.subtitles}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="releaseDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.releaseDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="runTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Time </th>
+          <td mat-cell *matCellDef="let element"> {{element.runTime}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayMovieColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayMovieColumns;"></tr>
       </table>
     </div>
 

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Movie} from "../catalog/dto/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
+import {MatSort, MatTableDataSource} from '@angular/material';
 
 @Component({
   selector: 'app-catalog',
@@ -10,7 +11,10 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 })
 export class movieSearchComponent implements OnInit {
 
-  movieList: Array<Movie> = [];
+  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime'];
+  matMovieList: MatTableDataSource<Movie>;
+
+  @ViewChild('movieSort') movieSort: MatSort;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
@@ -31,7 +35,8 @@ export class movieSearchComponent implements OnInit {
 
   getAllMovies(): void {
     this.http.get<Array<Movie>>('http://localhost:8080/user/catalog/getAll/movie', {withCredentials: true}).subscribe(response => {
-      this.movieList = response;
+      this.matMovieList = new MatTableDataSource(response);
+      this.matMovieList.sort = this.movieSort;
     }, error => {
       console.log(error);
     });
@@ -59,7 +64,8 @@ export class movieSearchComponent implements OnInit {
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Movie>>('http://localhost:8080/user/catalog/search/movie', body, options).subscribe(response => {
-      this.movieList = response;
+      this.matMovieList = new MatTableDataSource(response);
+      this.matMovieList.sort = this.movieSort;
     }, error => {
       console.log(error);
     });

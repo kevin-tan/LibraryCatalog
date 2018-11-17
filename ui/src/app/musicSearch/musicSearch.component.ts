@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Music} from "../catalog/dto/music";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
+import {MatSort, MatTableDataSource} from '@angular/material';
 
 @Component({
   selector: 'app-catalog',
@@ -10,7 +11,10 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 })
 export class musicSearchComponent implements OnInit {
 
-  musicList: Array<Music> = [];
+  displayMusicColumns: string[] = ['title', 'artist', 'label', 'type', 'asin', 'releaseDate'];
+  matMusicList: MatTableDataSource<Music>;
+
+  @ViewChild('musicSort') musicSort: MatSort;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
@@ -31,7 +35,8 @@ export class musicSearchComponent implements OnInit {
 
   getAllMusics(): void {
     this.http.get<Array<Music>>('http://localhost:8080/user/catalog/getAll/music', {withCredentials: true}).subscribe(response => {
-      this.musicList = response;
+      this.matMusicList = new MatTableDataSource(response);
+      this.matMusicList.sort = this.musicSort;
     }, error => {
       console.log(error);
     });
@@ -55,7 +60,8 @@ export class musicSearchComponent implements OnInit {
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Music>>('http://localhost:8080/user/catalog/search/music', body, options).subscribe(response => {
-      this.musicList = response;
+      this.matMusicList = new MatTableDataSource(response);
+      this.matMusicList.sort = this.musicSort;
     }, error => {
       console.log(error);
     });
