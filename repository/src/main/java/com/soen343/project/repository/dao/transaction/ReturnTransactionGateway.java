@@ -34,7 +34,7 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     public ReturnTransactionGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
-    
+
     @Override
     public void save(ReturnTransaction entity) {
         scheduler.writer_p();
