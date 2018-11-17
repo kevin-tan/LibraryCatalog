@@ -23,16 +23,6 @@ public class LoanTransaction extends Transaction {
 
     private LocalDateTime dueDate;
 
-    @JsonIgnore
-    private static final Map<String, Integer> DAYS_UNTIL_DUE;
-    static {
-        Map<String, Integer> map = new HashMap<>();
-        map.put(Book.class.getSimpleName(), Book.DAYS_UNTIL_DUE);
-        map.put(Movie.class.getSimpleName(), Movie.DAYS_UNTIL_DUE);
-        map.put(Music.class.getSimpleName(), Music.DAYS_UNTIL_DUE);
-        DAYS_UNTIL_DUE = Collections.unmodifiableMap(map);
-    }
-
     @Builder
     public LoanTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate, LocalDateTime dueDate) {
         super(id, loanableItem, client, transactionDate);
@@ -42,7 +32,7 @@ public class LoanTransaction extends Transaction {
     public LoanTransaction(LoanableItem loanableItem, Client client) {
         super(loanableItem, client);
         this.loanableItem.setAvailable(false);
-        this.dueDate = this.transactionDate.plusDays(DAYS_UNTIL_DUE.get(loanableItem.getType()));
+        this.dueDate = this.transactionDate.plusDays(LoanDays.DAYS_UNTIL_DUE.get(loanableItem.getType()));
     }
 
     @Override

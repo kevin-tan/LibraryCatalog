@@ -52,6 +52,7 @@ public class ClientHandler {
         }
 
         transactionService.createLoanTransactions(client,loanables); // TODO: SHOULD GET A LIST OF ALREADY LOANED ITEMS ON FAILURE, THE SECOND ERROR CASE
+
         cartHandler.clear(clientId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

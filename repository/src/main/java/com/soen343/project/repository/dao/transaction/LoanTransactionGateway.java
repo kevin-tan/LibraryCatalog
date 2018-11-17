@@ -47,7 +47,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     public void saveAll(LoanTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (LoanTransaction transaction : entities) {
-            uow.registerOperation(statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+            uow.registerOperation(statement -> statement.executeQuery(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
         }
         scheduler.writer_p();
         uow.commit();
