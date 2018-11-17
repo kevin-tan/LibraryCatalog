@@ -34,25 +34,18 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     public ReturnTransactionGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
-
-
-    // TODO: modify so that it updates the loanable items as well
+    
     @Override
     public void save(ReturnTransaction entity) {
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
-            // TODO: Modify save and saveAll:
 
             entity.getLoanableItem().setAvailable(true);
-            //Set every item to available
             statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
-            // }
         });
-        //executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         scheduler.writer_v();
     }
 
-    // TODO: modify so that it updates the loanable items as well
     @Override
     public void saveAll(ReturnTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
