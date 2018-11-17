@@ -40,7 +40,14 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     @Override
     public void save(ReturnTransaction entity) {
         scheduler.writer_p();
-        executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
+        executeBatchUpdate(statement -> {
+            // TODO: Modify save and saveAll:
+            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem WHERE LoanableItem.C");
+            //Set every item to available
+            statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
+            // }
+        });
+        //executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         scheduler.writer_v();
     }
 
