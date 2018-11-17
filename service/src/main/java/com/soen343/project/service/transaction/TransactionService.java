@@ -15,12 +15,10 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRegistry transactionRegistry;
-    private final LoanTransactionGateway loanTransactionGateway;
 
     @Autowired
     public TransactionService(TransactionRegistry transactionRegistry, LoanTransactionGateway loanTransactionGateway) {
         this.transactionRegistry = transactionRegistry;
-        this.loanTransactionGateway = loanTransactionGateway;
     }
 
     public ResponseEntity<?> createLoanTransactions(Client client, List<LoanableItem> loanables) {

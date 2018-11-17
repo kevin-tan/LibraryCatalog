@@ -42,9 +42,6 @@ public class TransactionRegistry {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findAll(), RETURN_TRANSACTION, returnTransactionGateway.findAll());
     }
 
-    /*TODO: CURRENTLY DON'T LOOK AT ITEM IS ALREADY LOANED CASE. MAYBE START WITH GET THAT CHECKS THAT QUERY FOR ALL CART WITH AVAILABLE RESTRICTED (OR CLIENT NULL). IF ONE OWNED SEND BACK FALSE, OR OWNED ITEMS.
-            THIS CAN BE DONE BY CHECKING QUERY SIZE. EX QUERY WHERE AVAILABLE = FALSE GIVES 0 IF ALL ITEMS ARE UNOWNED.
-     */
     public ResponseEntity<?> addTransactions(Client client, List<LoanableItem> loanables) {
         LocalDateTime transactionDate = LocalDateTime.now();
         String transactionDateFormatted = transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
@@ -61,7 +58,12 @@ public class TransactionRegistry {
         List<?> allTransactions = loanTransactionGateway.findByUserIdAndTransactionDate(client.getId(), transactionDateFormatted);
 
         // Check between loanables vs. all successful transactions
-        // TODO: match between lists
+        //TODO:Done
+        for(LoanTransaction t: transactions){
+            if(!allTransactions.contains(t)){
+                failedItems.add(t.getLoanableItem());
+            }
+        }
 
         if (failedItems.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -69,20 +71,6 @@ public class TransactionRegistry {
             return new ResponseEntity<>(failedItems, HttpStatus.EXPECTATION_FAILED);
 
         }
-/*        UnitOfWork updateLoanablesAndAddTransactions = new UnitOfWork();
-        for (LoanTransaction loanTransaction : loanTransactions) {
-            LoanableItem itemToBeLoaned = loanTransaction.getLoanableItem();
-
-            updateLoanablesAndAddTransactions.registerOperation(statement ->
-                    statement.executeUpdate(QueryBuilder.createUpdateQuery(itemToBeLoaned.getTable(), itemToBeLoaned.sqlUpdateValues(), itemToBeLoaned.getId())));
-
-            updateLoanablesAndAddTransactions.registerOperation(statement ->
-                    statement.executeUpdate(QueryBuilder.createSaveQuery(loanTransaction.getTable(), loanTransaction.toSQLValue())));
-        }
-        updateLoanablesAndAddTransactions.commit(); // TODO: UNSURE WHETHER UOW SHOULD BE DONE HERE OR IN GATEWAY
-                                                    // TODO: ASK ABOUT USING WRAPPERS TO REDUCE SIZE OF UOW OPERATIONS*/
-
-
     }
 
     public List<?> searchLoanTransactions() {

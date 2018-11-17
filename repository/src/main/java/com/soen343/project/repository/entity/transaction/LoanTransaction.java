@@ -29,16 +29,10 @@ public class LoanTransaction extends Transaction {
         this.dueDate = dueDate;
     }
 
-    public LoanTransaction(LoanableItem loanableItem, Client client) {
-        super(loanableItem, client);
-        this.loanableItem.setAvailable(false);
-        this.dueDate = this.transactionDate.plusDays(LoanDays.DAYS_UNTIL_DUE.get(loanableItem.getType()));
-    }
-
     public LoanTransaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         super(loanableItem, client, transactionDate);
         this.loanableItem.setAvailable(false);
-        this.dueDate = this.transactionDate.plusDays(DAYS_UNTIL_DUE.get(loanableItem.getType()));
+        this.dueDate = this.transactionDate.plusDays(LoanDays.DAYS_UNTIL_DUE.get(loanableItem.getType()));
     }
 
     @Override

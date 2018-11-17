@@ -26,13 +26,6 @@ public abstract class Transaction implements DatabaseEntity {
         this.transactionDate = transactionDate;
     }
 
-    Transaction(LoanableItem loanableItem, Client client) {
-        loanableItem.setClient(client);
-        this.loanableItem = loanableItem;
-        this.client = client;
-        this.transactionDate = LocalDateTime.now();
-    }
-
     Transaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         loanableItem.setClient(client);
         this.loanableItem = loanableItem;

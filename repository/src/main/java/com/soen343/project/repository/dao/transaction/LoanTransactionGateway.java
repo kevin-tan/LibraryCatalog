@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
 
             // Checking loanable items
             // TODO
+            entity.getLoanableItem()
 
             // if (){
             // Update loanable item if available
@@ -73,7 +75,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
                         // Then update loanable if available and mark it loaned and then create a transaction,
                         // If not available return null so that you know it was unsuccessful
 
-                        // Checking loanable items
+                        // Checking loanable items if another one is available
                         // TODO
 
                         // if (){
@@ -190,10 +192,13 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         return list;
     }
 
-    //TODO: fill query
+    //TODO: Done
     public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate){
         scheduler.reader_p();
-        List list = executeQueryExpectMultiple("", findAllTransaction());
+        Map<String, String> userAndDates = new HashMap<>();
+        userAndDates.put(USERID, userId.toString());
+        userAndDates.put(TRANSACTIONDATE, transactionDate);
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE, userAndDates), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
