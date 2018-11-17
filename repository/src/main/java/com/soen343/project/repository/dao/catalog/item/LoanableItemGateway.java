@@ -3,12 +3,9 @@ package com.soen343.project.repository.dao.catalog.item;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
-import com.soen343.project.repository.dao.transaction.com.TransactionOperations;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
-import com.soen343.project.repository.entity.transaction.LoanTransaction;
-import com.soen343.project.repository.entity.transaction.Transaction;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,6 @@ import java.util.Map;
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
-import static com.soen343.project.repository.dao.transaction.com.DateConverter.convertToDate;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
@@ -114,42 +110,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     public List<LoanableItem> findAll() {
         scheduler.reader_p();
         List<LoanableItem> list =
-                (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), (rs, statement) -> {
-                    List<LoanableItem> loanableItems = new ArrayList<>();
-
-                    while (rs.next()) {
-                        Client client = (rs.getLong(USERID) == 0) ? null : new Client(rs.getLong(USERID));
-                        loanableItems.add(new LoanableItem(rs.getLong(ID), null, Boolean.valueOf(rs.getString(AVAILABLE)), client));
-                    }
-
-                    for (LoanableItem loanableItem : loanableItems) {
-                        Long itemSpecId = null;
-                        String itemSpecType = null;
-
-                        ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItem.getId()));
-                        while (itemRS.next()) {
-                            itemSpecId = itemRS.getLong(ITEMSPECID);
-                            itemSpecType = itemRS.getString(TYPE);
-                        }
-
-                        ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
-                        while (itemSpecRS.next()) {
-                            loanableItem.setSpec(getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId));
-                        }
-
-                        if (loanableItem.getClient() != null) {
-                            ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient().getId()));
-                            while (clientRS.next()) {
-                                loanableItem.setClient(
-                                        new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
-                                                clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL),
-                                                clientRS.getString(PHONE_NUMBER), clientRS.getString(PASSWORD)));
-
-                            }
-                        }
-                    }
-                    return loanableItems;
-                });
+                (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
@@ -175,7 +136,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         return list;
     }
 
-    public DatabaseQueryOperation findAllTransaction() {
+    private DatabaseQueryOperation findAllTransaction() {
         return (rs, statement) -> {
             List<LoanableItem> loanableItems = new ArrayList<>();
 
