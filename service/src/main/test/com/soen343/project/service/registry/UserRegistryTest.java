@@ -41,8 +41,9 @@ public class UserRegistryTest {
         assertThat(userRegistry.viewActiveUserRegistry(), is(expectedActiveUsers));
     }
 
+    //Positive
     @Test
-    public void testUpdate_activeUserRemoved() {
+    public void testUpdate_activeUserRemovedOnLogout() {
         User user = new Client(1L, "", "", "", "", "", "");
 
         expectedActiveUsers.remove(0);
@@ -50,11 +51,30 @@ public class UserRegistryTest {
         assertThat(userRegistry.activeUsers, is(expectedActiveUsers));
     }
 
+    //Positive
     @Test
-    public void testUpdate_activeUserAdded() {
+    public void testUpdate_activeUserAddedOnLogin() {
         User user = new Client(6L, "", "", "", "", "", "");
 
         expectedActiveUsers.add(new ActiveUser(6L));
+        userRegistry.update(user, true);
+        assertThat(userRegistry.activeUsers, is(expectedActiveUsers));
+    }
+
+    //Negative
+    @Test
+    public void testUpdate_activeUserNotAddedOnLogout() {
+        User user = new Client(6L, "", "", "", "", "", "");
+
+        userRegistry.update(user, false);
+        assertThat(userRegistry.activeUsers, is(expectedActiveUsers));
+    }
+
+    //Negative
+    @Test
+    public void testUpdate_activeUserNotRemovedOnLogin() {
+        User user = new Client(1L, "", "", "", "", "", "");
+
         userRegistry.update(user, true);
         assertThat(userRegistry.activeUsers, is(expectedActiveUsers));
     }
