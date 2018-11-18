@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {LoanableItem} from "../catalog/dto/loanableItem";
 import {ItemSpecification} from "../catalog/dto/item-specification/item_specification";
 import {HttpClient} from "@angular/common/http";
+import {Magazine} from "../catalog/dto/item-specification/magazine";
 
 @Component({
   selector: 'app-details',
@@ -15,6 +16,10 @@ export class DetailsComponent implements OnInit {
 
   type: string;
   specID: number;
+  displayBookColumns: string[] = ['id', 'title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language', 'availability'];
+  displayMovieColumns: string[] = ['id', 'title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime', 'availability'];
+  displayMagazineColumns: string[] = ['id', 'title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13', 'availability'];
+  displayMusicColumns: string[] = ['id', 'title', 'artist', 'label', 'type', 'asin', 'releaseDate', 'availability'];
 
   loanables: LoanableItem[];
   magazines: ItemSpecification[];
@@ -41,6 +46,10 @@ export class DetailsComponent implements OnInit {
           console.log(error);
         });
     }
+  }
+
+  addItemToCart(){
+
   }
 
 }
