@@ -17,6 +17,7 @@ import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -33,13 +34,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     public void save(LoanableItem entity) {
         scheduler.writer_p();
-        executeBatchUpdate(statement -> {
-            Item item = new Item(entity.getSpec());
-            statement.executeQuery(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
-            ResultSet rs = statement.executeQuery("SELECT id FROM Item ORDER BY id DESC LIMIT 1");
-            if (rs.next()) entity.setId(rs.getLong(ID));
-            statement.execute(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
-        });
+        executeBatchUpdate(saveQuery(entity));
         scheduler.writer_v();
     }
 
@@ -47,8 +42,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     public void saveAll(LoanableItem... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (LoanableItem loanableItem : entities) {
-            uow.registerOperation(
-                    statement -> executeUpdate(createSaveQuery(loanableItem.getTableWithColumns(), loanableItem.toSQLValue())));
+            uow.registerOperation(saveQuery(loanableItem));
         }
         scheduler.writer_p();
         uow.commit();
@@ -74,7 +68,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
                     rs.next();// Move to query result
                     Long loanableItemId = rs.getLong(ID);
                     Long userId = rs.getLong(USERID);
-                    Boolean available = Boolean.valueOf(rs.getString(AVAILABLE));
+                    Boolean available = rs.getString(AVAILABLE).equals(BOOL_VAL_TRUE);
 
                     ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItemId));
                     itemRS.next();
@@ -126,22 +120,22 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
 
     public List<?> findByUserIdAndIsLoaned(Long userId) {
         scheduler.reader_p();
-        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANABLEITEM_TABLE,
-                ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")), findAllTransaction());
+        List list = executeQueryExpectMultiple(
+                createSearchByAttributesQuery(LOANABLEITEM_TABLE, ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")),
+                findAllTransaction());
         scheduler.reader_v();
         return list;
     }
 
     @SuppressWarnings("unchecked")
-    public List<LoanableItem> findLoanablesAreAvailable(List<LoanableItem> loanableItems) {
+    public List<LoanableItem> findIfLoanablesAreAvailable(List<LoanableItem> loanableItems) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple((statement) -> {
             List<LoanableItem> tempList = new LinkedList<>();
             for (LoanableItem loanableItem : loanableItems) {
                 ResultSet rs = statement.executeQuery(
-                        "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + loanableItem.getSpec().getId() +
-                        " and Item.type = '" + loanableItem.getType() +
-                        "' and LoanableItem.available = 1 and LoanableItem.id = Item.id LIMIT 1;");
+                        queryLoanableAndItemByItemspecType(loanableItem.getType(), loanableItem.getSpec().getId()) +
+                        " and LoanableItem.available = 1 LIMIT 1;");
                 if (!rs.next()) tempList.add(loanableItem);
             }
             return tempList;
@@ -150,6 +144,17 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         return list;
     }
 
+    public List<?> findByItemSpecId(String itemType, Long itemSpecId) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + ";", findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
+
+    private String queryLoanableAndItemByItemspecType(String itemType, Long itemSpecId) {
+        return "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + itemSpecId + " and Item.type = '" + itemType +
+               "' and LoanableItem.id = Item.id";
+    }
 
     private DatabaseQueryOperation findAllTransaction() {
         return (rs, statement) -> {
@@ -157,7 +162,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
 
             while (rs.next()) {
                 Client client = (rs.getLong(USERID) == 0) ? null : new Client(rs.getLong(USERID));
-                loanableItems.add(new LoanableItem(rs.getLong(ID), null, Boolean.valueOf(rs.getString(AVAILABLE)), client));
+                loanableItems.add(new LoanableItem(rs.getLong(ID), null, rs.getString(AVAILABLE).equals(BOOL_VAL_TRUE), client));
             }
 
             for (LoanableItem loanableItem : loanableItems) {
@@ -182,7 +187,6 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
                                 new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
                                         clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL), clientRS.getString(PHONE_NUMBER),
                                         clientRS.getString(PASSWORD)));
-
                     }
                 }
             }

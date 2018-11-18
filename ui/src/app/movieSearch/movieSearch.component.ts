@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Movie} from "../catalog/dto/item-specification/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -15,7 +16,7 @@ export class movieSearchComponent implements OnInit {
 
   @ViewChild('movieSort') movieSort: MatSort;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.getAllMovies();
@@ -47,7 +48,7 @@ export class movieSearchComponent implements OnInit {
       "subtitles": subtitles,
       "dubbed": dubbed,
       "producers": producers
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
@@ -57,5 +58,9 @@ export class movieSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }

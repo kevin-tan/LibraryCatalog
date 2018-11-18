@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Magazine} from "../catalog/dto/item-specification/magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -15,7 +16,7 @@ export class magazineSearchComponent implements OnInit {
 
   @ViewChild('magazineSort') magazineSort: MatSort;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router:Router) {
   }
 
   ngOnInit() {
@@ -55,5 +56,9 @@ export class magazineSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }

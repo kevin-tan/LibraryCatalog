@@ -16,11 +16,13 @@ import {activeUsersComponent} from "./activeUsers/activeUsers.component";
 import {HomeRedirectService} from "./home/home-redirect.service";
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
+import {MatRadioModule} from '@angular/material/radio';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ReturnComponent } from './return/return.component';
 import { CartComponent } from './cart/cart.component'
 import {MatListModule} from '@angular/material/list';
 import { NavbarComponent } from './navbar/navbar.component';
+import { DetailsComponent } from './details/details.component';
 
 
 @NgModule({
@@ -37,10 +39,12 @@ import { NavbarComponent } from './navbar/navbar.component';
     activeUsersComponent,
     ReturnComponent,
     CartComponent,
-    NavbarComponent
+    NavbarComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,
+    MatRadioModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,

@@ -152,7 +152,7 @@ public class ExampleController {
         LoanableItem l2 = new LoanableItem(12L, musicRepository.findById(2L), false, null);
         LoanableItem l3 = new LoanableItem(20L, musicRepository.findById(5L), false, null);
 
-        return new ResponseEntity<>(loanableItemGateway.findLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
+        return new ResponseEntity<>(loanableItemGateway.findIfLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
     }
 
     @GetMapping("/test/findLoanablesAreAvailable2")
@@ -161,7 +161,7 @@ public class ExampleController {
         LoanableItem l2 = new LoanableItem(12L, musicRepository.findById(2L), false, null);
         LoanableItem l3 = new LoanableItem(20L, musicRepository.findById(5L), false, null);
 
-        return new ResponseEntity<>(loanableItemGateway.findLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
+        return new ResponseEntity<>(loanableItemGateway.findIfLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
     }
 
     @PostMapping("/text/loanableItem")
@@ -177,6 +177,21 @@ public class ExampleController {
     @GetMapping("/test/findAllLoanableItems")
     public ResponseEntity<?> findAllLoanableItemTest() {
         return new ResponseEntity<>(loanableItemGateway.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveLoanableItems")
+    public ResponseEntity<?> findSaveLoanableItemTest() {
+        LoanableItem l1 = new LoanableItem(0L, movieRepository.findById(1L), true,null);
+        loanableItemGateway.save(l1);
+        return new ResponseEntity<>("DONE", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveAllLoanableItems")
+    public ResponseEntity<?> findSaveAllLoanableItemTest() {
+        LoanableItem l1 = new LoanableItem(0L, movieRepository.findById(1L), true,null);
+        LoanableItem l2 = new LoanableItem(0L, bookRepository.findById(1L), true,null);
+        loanableItemGateway.saveAll(l1, l2);
+        return new ResponseEntity<>("DONE", HttpStatus.OK);
     }
 
     @GetMapping("/test/findAllReturnTransactions")

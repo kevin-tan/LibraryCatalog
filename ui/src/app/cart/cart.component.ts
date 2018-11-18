@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HomeRedirectService} from "../home/home-redirect.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {LoanableItem} from "../catalog/dto/loanableItem";
 
 @Component({
@@ -16,13 +15,19 @@ export class CartComponent implements OnInit {
     this.getCartItems();
   }
 
-  loanableItems: Array<LoanableItem>;
-  displayColumn: string[] = ['title'];
+  loanableItems: LoanableItem[];
+  errorMessage: string;
+  selectedItem: LoanableItem;
 
   getCartItems(){
-    this.http.get<Array<LoanableItem>>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
-      this.loanableItems = response['loanableItems'] as Array<LoanableItem>;
-      console.log(this.loanableItems);
+    this.http.get<LoanableItem[]>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
+      for (let item of response) {
+        item.client = item.client['Client'];
+        item.spec = item.spec[item.type];
+      }
+      this.loanableItems = response;
+
+      this.errorMessage = "";
     }, error => {
       console.log(error);
     });
@@ -45,14 +50,6 @@ export class CartComponent implements OnInit {
       });
   }
 
-  checkout(){
-    this.http.post<LoanableItem>('http://localhost:8080/client/' + sessionStorage.getItem('user_id') + "/loan", {withCredentials: true},)
-      .subscribe(response => {
-      }, error => {
-        console.log(error);
-      });
-  }
-
   cancel(){
     this.http.delete<LoanableItem>('http://localhost:8080/client/' + sessionStorage.getItem('user_id') + "/cancelLoan", {withCredentials: true},)
       .subscribe(response => {
@@ -60,4 +57,34 @@ export class CartComponent implements OnInit {
         console.log(error);
       });
   }
+
+  cancelRemove(){
+    this.selectedItem = null;
+  }
+
+  checkout(adminUsername: string, adminPassword: string) {
+    let url: string = "http://localhost:8080/client/" + sessionStorage.getItem('user_id') + "/loan";
+    let headers = new HttpHeaders({'Authorization': 'Basic ' + btoa(adminUsername+':'+adminPassword), 'Content-Type': 'application/json'});
+    let options = {headers: headers};
+    let obj = [];
+    this.loanableItems.forEach(item => {
+      let json = {};
+      json["id"] = item.id;
+      json["available"] = item.available;
+      json["client"] = {["Client"]:item.client};
+      json["spec"] = {[item.type]:item.spec};
+      json["type"] = item.type;
+      obj.push({["LoanableItem"]:json});
+
+      let body = JSON.stringify(obj);
+
+      this.http.post(url, body, options).subscribe(response => {
+        this.getCartItems();
+      }, error => {
+        this.errorMessage = "Invalid Admin Credentials";
+      })
+
+    });
+  }
+
 }
