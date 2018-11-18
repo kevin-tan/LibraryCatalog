@@ -32,7 +32,7 @@ public class CatalogController {
 
     @GetMapping("/catalog/findByTitle/{titleValue}")
     public ResponseEntity<?> searchCatalogByTitle(@PathVariable String titleValue) {
-        return new ResponseEntity<>(catalogSearch.searchAllByTitle(titleValue), HttpStatus.OK);
+        return new ResponseEntity<>(catalogSearch.searchAllItemSpecByTitle(titleValue), HttpStatus.OK);
     }
 
     @PostMapping("/catalog/search/{itemType}")
@@ -50,11 +50,11 @@ public class CatalogController {
 
     @GetMapping("/catalog/getAll/{itemType}")
     public ResponseEntity<?> getAllOfType(@PathVariable String itemType) {
-        return new ResponseEntity<>(catalogSearch.getAllOfType(itemType), HttpStatus.OK);
+        return new ResponseEntity<>(catalogSearch.getAllItemSpecOfType(itemType), HttpStatus.OK);
     }
 
     @GetMapping("/catalog/getAll/{itemType}/{itemSpecId}")
     public ResponseEntity<?> getAllOfSameType(@PathVariable String itemType, @PathVariable Long itemSpecId) {
-        return new ResponseEntity<>(catalogSearch.getAllOfSameType(itemType, itemSpecId), HttpStatus.OK);
+        return new ResponseEntity<>(catalogSearch.getAllItemSpecOfSameType(itemType, itemSpecId), HttpStatus.OK);
     }
 }
