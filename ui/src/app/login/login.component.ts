@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
     let body = JSON.stringify({"email": email})
     this.http.post('http://localhost:8080/app/v1/login', body, options).subscribe(response => {
       sessionStorage.setItem("email", email);
+      sessionStorage.setItem("user_id", response['id']);
       sessionStorage.setItem("loggedIn", "true");
       this.loginRedirectService.redirect();
     }, error => {

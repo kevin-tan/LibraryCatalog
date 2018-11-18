@@ -1,5 +1,8 @@
 package com.soen343.project.service.authenticate;
 
+import com.google.common.collect.ImmutableMap;
+import com.soen343.project.repository.dao.user.UserGateway;
+import com.soen343.project.repository.entity.EntityConstants;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.service.database.Library;
 import com.soen343.project.service.notification.Observer;
@@ -10,32 +13,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LoginManager implements Subject<User> {
 
     private Library library;
+    private final UserGateway userGateway;
     private List<Observer> observers;
 
     @Autowired
-    LoginManager(UserRegistry userRegistry, Library library) {
+    LoginManager(UserRegistry userRegistry, Library library, UserGateway userGateway) {
         this.library = library;
+        this.userGateway = userGateway;
         observers = new LinkedList<>();
         addObserver(userRegistry);
     }
 
-    public boolean loginUser(String email){
+    public Map<String, Long> loginUser(String email) {
         User user = library.getUserByEmail(email);
-        if (user != null){
+        if (user != null) {
             notifyObservers(user, true);
-            return true;
+            return ImmutableMap.of(EntityConstants.ID, userGateway.findByEmail(email).getId());
         }
-        return false;
+        return ImmutableMap.of(EntityConstants.ID, 0L);
     }
 
     public boolean logoutUser(String email) {
         User user = library.getUserByEmail(email);
-        if (user != null){
+        if (user != null) {
             notifyObservers(user, false);
             return true;
         }
@@ -54,7 +60,7 @@ public class LoginManager implements Subject<User> {
 
     @Override
     public void notifyObservers(User data, boolean islogin) {
-        for (Observer observer: observers) {
+        for (Observer observer : observers) {
             observer.update(data, islogin);
         }
     }
