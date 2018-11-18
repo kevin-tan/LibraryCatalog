@@ -21,12 +21,15 @@ export class ManageCatalogComponent implements OnInit {
   matBookList: MatTableDataSource<Book>;
 
   displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate', 'runTime'];
+  movieList: Movie[];
   matMovieList: MatTableDataSource<Movie>;
 
   displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13'];
+  magazineList: Magazine[];
   matMagazineList: MatTableDataSource<Magazine>;
 
   displayMusicColumns: string[] = ['title', 'artist', 'label', 'type', 'asin', 'releaseDate'];
+  musicList: Music[];
   matMusicList: MatTableDataSource<Music>;
 
   @ViewChild('bookSort') bookSort: MatSort;
@@ -75,11 +78,17 @@ export class ManageCatalogComponent implements OnInit {
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
       this.bookList = response['book'] as Array<Book>;
       this.matBookList.sort = this.bookSort;
+
       this.matMagazineList = new MatTableDataSource(response['magazine'] as Array<Magazine>);
+      this.magazineList = response['magazine'] as Array<Magazine>;
       this.matMagazineList.sort = this.magazineSort;
+
       this.matMovieList = new MatTableDataSource(response['movie'] as Array<Movie>);
+      this.movieList = response['movie'] as Array<Movie>;
       this.matMovieList.sort = this.movieSort;
+
       this.matMusicList = new MatTableDataSource(response['music'] as Array<Music>);
+      this.musicList = response['music'] as Array<Music>;
       this.matMusicList.sort = this.musicSort;
     }, error => {
       console.log(error);
@@ -92,9 +101,7 @@ export class ManageCatalogComponent implements OnInit {
     });
   }
 
-  //TODO Note that the method is always called even on invalid input, so verify before proceeding
-
-  searchBooks(title: string,
+  addBook(title: string,
               author: string,
               publisher: string,
               pubDate: string,
@@ -104,8 +111,6 @@ export class ManageCatalogComponent implements OnInit {
               isbn13: string,
               pages: string,
               form: NgForm) {
-
-    console.log(form.pristine);
 
     let body = JSON.stringify( {
       "Book": {
@@ -117,7 +122,7 @@ export class ManageCatalogComponent implements OnInit {
         "format": format,
         "isbn10": isbn10,
         "isbn13": isbn13,
-        "pages": pages
+        "pages": +pages
       }
     });
 
@@ -142,36 +147,126 @@ export class ManageCatalogComponent implements OnInit {
     });
   }
 
-  searchMovies(title: string,
+  addMovie(title: string,
                director: string,
                releaseDate: string,
                language: string,
                subtitles: string,
                dubbed: string,
                actors: string,
-               producers: string) {
+               producers: string,
+               runTime: string,
+               form: NgForm) {
 
-    console.log('Title: ' + title);
+    let body = JSON.stringify( {
+      "Movie": {
+        "title": title,
+        "director": director,
+        "releaseDate": releaseDate,
+        "language": language,
+        "subtitles": subtitles,
+        "dubbed": dubbed.split(", "),
+        "actors": actors.split(", "),
+        "producers": producers.split(", "),
+        "runTime": +runTime
+      }
+    });
+
+    console.log(body);
+
+    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let options = {headers: headers, withCredentials: true};
+
+    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
+      form.resetForm();
+      this.movieList.push({"title": title,
+        "director": director,
+        "releaseDate": releaseDate,
+        "language": language,
+        "subtitles": subtitles,
+        "dubbed": dubbed.split(", "),
+        "actors": actors.split(", "),
+        "producers": producers.split(", "),
+        "runTime": +runTime});
+      this.matMovieList = new MatTableDataSource(this.movieList);
+      this.matMovieList.sort = this.movieSort;
+    }, error => {
+      console.log(error);
+    });
   }
 
-  searchMagazines(title: string,
+  addMagazine(title: string,
                   publisher: string,
                   pubDate: string,
                   language: string,
                   isbn10: string,
-                  isbn13: string) {
+                  isbn13: string,
+                  form: NgForm) {
 
-    console.log('Title: ' + title);
+    let body = JSON.stringify( {
+      "Magazine": {
+        "title": title,
+        "publisher": publisher,
+        "pubDate": pubDate,
+        "language": language,
+        "isbn10": isbn10,
+        "isbn13": isbn13
+      }
+    });
+
+    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let options = {headers: headers, withCredentials: true};
+
+    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
+      form.resetForm();
+      this.magazineList.push({"title": title,
+        "publisher": publisher,
+        "pubDate": pubDate,
+        "language": language,
+        "isbn10": isbn10,
+        "isbn13": isbn13});
+      this.matMagazineList = new MatTableDataSource(this.magazineList);
+      this.matMagazineList.sort = this.magazineSort;
+    }, error => {
+      console.log(error);
+    });
   }
 
-  searchMusics(title: string,
+  addMusic(title: string,
                artist: string,
                type: string,
                releaseDate: string,
                label: string,
-               asin: string) {
+               asin: string,
+               form: NgForm) {
 
-    console.log('Title: ' + title);
+    let body = JSON.stringify( {
+      "Music": {
+        "title": title,
+        "artist": artist,
+        "type": type,
+        "releaseDate": releaseDate,
+        "label": label,
+        "asin": asin
+      }
+    });
+
+    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let options = {headers: headers, withCredentials: true};
+
+    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
+      form.resetForm();
+      this.musicList.push({"title": title,
+        "artist": artist,
+        "type": type,
+        "releaseDate": releaseDate,
+        "label": label,
+        "asin": asin});
+      this.matMusicList = new MatTableDataSource(this.musicList);
+      this.matMusicList.sort = this.musicSort;
+    }, error => {
+      console.log(error);
+    });
   }
 
   saveAll() {

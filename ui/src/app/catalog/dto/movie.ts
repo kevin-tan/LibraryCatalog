@@ -7,5 +7,5 @@ export interface Movie extends MediaItem {
     dubbed: Array<string>;
     language: string;
     subtitles: string;
-    runTime: string;
+    runTime: number;
 }

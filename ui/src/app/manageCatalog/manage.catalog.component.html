@@ -164,7 +164,7 @@
           </th>
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
-                    (click)="searchBooks(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+                    (click)="addBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
               <i class="fa fa-plus"></i><b> Add Book</b>
             </button>
           </td>
@@ -229,7 +229,7 @@
   <h2><i>Movies</i></h2>
   <hr>
   <div>
-    <form ngNativeValidate>
+    <form ngNativeValidate #movieForm="ngForm">
       <table width="65%">
         <tr>
           <th>
@@ -290,10 +290,15 @@
           </th>
         </tr>
         <tr>
-          <td></td>
+          <th>
+            <label class="formLabel">Runtime</label>
+            <div>
+              <textarea rows="1" cols="47" #mng_movie_runtime mng_movie_runtime.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round"
-                    (click)="searchMovies(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value)">
+                    (click)="addMovie(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value, mng_movie_runtime.value, movieForm)">
               <i class="fa fa-plus"></i><b> Add Movie</b>
             </button>
           </td>
@@ -352,7 +357,7 @@
   <h2><i>Magazine</i></h2>
   <hr>
   <div>
-    <form ngNativeValidate>
+    <form ngNativeValidate #magazineForm="ngForm">
       <table width="60%">
         <tr>
           <th>
@@ -402,7 +407,7 @@
           <td></td>
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round"
-                    (click)="searchMagazines(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value)">
+                    (click)="addMagazine(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value, magazineForm)">
               <i class="fa fa-plus"></i><b> Add Magazine</b>
             </button>
           </td>
@@ -451,7 +456,7 @@
   <h2><i>Music</i></h2>
   <hr>
   <div>
-    <form ngNativeValidate>
+    <form ngNativeValidate #musicForm="ngForm">
       <table width="60%">
         <tr>
           <th>
@@ -501,7 +506,7 @@
           <td></td>
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round"
-                    (click)="searchMusics(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value)">
+                    (click)="addMusic(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value, musicForm)">
               <i class="fa fa-plus"></i><b> Add Music</b>
             </button>
           </td>
