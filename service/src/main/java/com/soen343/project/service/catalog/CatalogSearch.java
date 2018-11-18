@@ -1,11 +1,13 @@
 package com.soen343.project.service.catalog;
 
 import com.google.common.collect.ImmutableMap;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.mapper.GatewayMapper;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class CatalogSearch {
     private final BookGateway bookRepository;
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
+    private final LoanableItemGateway loanableItemGateway;
 
     private static final String BOOK = "book";
     private static final String MAGAZINE = "magazine";
@@ -28,12 +31,13 @@ public class CatalogSearch {
 
     @Autowired
     public CatalogSearch(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
-                         MagazineGateway magazineRepository, MusicGateway musicRepository) {
+                         MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableItemGateway loanableItemGateway) {
         this.gatewayMapper = gatewayMapper;
         this.movieRepository = movieRepository;
         this.bookRepository = bookRepository;
         this.magazineRepository = magazineRepository;
         this.musicRepository = musicRepository;
+        this.loanableItemGateway = loanableItemGateway;
     }
 
 
@@ -53,5 +57,9 @@ public class CatalogSearch {
 
     public List<?> getAllOfType(String itemType) {
         return gatewayMapper.getGateway(itemType).findAll();
+    }
+
+    public List<?> getLoanableItemsBySpec(Long specID){
+        return loanableItemGateway.findItemBySpecId(specID);
     }
 }

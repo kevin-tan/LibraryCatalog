@@ -55,4 +55,9 @@ public class CatalogController {
     public ResponseEntity<?> getAllOfType(@PathVariable String itemType) {
         return new ResponseEntity<>(catalogSearch.getAllOfType(itemType), HttpStatus.OK);
     }
+
+    @GetMapping("/catalog/itemSpec/{specID}")
+    public ResponseEntity<?> getLoanablesBySpec(@PathVariable Long specID) {
+        return new ResponseEntity<>(catalogSearch.getLoanableItemsBySpec(specID), HttpStatus.OK);
+    }
 }

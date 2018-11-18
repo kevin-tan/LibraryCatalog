@@ -150,6 +150,12 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         return list;
     }
 
+    public List<?> findItemBySpecId(Long specID) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANABLEITEM_TABLE, ITEMSPECID, specID), findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
 
     private DatabaseQueryOperation findAllTransaction() {
         return (rs, statement) -> {
