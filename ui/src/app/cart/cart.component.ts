@@ -29,9 +29,9 @@ export class CartComponent implements OnInit {
   }
 
   getCartItem(){
-    this.http.get<Array<Book>>('http://localhost:8080/user/catalog/getAll/book', {withCredentials: true}).subscribe(response => {
-      this.matBookList = new MatTableDataSource(response);
-      this.matBookList.sort = this.bookSort;
+    this.http.get<Array<Book>>('http://localhost:8080/user/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
+    //  this.matBookList = new MatTableDataSource(response);
+    //  this.matBookList.sort = this.bookSort;
     }, error => {
       console.log(error);
     });
