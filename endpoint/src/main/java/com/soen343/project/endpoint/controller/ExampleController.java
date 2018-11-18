@@ -463,7 +463,7 @@ public class ExampleController {
         itemRepository.save(item4);
         itemRepository.save(item44);
 
-        return new ResponseEntity<>(catalogSearch.searchAllByTitle(titleValue), HttpStatus.OK);
+        return new ResponseEntity<>(catalogSearch.searchAllItemSpecByTitle(titleValue), HttpStatus.OK);
     }
 
     @PostMapping("/testmulti/{itemType}")

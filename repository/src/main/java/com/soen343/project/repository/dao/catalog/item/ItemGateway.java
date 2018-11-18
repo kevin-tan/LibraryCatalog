@@ -106,6 +106,13 @@ public class ItemGateway implements Gateway<Item> {
         return list;
     }
 
+    public List<?> findByItemSpec(String itemType) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(createSearchByAttributeQuery(ITEM_TABLE, TYPE, itemType), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
     private DatabaseQueryOperation databaseQueryOperation() {
         return (rs, statement) -> {
             List<DatabaseEntity> listTemp = new ArrayList<>();

@@ -1,7 +1,6 @@
 package com.soen343.project.service.registry;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
@@ -16,12 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.soen343.project.repository.dao.transaction.com.DateConverter.DATE_FORMAT;
 import static com.soen343.project.repository.entity.EntityConstants.DUEDATE;
 import static com.soen343.project.repository.entity.EntityConstants.TRANSACTIONDATE;
 
@@ -74,32 +71,29 @@ public class TransactionRegistry {
     }
 
     public List<?> searchLoanTransactions() {
-        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findAll());
+        return loanTransactionGateway.findAll();
     }
 
     public List<?> searchReturnTransactions() {
-        return ImmutableList.of(RETURN_TRANSACTION, returnTransactionGateway.findAll());
+        return returnTransactionGateway.findAll();
     }
 
     public Map<String, List<?>> searchAllByTransactionDate(ObjectNode transactionDate) {
-        return ImmutableMap.of(LOAN_TRANSACTION,
-                loanTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())),
-                RETURN_TRANSACTION,
-                returnTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+        return ImmutableMap
+                .of(LOAN_TRANSACTION, loanTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()),
+                        RETURN_TRANSACTION, returnTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()));
     }
 
     public List<?> searchLoanByTransactionDate(ObjectNode transactionDate) {
-        return ImmutableList
-                .of(loanTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+        return loanTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText());
     }
 
     public List<?> searchLoanByDueDate(ObjectNode dueDate) {
-        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(formatDateString(dueDate.get(DUEDATE).asText())));
+        return loanTransactionGateway.findByDueDate(dueDate.get(DUEDATE).asText());
     }
 
     public List<?> searchReturnByTransactionDate(ObjectNode transactionDate) {
-        return ImmutableList
-                .of(returnTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+        return returnTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText());
     }
 
     public Map<String, List<?>> searchTransactionsByUserId(Long userId) {
@@ -108,19 +102,15 @@ public class TransactionRegistry {
     }
 
     public List<?> searchLoanByUserId(Long userId) {
-        return ImmutableList.of(loanTransactionGateway.findByUserId(userId));
+        return loanTransactionGateway.findByUserId(userId);
     }
 
     public List<?> searchReturnByUserId(Long userId) {
-        return ImmutableList.of(returnTransactionGateway.findByUserId(userId));
+        return returnTransactionGateway.findByUserId(userId);
     }
 
     public Map<String, List<?>> searchTransactionByItemType(String itemType) {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByItemType(itemType), RETURN_TRANSACTION,
                 returnTransactionGateway.findByItemType(itemType));
-    }
-
-    private String formatDateString(String date) {
-        return LocalDateTime.parse(date).format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 }
