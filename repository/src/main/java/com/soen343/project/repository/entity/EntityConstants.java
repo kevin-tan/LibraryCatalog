@@ -5,6 +5,7 @@ public final class EntityConstants {
     private EntityConstants() {}
 
     public static final String ID = "id";
+    public static String BOOL_VAL_TRUE = "1";
 
     //Tables
     public static final String USER_TABLE = "User";

@@ -3,6 +3,7 @@ package com.soen343.project.service.catalog;
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.item.ItemGateway;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.soen343.project.repository.entity.EntityConstants.MAGAZINE_TABLE;
+
 @Service
 public class CatalogSearch {
 
@@ -23,8 +26,8 @@ public class CatalogSearch {
     private final BookGateway bookRepository;
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
-    private final LoanableItemGateway loanableItemGateway;
     private final ItemGateway itemGateway;
+    private final LoanableItemGateway loanableItemGateway;
 
     private static final String BOOK = "book";
     private static final String MAGAZINE = "magazine";
@@ -33,15 +36,15 @@ public class CatalogSearch {
 
     @Autowired
     public CatalogSearch(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
-                         MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableItemGateway loanableItemGateway) {
-                         MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway) {
+                         MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway,
+                         LoanableItemGateway loanableItemGateway) {
         this.gatewayMapper = gatewayMapper;
         this.movieRepository = movieRepository;
         this.bookRepository = bookRepository;
         this.magazineRepository = magazineRepository;
         this.musicRepository = musicRepository;
-        this.loanableItemGateway = loanableItemGateway;
         this.itemGateway = itemGateway;
+        this.loanableItemGateway = loanableItemGateway;
     }
 
 
@@ -55,8 +58,8 @@ public class CatalogSearch {
     }
 
     public Map<String, List<?>> getAllItemSpecs() {
-        return ImmutableMap.of(MOVIE, movieRepository.findAll(), BOOK, bookRepository.findAll(), MUSIC,
-                musicRepository.findAll(), MAGAZINE, magazineRepository.findAll());
+        return ImmutableMap.of(MOVIE, movieRepository.findAll(), BOOK, bookRepository.findAll(), MUSIC, musicRepository.findAll(), MAGAZINE,
+                magazineRepository.findAll());
     }
 
     public List<?> getAllOfType(String itemType) {
@@ -64,10 +67,10 @@ public class CatalogSearch {
     }
 
     public List<?> getAllOfSameType(String itemType, Long itemSpecId) {
-        return itemGateway.findByItemSpecId(itemType, itemSpecId);
-    }
-
-    public List<?> getLoanableItemsBySpec(Long specID){
-        return loanableItemGateway.findItemBySpecId(specID);
+        if (itemType.equals(MAGAZINE_TABLE)) {
+            return itemGateway.findByItemSpecId(itemType, itemSpecId);
+        }else{
+            return loanableItemGateway.findByItemSpecId(itemType, itemSpecId);
+        }
     }
 }

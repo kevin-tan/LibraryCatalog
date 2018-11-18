@@ -49,7 +49,7 @@ public class TransactionRegistry {
 
     public ResponseEntity<?> addLoanTransactions(Client client, List<LoanableItem> loanables) {
         // Check for if the loanables are available
-        List<LoanableItem> failedLoanedItems = loanableItemGateway.findLoanablesAreAvailable(loanables);
+        List<LoanableItem> failedLoanedItems = loanableItemGateway.findIfLoanablesAreAvailable(loanables);
 
         if (failedLoanedItems.isEmpty()) {
             // Create loan transaction
