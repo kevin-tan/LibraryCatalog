@@ -41,6 +41,8 @@ export class ManageCatalogComponent implements OnInit {
   @ViewChild('magazineSort') magazineSort: MatSort;
   @ViewChild('musicSort') musicSort: MatSort;
 
+  @ViewChild('bookForm') bookForm: NgForm;
+
   ngOnInit() {
     this.startSession();
     //Gets all itemSpecs at beginning
@@ -309,6 +311,20 @@ export class ManageCatalogComponent implements OnInit {
 
   rowSelected(row: Book) {
     this.selectedRow = row;
+
+    if(!this.bookSelection.isSelected(row)) {
+      (<HTMLInputElement>document.getElementById("mng_book_title")).value = row.title;
+      (<HTMLInputElement>document.getElementById("mng_book_author")).value = row.author;
+      (<HTMLInputElement>document.getElementById("mng_book_publisher")).value = row.publisher;
+      (<HTMLInputElement>document.getElementById("mng_book_pubDate")).value = row.pubDate;
+      (<HTMLInputElement>document.getElementById("mng_book_language")).value = row.language;
+      (<HTMLInputElement>document.getElementById("mng_book_format")).value = row.format;
+      (<HTMLInputElement>document.getElementById("mng_book_isbn10")).value = row.isbn10;
+      (<HTMLInputElement>document.getElementById("mng_book_isbn13")).value = row.isbn13;
+      (<HTMLInputElement>document.getElementById("mng_book_pages")).value = row.pages.toString();
+    } else {
+      this.bookForm.resetForm();
+    }
   }
 
   editBook(title: string,
@@ -322,19 +338,18 @@ export class ManageCatalogComponent implements OnInit {
            pages: string,
            form: NgForm) {
     if(this.bookSelection.isSelected(this.selectedRow) && this.selectedRow.id !== null) {
-
       let body = JSON.stringify({
         "Book": {
           "id": this.selectedRow.id,
-          "title": title !== "" ? title : this.selectedRow.title,
-          "author": author !== "" ? author : this.selectedRow.author,
-          "publisher": publisher !== "" ? publisher : this.selectedRow.publisher,
-          "pubDate": pubDate !== "" ? pubDate : this.selectedRow.pubDate,
-          "language": language !== "" ? language : this.selectedRow.language,
-          "format": format !== "" ? format : this.selectedRow.format,
-          "isbn10": isbn10 !== "" ? isbn10 : this.selectedRow.isbn10,
-          "isbn13": isbn13 !== "" ? isbn13 : this.selectedRow.isbn13,
-          "pages": pages !== "" ? +pages : this.selectedRow.pages
+          "title": title,
+          "author": author,
+          "publisher": publisher,
+          "pubDate": pubDate,
+          "language": language,
+          "format": format,
+          "isbn10": isbn10,
+          "isbn13": isbn13,
+          "pages": pages
         }
       });
 
@@ -348,15 +363,15 @@ export class ManageCatalogComponent implements OnInit {
           if (this.bookList[i].id === this.selectedRow.id) {
             this.bookList[i] = {
               "id": this.selectedRow.id,
-              "title": title !== "" ? title : this.selectedRow.title,
-              "author": author !== "" ? author : this.selectedRow.author,
-              "publisher": publisher !== "" ? publisher : this.selectedRow.publisher,
-              "pubDate": pubDate !== "" ? pubDate : this.selectedRow.pubDate,
-              "language": language !== "" ? language : this.selectedRow.language,
-              "format": format !== "" ? format : this.selectedRow.format,
-              "isbn10": isbn10 !== "" ? isbn10 : this.selectedRow.isbn10,
-              "isbn13": isbn13 !== "" ? isbn13 : this.selectedRow.isbn13,
-              "pages": pages !== "" ? +pages : this.selectedRow.pages
+              "title": title,
+              "author": author,
+              "publisher": publisher,
+              "pubDate": pubDate,
+              "language": language,
+              "format": format,
+              "isbn10": isbn10,
+              "isbn13": isbn13,
+              "pages": +pages
             };
             break;
           }
