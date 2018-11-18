@@ -24,8 +24,7 @@ public class ReturnTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = super.sqlUpdateValues();
-        return columnValues;
+        return super.sqlUpdateValues();
     }
 
     @Override
