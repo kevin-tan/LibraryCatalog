@@ -24,7 +24,7 @@ export class ManageCatalogComponent implements OnInit {
   matBookList: MatTableDataSource<Book>;
   bookSelection = new SelectionModel<Book>(false, []);
 
-  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate', 'runTime'];
+  displayMovieColumns: string[] = ['title', 'language', 'director', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate', 'runTime'];
   movieList: Movie[];
   matMovieList: MatTableDataSource<Movie>;
 
@@ -52,21 +52,6 @@ export class ManageCatalogComponent implements OnInit {
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, public snackBar: MatSnackBar) {
 
   }
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.bookSelection.selected.length;
-    const numRows = this.matBookList.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  masterToggle() {
-    this.isAllSelected() ?
-      this.bookSelection.clear() :
-      this.matBookList.data.forEach(row => this.bookSelection.select(row));
-  }
-
 
   logout() {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
@@ -122,47 +107,30 @@ export class ManageCatalogComponent implements OnInit {
     });
   }
 
-  addBook(title: string,
-              author: string,
-              publisher: string,
-              pubDate: string,
-              language: string,
-              format: string,
-              isbn10: string,
-              isbn13: string,
-              pages: string,
-              form: NgForm) {
+  addBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
+          isbn13: string, pages: string, form: NgForm) {
 
-    let body = JSON.stringify( {
-      "Book": {
-        "title": title,
-        "author": author,
-        "publisher": publisher,
-        "pubDate": pubDate,
-        "language": language,
-        "format": format,
-        "isbn10": isbn10,
-        "isbn13": isbn13,
-        "pages": +pages
+    let body = JSON.stringify({
+      'Book': {
+        'title': title,
+        'author': author,
+        'publisher': publisher,
+        'pubDate': pubDate,
+        'language': language,
+        'format': format,
+        'isbn10': isbn10,
+        'isbn13': isbn13,
+        'pages': +pages
       }
     });
 
-    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
     let options = {headers: headers, withCredentials: true};
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.bookList.push({
-        "id": null,
-        "title": title,
-        "author": author,
-        "publisher": publisher,
-        "pubDate": pubDate,
-        "language": language,
-        "format": format,
-        "isbn10": isbn10,
-        "isbn13": isbn13,
-        "pages": +pages});
+      this.bookList.push({'id': null, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
+        'format': format, 'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages});
       this.matBookList = new MatTableDataSource(this.bookList);
       this.matBookList.sort = this.bookSort;
       this.snackBar.open('Item added successfully!', 'OK', {
@@ -173,47 +141,31 @@ export class ManageCatalogComponent implements OnInit {
     });
   }
 
-  addMovie(title: string,
-               director: string,
-               releaseDate: string,
-               language: string,
-               subtitles: string,
-               dubbed: string,
-               actors: string,
-               producers: string,
-               runTime: string,
-               form: NgForm) {
+  addMovie(title: string, director: string, releaseDate: string, language: string, subtitles: string, dubbed: string, actors: string,
+           producers: string, runTime: string, form: NgForm) {
 
-    let body = JSON.stringify( {
-      "Movie": {
-        "title": title,
-        "director": director,
-        "releaseDate": releaseDate,
-        "language": language,
-        "subtitles": subtitles,
-        "dubbed": dubbed.split(", "),
-        "actors": actors.split(", "),
-        "producers": producers.split(", "),
-        "runTime": +runTime
+    let body = JSON.stringify({
+      'Movie': {
+        'title': title,
+        'director': director,
+        'releaseDate': releaseDate,
+        'language': language,
+        'subtitles': subtitles,
+        'dubbed': dubbed.split(', '),
+        'actors': actors.split(', '),
+        'producers': producers.split(', '),
+        'runTime': +runTime
       }
     });
 
-    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
     let options = {headers: headers, withCredentials: true};
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.movieList.push({
-        "id": null,
-        "title": title,
-        "director": director,
-        "releaseDate": releaseDate,
-        "language": language,
-        "subtitles": subtitles,
-        "dubbed": dubbed.split(", "),
-        "actors": actors.split(", "),
-        "producers": producers.split(", "),
-        "runTime": +runTime});
+      this.movieList.push({'id': null, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
+        'subtitles': subtitles, 'dubbed': dubbed.split(', '), 'actors': actors.split(', '),
+        'producers': producers.split(', '), 'runTime': +runTime});
       this.matMovieList = new MatTableDataSource(this.movieList);
       this.matMovieList.sort = this.movieSort;
     }, error => {
@@ -221,38 +173,25 @@ export class ManageCatalogComponent implements OnInit {
     });
   }
 
-  addMagazine(title: string,
-                  publisher: string,
-                  pubDate: string,
-                  language: string,
-                  isbn10: string,
-                  isbn13: string,
-                  form: NgForm) {
-
-    let body = JSON.stringify( {
-      "Magazine": {
-        "title": title,
-        "publisher": publisher,
-        "pubDate": pubDate,
-        "language": language,
-        "isbn10": isbn10,
-        "isbn13": isbn13
+  addMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
+    let body = JSON.stringify({
+      'Magazine': {
+        'title': title,
+        'publisher': publisher,
+        'pubDate': pubDate,
+        'language': language,
+        'isbn10': isbn10,
+        'isbn13': isbn13
       }
     });
 
-    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
     let options = {headers: headers, withCredentials: true};
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.magazineList.push({
-        "id": null,
-        "title": title,
-        "publisher": publisher,
-        "pubDate": pubDate,
-        "language": language,
-        "isbn10": isbn10,
-        "isbn13": isbn13});
+      this.magazineList.push({'id': null, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
+        'isbn10': isbn10, 'isbn13': isbn13});
       this.matMagazineList = new MatTableDataSource(this.magazineList);
       this.matMagazineList.sort = this.magazineSort;
     }, error => {
@@ -260,38 +199,24 @@ export class ManageCatalogComponent implements OnInit {
     });
   }
 
-  addMusic(title: string,
-               artist: string,
-               type: string,
-               releaseDate: string,
-               label: string,
-               asin: string,
-               form: NgForm) {
-
-    let body = JSON.stringify( {
-      "Music": {
-        "title": title,
-        "artist": artist,
-        "type": type,
-        "releaseDate": releaseDate,
-        "label": label,
-        "asin": asin
+  addMusic(title: string, artist: string, type: string, releaseDate: string, label: string, asin: string, form: NgForm) {
+    let body = JSON.stringify({
+      'Music': {
+        'title': title,
+        'artist': artist,
+        'type': type,
+        'releaseDate': releaseDate,
+        'label': label,
+        'asin': asin
       }
     });
 
-    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
     let options = {headers: headers, withCredentials: true};
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.musicList.push({
-        "id": null,
-        "title": title,
-        "artist": artist,
-        "type": type,
-        "releaseDate": releaseDate,
-        "label": label,
-        "asin": asin});
+      this.musicList.push({'id': null, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label, 'asin': asin});
       this.matMusicList = new MatTableDataSource(this.musicList);
       this.matMusicList.sort = this.musicSort;
     }, error => {
@@ -312,48 +237,40 @@ export class ManageCatalogComponent implements OnInit {
   rowSelected(row: Book) {
     this.selectedRow = row;
 
-    if(!this.bookSelection.isSelected(row)) {
-      (<HTMLInputElement>document.getElementById("mng_book_title")).value = row.title;
-      (<HTMLInputElement>document.getElementById("mng_book_author")).value = row.author;
-      (<HTMLInputElement>document.getElementById("mng_book_publisher")).value = row.publisher;
-      (<HTMLInputElement>document.getElementById("mng_book_pubDate")).value = row.pubDate;
-      (<HTMLInputElement>document.getElementById("mng_book_language")).value = row.language;
-      (<HTMLInputElement>document.getElementById("mng_book_format")).value = row.format;
-      (<HTMLInputElement>document.getElementById("mng_book_isbn10")).value = row.isbn10;
-      (<HTMLInputElement>document.getElementById("mng_book_isbn13")).value = row.isbn13;
-      (<HTMLInputElement>document.getElementById("mng_book_pages")).value = row.pages.toString();
+    if (!this.bookSelection.isSelected(row)) {
+      (<HTMLInputElement>document.getElementById('mng_book_title')).value = row.title;
+      (<HTMLInputElement>document.getElementById('mng_book_author')).value = row.author;
+      (<HTMLInputElement>document.getElementById('mng_book_publisher')).value = row.publisher;
+      (<HTMLInputElement>document.getElementById('mng_book_pubDate')).value = row.pubDate;
+      (<HTMLInputElement>document.getElementById('mng_book_language')).value = row.language;
+      (<HTMLInputElement>document.getElementById('mng_book_format')).value = row.format;
+      (<HTMLInputElement>document.getElementById('mng_book_isbn10')).value = row.isbn10;
+      (<HTMLInputElement>document.getElementById('mng_book_isbn13')).value = row.isbn13;
+      (<HTMLInputElement>document.getElementById('mng_book_pages')).value = row.pages.toString();
     } else {
       this.bookForm.resetForm();
     }
   }
 
-  editBook(title: string,
-           author: string,
-           publisher: string,
-           pubDate: string,
-           language: string,
-           format: string,
-           isbn10: string,
-           isbn13: string,
-           pages: string,
-           form: NgForm) {
-    if(this.bookSelection.isSelected(this.selectedRow) && this.selectedRow.id !== null) {
+  editBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
+           isbn13: string, pages: string, form: NgForm) {
+    if (this.bookSelection.isSelected(this.selectedRow) && this.selectedRow.id !== null) {
       let body = JSON.stringify({
-        "Book": {
-          "id": this.selectedRow.id,
-          "title": title,
-          "author": author,
-          "publisher": publisher,
-          "pubDate": pubDate,
-          "language": language,
-          "format": format,
-          "isbn10": isbn10,
-          "isbn13": isbn13,
-          "pages": pages
+        'Book': {
+          'id': this.selectedRow.id,
+          'title': title,
+          'author': author,
+          'publisher': publisher,
+          'pubDate': pubDate,
+          'language': language,
+          'format': format,
+          'isbn10': isbn10,
+          'isbn13': isbn13,
+          'pages': pages
         }
       });
 
-      let headers = new HttpHeaders({"Content-Type": "application/json"});
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
       let options = {headers: headers, withCredentials: true};
 
       this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
@@ -361,18 +278,8 @@ export class ManageCatalogComponent implements OnInit {
 
         for (let i = 0; i < this.bookList.length; i++) {
           if (this.bookList[i].id === this.selectedRow.id) {
-            this.bookList[i] = {
-              "id": this.selectedRow.id,
-              "title": title,
-              "author": author,
-              "publisher": publisher,
-              "pubDate": pubDate,
-              "language": language,
-              "format": format,
-              "isbn10": isbn10,
-              "isbn13": isbn13,
-              "pages": +pages
-            };
+            this.bookList[i] = {'id': this.selectedRow.id, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate,
+              'language': language, 'format': format, 'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages};
             break;
           }
         }

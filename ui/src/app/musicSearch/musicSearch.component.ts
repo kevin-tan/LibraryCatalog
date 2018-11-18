@@ -3,6 +3,7 @@ import {Music} from "../catalog/dto/music";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-catalog',
@@ -15,6 +16,7 @@ export class musicSearchComponent implements OnInit {
   matMusicList: MatTableDataSource<Music>;
 
   @ViewChild('musicSort') musicSort: MatSort;
+  @ViewChild('musicForm') musicForm: NgForm;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
@@ -35,6 +37,7 @@ export class musicSearchComponent implements OnInit {
 
   getAllMusics(): void {
     this.http.get<Array<Music>>('http://localhost:8080/user/catalog/getAll/music', {withCredentials: true}).subscribe(response => {
+      this.musicForm.resetForm();
       this.matMusicList = new MatTableDataSource(response);
       this.matMusicList.sort = this.musicSort;
     }, error => {
@@ -60,6 +63,7 @@ export class musicSearchComponent implements OnInit {
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Music>>('http://localhost:8080/user/catalog/search/music', body, options).subscribe(response => {
+      this.musicForm.resetForm();
       this.matMusicList = new MatTableDataSource(response);
       this.matMusicList.sort = this.musicSort;
     }, error => {

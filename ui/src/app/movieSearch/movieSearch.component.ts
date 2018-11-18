@@ -3,6 +3,7 @@ import {Movie} from "../catalog/dto/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-catalog',
@@ -11,10 +12,11 @@ import {MatSort, MatTableDataSource} from '@angular/material';
 })
 export class movieSearchComponent implements OnInit {
 
-  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime'];
+  displayMovieColumns: string[] = ['title', 'language', 'director', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime'];
   matMovieList: MatTableDataSource<Movie>;
 
   @ViewChild('movieSort') movieSort: MatSort;
+  @ViewChild('movieForm') movieForm: NgForm;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
@@ -35,6 +37,7 @@ export class movieSearchComponent implements OnInit {
 
   getAllMovies(): void {
     this.http.get<Array<Movie>>('http://localhost:8080/user/catalog/getAll/movie', {withCredentials: true}).subscribe(response => {
+      this.movieForm.resetForm();
       this.matMovieList = new MatTableDataSource(response);
       this.matMovieList.sort = this.movieSort;
     }, error => {
@@ -46,9 +49,6 @@ export class movieSearchComponent implements OnInit {
                releaseDate: string,
                language: string,
                subtitles: string,
-               dubbed: string,
-               actors: string,
-               producers: string,
                runTime: string) {
 
     let body = JSON.stringify( {
@@ -57,15 +57,13 @@ export class movieSearchComponent implements OnInit {
         "releaseDate": releaseDate,
         "language": language,
         "subtitles": subtitles,
-        "dubbed": dubbed.split(", "),
-        "actors": actors.split(", "),
-        "producers": producers.split(", "),
-        "runTime": +runTime
+        "runTime": runTime === "" ? "" : +runTime
     });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Movie>>('http://localhost:8080/user/catalog/search/movie', body, options).subscribe(response => {
+      this.movieForm.resetForm();
       this.matMovieList = new MatTableDataSource(response);
       this.matMovieList.sort = this.movieSort;
     }, error => {

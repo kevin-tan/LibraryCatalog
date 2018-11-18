@@ -3,6 +3,7 @@ import {Magazine} from "../catalog/dto/Magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-catalog',
@@ -15,6 +16,7 @@ export class magazineSearchComponent implements OnInit {
   matMagazineList: MatTableDataSource<Magazine>;
 
   @ViewChild('magazineSort') magazineSort: MatSort;
+  @ViewChild('magazineForm') magazineForm: NgForm;
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
   }
@@ -36,6 +38,7 @@ export class magazineSearchComponent implements OnInit {
 
   getAllMagazines(): void {
     this.http.get<Array<Magazine>>('http://localhost:8080/user/catalog/getAll/magazine', {withCredentials: true}).subscribe(response => {
+      this.magazineForm.resetForm();
       this.matMagazineList = new MatTableDataSource(response);
       this.matMagazineList.sort = this.magazineSort;
     }, error => {
@@ -57,11 +60,12 @@ export class magazineSearchComponent implements OnInit {
       "language": language,
       "isbn10": isbn10,
       "isbn13": isbn13
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Magazine>>('http://localhost:8080/user/catalog/search/magazine', body, options).subscribe(response => {
+      this.magazineForm.resetForm();
       this.matMagazineList = new MatTableDataSource(response);
       this.matMagazineList.sort = this.magazineSort;
     }, error => {

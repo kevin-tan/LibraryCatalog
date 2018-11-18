@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../catalog/dto/book';
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-catalog',
@@ -17,6 +18,7 @@ export class bookSearchComponent implements OnInit {
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
   @ViewChild('bookSort') bookSort: MatSort;
+  @ViewChild('bookForm') bookForm: NgForm;
 
   ngOnInit() {
     this.getAllBooks();
@@ -35,6 +37,7 @@ export class bookSearchComponent implements OnInit {
 
   getAllBooks(): void {
     this.http.get<Array<Book>>('http://localhost:8080/user/catalog/getAll/book', {withCredentials: true}).subscribe(response => {
+      this.bookForm.resetForm();
       this.matBookList = new MatTableDataSource(response);
       this.matBookList.sort = this.bookSort;
     }, error => {
@@ -59,11 +62,12 @@ export class bookSearchComponent implements OnInit {
       "format": format,
       "isbn10": isbn10,
       "isbn13": isbn13
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Book>>('http://localhost:8080/user/catalog/search/book', body, options).subscribe(response => {
+      this.bookForm.resetForm();
       this.matBookList = new MatTableDataSource(response);
       this.matBookList.sort = this.bookSort;
     }, error => {

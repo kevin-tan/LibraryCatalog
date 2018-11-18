@@ -32,7 +32,7 @@ label::before {
   height: 20px;
 }
 #expandTitle, #expandDirector, #expandRelease, #expandLang,
-#expandSub, #expandDub, #expandActor, #expandProducer {
+#expandSub, #expandRun {
   height: 0px;
   overflow: hidden;
   transition: height 0.5s;
@@ -40,14 +40,12 @@ label::before {
 
 #toggleTitle:checked ~ #expandTitle, #toggleDirector:checked ~ #expandDirector,
 #toggleRelease:checked ~ #expandRelease, #toggleLang:checked ~ #expandLang,
-#toggleSub:checked ~ #expandSub, #toggleDub:checked ~ #expandDub,
-#toggleActor:checked ~ #expandActor, #toggleProducer:checked ~ #expandProducer {
+#toggleSub:checked ~ #expandSub, #toggleRun:checked ~ #expandRun {
   height: 50px;
 }
 
 #toggleTitle:checked ~ label::before, #toggleDirector:checked ~ label::before,
 #toggleRelease:checked ~label::before, #toggleLang:checked ~ label::before,
-#toggleSub:checked ~ label::before, #toggleDub:checked ~ label::before,
-#toggleActor:checked ~ label::before, #toggleProducer:checked ~ label::before{
+#toggleSub:checked ~ label::before, #toggleRun:checked ~ label::before {
   content: "-";
 }

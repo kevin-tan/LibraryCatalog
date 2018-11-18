@@ -6,6 +6,7 @@ import {Magazine} from '../catalog/dto/magazine';
 import {Movie} from '../catalog/dto/movie';
 import {Music} from '../catalog/dto/music';
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +32,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('movieSort') movieSort: MatSort;
   @ViewChild('magazineSort') magazineSort: MatSort;
   @ViewChild('musicSort') musicSort: MatSort;
+  @ViewChild('homeForm') homeForm: NgForm;
 
   ngOnInit() {
     //Gets all itemSpecs at beginning
@@ -56,6 +58,7 @@ export class HomeComponent implements OnInit {
 
   searchAllTitle(searchTitle: string) {
     this.http.get('http://localhost:8080/user/catalog/findByTitle/' + searchTitle, {withCredentials: true}).subscribe(response => {
+      this.homeForm.resetForm();
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
       this.matBookList.sort = this.bookSort;
       this.matMagazineList = new MatTableDataSource(response['magazine'] as Array<Magazine>);
@@ -71,6 +74,7 @@ export class HomeComponent implements OnInit {
 
   getAllCatalog() {
     this.http.get('http://localhost:8080/user/catalog/searchAll', {withCredentials: true}).subscribe(response => {
+      this.homeForm.resetForm();
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
       this.matBookList.sort = this.bookSort;
       this.matMagazineList = new MatTableDataSource(response['magazine'] as Array<Magazine>);
