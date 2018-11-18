@@ -23,8 +23,9 @@ public class LoanableItem extends Item {
 
     @Override
     public String sqlUpdateValues() {
-        String columnValues = USERID + " = '" + client.getId() + "', ";
-        columnValues += AVAILABLE + " = '" + available + "'";
+        Long client_id = (client == null) ? null : client.getId();
+        String columnValues = USERID + " = '" + client_id + "', ";
+        columnValues += AVAILABLE + " = " + available + "";
         return columnValues;
     }
 

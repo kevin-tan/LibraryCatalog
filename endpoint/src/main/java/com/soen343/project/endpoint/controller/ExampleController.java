@@ -21,6 +21,8 @@ import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
+import com.soen343.project.repository.entity.transaction.LoanTransaction;
+import com.soen343.project.repository.entity.transaction.ReturnTransaction;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -36,8 +38,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
 
@@ -78,6 +80,72 @@ public class ExampleController {
         this.loanableItemGateway = loanableItemGateway;
         this.returnTransactionGateway = returnTransactionGateway;
         this.loanTransactionGateway = loanTransactionGateway;
+    }
+
+    @GetMapping("/test/saveLoanTransaction")
+    public ResponseEntity<?> testSaveLoanableTransaction() {
+        LoanTransaction l1 =
+                new LoanTransaction(0L, loanableItemGateway.findById(1L), (Client) userRepository.findById(3L), LocalDateTime.now(),
+                        LocalDateTime.now());
+
+        LoanTransaction l2 =
+                new LoanTransaction(0L, loanableItemGateway.findById(11L), (Client) userRepository.findById(3L), LocalDateTime.now(),
+                        LocalDateTime.now());
+
+        LoanTransaction l3 =
+                new LoanTransaction(0L, loanableItemGateway.findById(16L), (Client) userRepository.findById(3L), LocalDateTime.now(),
+                        LocalDateTime.now());
+        loanTransactionGateway.saveAll(l1, l2, l3);
+        return new ResponseEntity<>("Worked", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveLoanTransaction2")
+    public ResponseEntity<?> testSaveLoanableTransaction2() {
+        LoanTransaction l1 =
+                new LoanTransaction(0L, loanableItemGateway.findById(2L), (Client) userRepository.findById(3L), LocalDateTime.now(),
+                        LocalDateTime.now());
+
+        LoanTransaction l2 =
+                new LoanTransaction(0L, loanableItemGateway.findById(3L), (Client) userRepository.findById(3L), LocalDateTime.now(),
+                        LocalDateTime.now());
+
+        LoanTransaction l3 =
+                new LoanTransaction(0L, loanableItemGateway.findById(4L), (Client) userRepository.findById(3L), LocalDateTime.now(),
+                        LocalDateTime.now());
+        loanTransactionGateway.saveAll(l1, l2, l3);
+        return new ResponseEntity<>("Worked", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveReturnTransaction2")
+    public ResponseEntity<?> testSaveReturnTransaction2() {
+        ReturnTransaction l1 =
+                new ReturnTransaction(0L, loanableItemGateway.findById(2L), (Client) userRepository.findById(3L), LocalDateTime.now());
+
+        ReturnTransaction l2 =
+                new ReturnTransaction(0L, loanableItemGateway.findById(3L), (Client) userRepository.findById(3L), LocalDateTime.now());
+
+        ReturnTransaction l3 =
+                new ReturnTransaction(0L, loanableItemGateway.findById(4L), (Client) userRepository.findById(3L), LocalDateTime.now());
+        returnTransactionGateway.saveAll(l1, l2, l3);
+        return new ResponseEntity<>("Worked", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/findLoanablesAreAvailable")
+    public ResponseEntity<?> testfindLoanablesAreAvailable() {
+        LoanableItem l1 = new LoanableItem(1L, movieRepository.findById(1L), false, null);
+        LoanableItem l2 = new LoanableItem(12L, musicRepository.findById(2L), false, null);
+        LoanableItem l3 = new LoanableItem(20L, musicRepository.findById(5L), false, null);
+
+        return new ResponseEntity<>(loanableItemGateway.findLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
+    }
+
+    @GetMapping("/test/findLoanablesAreAvailable2")
+    public ResponseEntity<?> testfindLoanablesAreAvailable2() {
+        LoanableItem l1 = new LoanableItem(2L, movieRepository.findById(2L), false, null);
+        LoanableItem l2 = new LoanableItem(12L, musicRepository.findById(2L), false, null);
+        LoanableItem l3 = new LoanableItem(20L, musicRepository.findById(5L), false, null);
+
+        return new ResponseEntity<>(loanableItemGateway.findLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
     }
 
     @PostMapping("/text/loanableItem")

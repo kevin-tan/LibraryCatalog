@@ -62,15 +62,20 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
             // Get Movie Id
             ResultSet rs = statement.executeQuery(createFindByIdQuery(MOVIE_TABLE, id));
 
+            // Build movie
+            Movie m = Movie.builder().id(rs.getLong(ID)).actors(null).date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
+                    .dubbed(null).lang(rs.getString(LANGUAGE)).producers(null).runTime(rs.getInt(RUNTIME))
+                    .subtitles(rs.getString(SUBTITLES)).title(rs.getString(TITLE)).build();
+
             //Only single id for rs, thus no need to check rs.next()
             List<String> producers = findAllFromForeignKey(statement, PRODUCERS_TABLE, id);
             List<String> actors = findAllFromForeignKey(statement, ACTORS_TABLE, id);
             List<String> dubbed = findAllFromForeignKey(statement, DUBBED_TABLE, id);
 
-            // Build movie
-            return Movie.builder().id(rs.getLong(ID)).actors(actors).date(rs.getString(RELEASEDATE)).director(rs.getString(DIRECTOR))
-                    .dubbed(dubbed).lang(rs.getString(LANGUAGE)).producers(producers).runTime(rs.getInt(RUNTIME))
-                    .subtitles(rs.getString(SUBTITLES)).title(rs.getString(TITLE)).build();
+            m.setProducers(producers);
+            m.setActors(actors);
+            m.setDubbed(dubbed);
+            return m;
         });
         scheduler.reader_v();
         return movie;

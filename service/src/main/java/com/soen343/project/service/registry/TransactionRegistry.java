@@ -48,6 +48,9 @@ public class TransactionRegistry {
         String transactionDateFormatted = transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         List<LoanableItem> failedItems = new LinkedList<>();
 
+        // Check for if the loanables are available
+
+
         // Create loan transaction
         List<LoanTransaction> transactions = new LinkedList<>();
         loanables.forEach(loanableItem -> transactions.add(new LoanTransaction(loanableItem, client, transactionDate)));
