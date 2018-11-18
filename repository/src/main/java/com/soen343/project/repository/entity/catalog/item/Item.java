@@ -44,7 +44,7 @@ public class Item implements DatabaseEntity {
 
     @Override
     public String sqlUpdateValues() {
-        String columnValues = ITEMSPECID + " = '" + spec.getId() + "', ";
+        String columnValues = ITEMSPECID + " = " + spec.getId() + ", ";
         columnValues += TYPE + " = '" + type + "'";
         return columnValues;
     }
@@ -52,7 +52,7 @@ public class Item implements DatabaseEntity {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + spec.getId() + "','" + type + "')";
+        return "(" + spec.getId() + ",'" + type + "')";
     }
 
     @Override

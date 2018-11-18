@@ -8,12 +8,9 @@ import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import static com.soen343.project.repository.dao.transaction.com.DateConverter.DATE_FORMAT;
 import static com.soen343.project.repository.entity.EntityConstants.DUEDATE;
 import static com.soen343.project.repository.entity.EntityConstants.TRANSACTIONDATE;
 
@@ -46,23 +43,23 @@ public class TransactionRegistry {
 
     public Map<String, List<?>> searchAllByTransactionDate(ObjectNode transactionDate) {
         return ImmutableMap.of(LOAN_TRANSACTION,
-                loanTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())),
+                loanTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()),
                 RETURN_TRANSACTION,
-                returnTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+                returnTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()));
     }
 
     public List<?> searchLoanByTransactionDate(ObjectNode transactionDate) {
         return ImmutableList
-                .of(loanTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+                .of(loanTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()));
     }
 
     public List<?> searchLoanByDueDate(ObjectNode dueDate) {
-        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(formatDateString(dueDate.get(DUEDATE).asText())));
+        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(dueDate.get(DUEDATE).asText()));
     }
 
     public List<?> searchReturnByTransactionDate(ObjectNode transactionDate) {
         return ImmutableList
-                .of(returnTransactionGateway.findByTransactionDate(formatDateString(transactionDate.get(TRANSACTIONDATE).asText())));
+                .of(returnTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()));
     }
 
     public Map<String, List<?>> searchTransactionsByUserId(Long userId) {
@@ -81,9 +78,5 @@ public class TransactionRegistry {
     public Map<String, List<?>> searchTransactionByItemType(String itemType) {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByItemType(itemType), RETURN_TRANSACTION,
                 returnTransactionGateway.findByItemType(itemType));
-    }
-
-    private String formatDateString(String date) {
-        return LocalDateTime.parse(date).format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 }
