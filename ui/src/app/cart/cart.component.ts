@@ -6,7 +6,7 @@ import {LoanableItem} from "../catalog/dto/loanableItem";
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.css']
+  styleUrls: ['./cart.component.css', '../home/home.component.css']
 })
 export class CartComponent implements OnInit {
 
@@ -17,6 +17,7 @@ export class CartComponent implements OnInit {
   }
 
   loanableItems: Array<LoanableItem>;
+  displayColumn: string[] = ['title'];
 
   logout(): void {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
