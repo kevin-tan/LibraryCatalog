@@ -28,6 +28,7 @@ import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.uow.UnitOfWork;
 import com.soen343.project.service.catalog.CatalogSearch;
+import com.soen343.project.service.registry.TransactionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,12 +63,14 @@ public class ExampleController {
     private final LoanableItemGateway loanableItemGateway;
     private final ReturnTransactionGateway returnTransactionGateway;
     private final LoanTransactionGateway loanTransactionGateway;
+    private final TransactionRegistry transactionRegistry;
 
     @Autowired
     public ExampleController(UserGateway userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CatalogSearch catalogSearch,
                              MovieGateway movieRepository, ItemGateway itemRepository, BookGateway bookRepository,
                              MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableItemGateway loanableItemGateway,
-                             ReturnTransactionGateway returnTransactionGateway, LoanTransactionGateway loanTransactionGateway) {
+                             ReturnTransactionGateway returnTransactionGateway, LoanTransactionGateway loanTransactionGateway,
+                             TransactionRegistry transactionRegistry) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.catalogSearch = catalogSearch;
@@ -80,6 +83,19 @@ public class ExampleController {
         this.loanableItemGateway = loanableItemGateway;
         this.returnTransactionGateway = returnTransactionGateway;
         this.loanTransactionGateway = loanTransactionGateway;
+        this.transactionRegistry = transactionRegistry;
+    }
+
+    @GetMapping("/test/addTransactionRegistry")
+    public ResponseEntity<?> testAddTransactionRegistry() {
+        return transactionRegistry.addLoanTransactions((Client) userRepository.findById(2L),
+                Arrays.asList(loanableItemGateway.findById(4L), loanableItemGateway.findById(2L), loanableItemGateway.findById(3L)));
+    }
+
+    @GetMapping("/test/returnTransactionRegistry")
+    public ResponseEntity<?> testReturnTransactionRegistry() {
+        return transactionRegistry.addReturnTransactions((Client) userRepository.findById(2L),
+                Arrays.asList(loanableItemGateway.findById(4L), loanableItemGateway.findById(2L), loanableItemGateway.findById(3L)));
     }
 
     @GetMapping("/test/saveLoanTransaction")
