@@ -44,7 +44,7 @@ public class ClientHandler {
 
         long numberOfOwnedItems = getLoanedItemsByUserID(clientId).size();
 
-        if (numberOfOwnedItems + loanables.size() >= MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN) {
+        if (numberOfOwnedItems + loanables.size() > MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
