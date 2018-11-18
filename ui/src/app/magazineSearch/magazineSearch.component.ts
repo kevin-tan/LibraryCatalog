@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Magazine} from "../catalog/dto/Magazine";
+import {Magazine} from "../catalog/dto/item-specification/magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';

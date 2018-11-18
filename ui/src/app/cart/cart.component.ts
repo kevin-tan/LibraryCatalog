@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {HttpClient} from "@angular/common/http";
 import {MatTableDataSource} from "@angular/material";
-import {Book} from "../catalog/dto/book";
+import {Book} from "../catalog/dto/item-specification/book";
 
 @Component({
   selector: 'app-cart',

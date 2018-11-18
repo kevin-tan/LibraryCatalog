@@ -1,8 +1,8 @@
-import {ItemSpecification} from "./item_specification";
+import {ItemSpecification} from "./item-specification/item_specification";
 import {User} from "../../registration/user";
 
-export interface LoanableItem{
-  id: Number;
+export interface LoanableItem {
+  id: number;
   spec: ItemSpecification;
   type: string;
   available: boolean;
