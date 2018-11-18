@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {LoanableItem} from "../catalog/dto/loanableItem";
 import {ItemSpecification} from "../catalog/dto/item-specification/item_specification";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Magazine} from "../catalog/dto/item-specification/magazine";
 
 @Component({
@@ -12,7 +12,7 @@ import {Magazine} from "../catalog/dto/item-specification/magazine";
 })
 export class DetailsComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router:Router) { }
 
   type: string;
   specID: number;
@@ -23,6 +23,7 @@ export class DetailsComponent implements OnInit {
 
   loanables: LoanableItem[];
   magazines: ItemSpecification[];
+  availableCounter: number = 0;
 
   ngOnInit() {
     this.type = this.route.snapshot.paramMap.get('type');
@@ -35,6 +36,7 @@ export class DetailsComponent implements OnInit {
       this.http.get<ItemSpecification[]>('http://localhost:8080/user/catalog/getAll/' + this.type +'/' + this.specID, {withCredentials: true},)
         .subscribe(response => {
           this.magazines = response;
+
         }, error => {
           console.log(error);
         });
@@ -42,14 +44,37 @@ export class DetailsComponent implements OnInit {
       this.http.get<LoanableItem[]>('http://localhost:8080/user/catalog/getAll/' + this.type +'/' + this.specID, {withCredentials: true},)
         .subscribe(response => {
           this.loanables = response;
+          for(let item of this.loanables){
+            if(item.available){
+               this.availableCounter +=1;
+            }
+          }
         }, error => {
           console.log(error);
         });
     }
   }
 
-  addItemToCart(){
+  addItemToCart(loanableItem: LoanableItem){
+    let json = {};
+    json["id"] = loanableItem.id;
+    json["available"] = loanableItem.available;
+    json["client"] = loanableItem.client;
+    json["spec"] = loanableItem.spec;
+    json["type"] = loanableItem.type;
+    let final = {["LoanableItem"]:json};
 
+    let body = JSON.stringify(final);
+
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
+    let options = {headers: headers, withCredentials: true};
+
+    this.http.post('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/add", body, options)
+      .subscribe(response => {
+        this.router.navigate(['/cart']);
+      }, error => {
+        console.log(error);
+      });
   }
 
 }

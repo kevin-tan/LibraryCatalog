@@ -23,8 +23,7 @@ export class CartComponent implements OnInit {
   getCartItems(){
     this.http.get<LoanableItem[]>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
       for (let item of response) {
-        item.client = item.client['Client'];
-        item.spec = item.spec[item.type];
+        console.log(item);
       }
       this.loanableItems = response;
 
@@ -34,26 +33,33 @@ export class CartComponent implements OnInit {
     });
   }
 
-  addItemToCart(loanableItem: LoanableItem){
-    this.http.post<LoanableItem>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/add", {withCredentials: true, loanableItem}, )
-      .subscribe(response => {
-      console.log(this.loanableItems);
-    }, error => {
-      console.log(error);
-    });
-  }
-
   removeItemFromCart(loanableItem: LoanableItem){
-    this.http.put<LoanableItem>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/remove", {withCredentials: true, loanableItem},)
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
+    let options = {headers: headers, withCredentials: true};
+
+    let json = {};
+    json["id"] = loanableItem.id;
+    json["available"] = loanableItem.available;
+    json["client"] = loanableItem.client;
+    json["spec"] = loanableItem.spec;
+    json["type"] = loanableItem.type;
+    let final = {["LoanableItem"]:json};
+
+    let body = JSON.stringify(final);
+
+    this.http.put<LoanableItem>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/remove", body, options)
       .subscribe(response => {
+        this.getCartItems();
       }, error => {
         console.log(error);
       });
   }
 
+  //refresh
   cancel(){
     this.http.delete<LoanableItem>('http://localhost:8080/client/' + sessionStorage.getItem('user_id') + "/cancelLoan", {withCredentials: true},)
       .subscribe(response => {
+        this.getCartItems();
       }, error => {
         console.log(error);
       });
@@ -67,25 +73,26 @@ export class CartComponent implements OnInit {
     let url: string = "http://localhost:8080/client/" + sessionStorage.getItem('user_id') + "/loan";
     let headers = new HttpHeaders({'Authorization': 'Basic ' + btoa(adminUsername+':'+adminPassword), 'Content-Type': 'application/json'});
     let options = {headers: headers};
-    let obj = [];
+    let final =[];
     this.loanableItems.forEach(item => {
       let json = {};
       json["id"] = item.id;
       json["available"] = item.available;
-      json["client"] = {["Client"]:item.client};
-      json["spec"] = {[item.type]:item.spec};
+      json["client"] = item.client;
+      json["spec"] = item.spec;
       json["type"] = item.type;
-      obj.push({["LoanableItem"]:json});
+      final.push({["LoanableItem"]:json});
+    });
 
-      let body = JSON.stringify(obj);
+      let body = JSON.stringify(final);
 
-      this.http.post(url, body, options).subscribe(response => {
+    console.log(body);
+
+    this.http.post(url, body, options).subscribe(response => {
         this.getCartItems();
       }, error => {
         this.errorMessage = "Invalid Admin Credentials";
       })
-
-    });
   }
 
   logout(): void {

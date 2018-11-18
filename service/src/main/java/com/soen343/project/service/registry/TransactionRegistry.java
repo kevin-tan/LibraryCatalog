@@ -57,8 +57,10 @@ public class TransactionRegistry {
             loanables.forEach(loanableItem -> transactions.add(new LoanTransaction(loanableItem, client, LocalDateTime.now())));
             // Check + create the loan transaction
             loanTransactionGateway.saveAll(transactions.toArray(new LoanTransaction[]{}));
+            System.err.print("On transaction");
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
+            System.err.print("EROROR");
             return new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
         }
     }
