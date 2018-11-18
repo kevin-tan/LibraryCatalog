@@ -54,11 +54,13 @@ public class ClientHandler {
         return transactionService.createLoanTransactions(client,loanables);
     }
 
-    // TODO: Done
-    public Transaction returnItems(Long clientId, List<LoanableItem> loanableItems) {
+    public ResponseEntity<?> returnItems(Long clientId, List<LoanableItem> loanableItems) {
         setClient(clientId);
-        transactionService.createReturnTransactions(client,loanableItems);
-        return null;
+        return transactionService.createReturnTransactions(client,loanableItems);
+    }
+
+    public List<?> getLoanedItemsByUserID(Long clientId){
+        return loanableItemGateway.findByUserIdAndIsLoaned(clientId);
     }
 
     private void setClient(Long clientId) {

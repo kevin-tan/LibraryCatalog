@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.catalog.item;
 
+import com.google.common.collect.ImmutableMap;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
@@ -125,10 +126,8 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
 
     public List<?> findByUserIdAndIsLoaned(Long userId) {
         scheduler.reader_p();
-        Map<String, String> userIdAndLoaned = new HashMap<>();
-        userIdAndLoaned.put(USERID, userId.toString());
-        userIdAndLoaned.put(AVAILABLE, "0");
-        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANABLEITEM_TABLE, userIdAndLoaned), findAllTransaction());
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANABLEITEM_TABLE,
+                ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")), findAllTransaction());
         scheduler.reader_v();
         return list;
     }

@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.transaction;
 
+import com.google.common.collect.ImmutableMap;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.transaction.com.TransactionGateway;
@@ -184,10 +185,8 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
 
     public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate) {
         scheduler.reader_p();
-        Map<String, String> userAndDates = new HashMap<>();
-        userAndDates.put(USERID, userId.toString());
-        userAndDates.put(TRANSACTIONDATE, transactionDate);
-        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE, userAndDates), findAllTransaction());
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE,
+                ImmutableMap.of(USERID, userId.toString(), TRANSACTIONDATE, transactionDate)), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
