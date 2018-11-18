@@ -2,6 +2,7 @@ package com.soen343.project.service.catalog;
 
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
+import com.soen343.project.repository.dao.catalog.item.ItemGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
@@ -23,6 +24,7 @@ public class CatalogSearch {
     private final MagazineGateway magazineRepository;
     private final MusicGateway musicRepository;
     private final LoanableItemGateway loanableItemGateway;
+    private final ItemGateway itemGateway;
 
     private static final String BOOK = "book";
     private static final String MAGAZINE = "magazine";
@@ -32,12 +34,14 @@ public class CatalogSearch {
     @Autowired
     public CatalogSearch(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
                          MagazineGateway magazineRepository, MusicGateway musicRepository, LoanableItemGateway loanableItemGateway) {
+                         MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway) {
         this.gatewayMapper = gatewayMapper;
         this.movieRepository = movieRepository;
         this.bookRepository = bookRepository;
         this.magazineRepository = magazineRepository;
         this.musicRepository = musicRepository;
         this.loanableItemGateway = loanableItemGateway;
+        this.itemGateway = itemGateway;
     }
 
 
@@ -57,6 +61,10 @@ public class CatalogSearch {
 
     public List<?> getAllOfType(String itemType) {
         return gatewayMapper.getGateway(itemType).findAll();
+    }
+
+    public List<?> getAllOfSameType(String itemType, Long itemSpecId) {
+        return itemGateway.findByItemSpecId(itemType, itemSpecId);
     }
 
     public List<?> getLoanableItemsBySpec(Long specID){
