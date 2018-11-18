@@ -54,7 +54,7 @@ public class LoanController {
         return new ResponseEntity<>(clientHandler.returnItems(clientId, loanableItems), HttpStatus.OK);
     }
 
-    @GetMapping("/{clientId}/loanedItem")
+    @GetMapping("/{clientId}/loanedItems")
     public ResponseEntity<?> getLoanedItems(@PathVariable Long clientId) {
         return new ResponseEntity<>(clientHandler.getLoanedItemsByUserID(clientId), HttpStatus.OK);
     }
