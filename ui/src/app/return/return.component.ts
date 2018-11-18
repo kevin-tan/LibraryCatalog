@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {HomeRedirectService} from "../home/home-redirect.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {LoanableItem} from "../catalog/dto/loanableItem";
 
