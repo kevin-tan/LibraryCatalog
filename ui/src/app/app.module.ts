@@ -16,6 +16,7 @@ import {activeUsersComponent} from './activeUsers/activeUsers.component';
 import {ManageCatalogComponent} from './manageCatalog/manage.catalog.component';
 import {HomeRedirectService} from './home/home-redirect.service';
 import {MatTableModule} from '@angular/material/table';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSortModule} from '@angular/material/sort';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -40,6 +41,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     AppRoutingModule,
     MatTableModule,
     MatSortModule,
+    MatSnackBarModule,
     BrowserAnimationsModule
   ],
   providers: [LoginRedirectService, HomeRedirectService],

@@ -93,19 +93,19 @@
   <h2><i>Books</i></h2>
   <hr>
   <div>
-    <form ngNativeValidate>
+    <form ngNativeValidate #bookForm="ngForm">
       <table width="60%">
         <tr>
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_title mng_book_title.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_title mng_book_title.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Author</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_author mng_book_author.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_author mng_book_author.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -114,13 +114,13 @@
           <th>
             <label class="formLabel">Publisher</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_publisher mng_book_publisher.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_publisher mng_book_publisher.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Publish Date</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_pubDate mng_book_pubDate.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_pubDate mng_book_pubDate.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -129,13 +129,13 @@
           <th>
             <label class="formLabel">Language</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_language mng_book_language.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_language mng_book_language.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Format</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_format mng_book_format.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_format mng_book_format.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -144,22 +144,28 @@
           <th>
             <label class="formLabel">ISBN</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_isbn10 mng_book_isbn10.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_isbn10 mng_book_isbn10.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">ISBN13</label>
             <div>
-              <textarea rows="1" cols="47" #mng_book_isbn13 mng_book_isbn13.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_book_isbn13 mng_book_isbn13.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
+
         <tr>
-          <td></td>
+          <th>
+            <label class="formLabel">Pages</label>
+            <div>
+              <textarea rows="1" cols="47" #mng_book_pages mng_book_pages.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
           <td align="right">
-            <button class="w3-bar-item w3-button w3-grey w3-round"
-                    (click)="searchBooks(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value)">
-              <b>Add Book</b>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="searchBooks(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+              <i class="fa fa-plus"></i><b> Add Book</b>
             </button>
           </td>
         </tr>
@@ -229,13 +235,13 @@
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_title mng_movie_title.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_title mng_movie_title.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Director</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_director mng_movie_director.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_director mng_movie_director.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -244,13 +250,13 @@
           <th>
             <label class="formLabel">Release Date</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_releaseDate mng_movie_releaseDate.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_releaseDate mng_movie_releaseDate.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Language</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_language mng_movie_language.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_language mng_movie_language.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -259,13 +265,13 @@
           <th>
             <label class="formLabel">Subtitle Language</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_subtitles mng_movie_subtitles.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_subtitles mng_movie_subtitles.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Dubbed Language</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_dubbed mng_movie_dubbed.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_dubbed mng_movie_dubbed.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -273,13 +279,13 @@
           <th>
             <label class="formLabel">Actor</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_actors mng_movie_actors.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_actors mng_movie_actors.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Producer</label>
             <div>
-              <textarea rows="1" cols="47" #mng_movie_producers mng_movie_producers.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_movie_producers mng_movie_producers.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -288,7 +294,7 @@
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round"
                     (click)="searchMovies(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value)">
-              <b>Add Movie</b>
+              <i class="fa fa-plus"></i><b> Add Movie</b>
             </button>
           </td>
         </tr>
@@ -352,13 +358,13 @@
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #mng_magazine_title mng_magazine_title.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_title mng_magazine_title.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Language</label>
             <div>
-              <textarea rows="1" cols="47" #mng_magazine_language mng_magazine_language.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_language mng_magazine_language.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -367,13 +373,13 @@
           <th>
             <label class="formLabel">Publisher</label>
             <div>
-              <textarea rows="1" cols="47" #mng_magazine_publisher mng_magazine_publisher.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_publisher mng_magazine_publisher.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Publish Date</label>
             <div>
-              <textarea rows="1" cols="47" #mng_magazine_pubDate mng_magazine_pubDate.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_pubDate mng_magazine_pubDate.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -382,13 +388,13 @@
           <th>
             <label class="formLabel">ISBN</label>
             <div>
-              <textarea rows="1" cols="47" #mng_magazine_isbn10 mng_magazine_isbn10.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_isbn10 mng_magazine_isbn10.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">ISBN13</label>
             <div>
-              <textarea rows="1" cols="47" #mng_magazine_isbn13 mng_magazine_isbn13.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_magazine_isbn13 mng_magazine_isbn13.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -397,7 +403,7 @@
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round"
                     (click)="searchMagazines(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value)">
-              <b>Add Magazine</b>
+              <i class="fa fa-plus"></i><b> Add Magazine</b>
             </button>
           </td>
         </tr>
@@ -451,13 +457,13 @@
           <th>
             <label class="formLabel">Title</label>
             <div>
-              <textarea rows="1" cols="47" #mng_music_title mng_music_title.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_music_title mng_music_title.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Artist</label>
             <div>
-              <textarea rows="1" cols="47" #mng_music_artist mng_music_artist.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_music_artist mng_music_artist.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -466,13 +472,13 @@
           <th>
             <label class="formLabel">Release Date</label>
             <div>
-              <textarea rows="1" cols="47" #mng_music_releaseDate mng_music_releaseDate.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_music_releaseDate mng_music_releaseDate.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">Type</label>
             <div>
-              <textarea rows="1" cols="47" #mng_music_type mng_music_type.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_music_type mng_music_type.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -481,13 +487,13 @@
           <th>
             <label class="formLabel">Label</label>
             <div>
-              <textarea rows="1" cols="47" #mng_music_label mng_music_label.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_music_label mng_music_label.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
             <label class="formLabel">ASIN</label>
             <div>
-              <textarea rows="1" cols="47" #mng_music_asin mng_music_asin.value="" required></textarea>
+              <textarea rows="1" cols="47" #mng_music_asin mng_music_asin.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
         </tr>
@@ -496,7 +502,7 @@
           <td align="right">
             <button class="w3-bar-item w3-button w3-grey w3-round"
                     (click)="searchMusics(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value)">
-              <b>Add Music</b>
+              <i class="fa fa-plus"></i><b> Add Music</b>
             </button>
           </td>
         </tr>
@@ -539,6 +545,12 @@
     <tr mat-header-row *matHeaderRowDef="displayMusicColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayMusicColumns;"></tr>
   </table>
+
+  <hr style="width:100%" class="w3-opacity">
+  <button class="w3-bar-item w3-button w3-grey w3-round"
+          (click)="saveAll()">
+    <b>Save Changes </b><i class="fa fa-check-circle"></i>
+  </button>
 
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">

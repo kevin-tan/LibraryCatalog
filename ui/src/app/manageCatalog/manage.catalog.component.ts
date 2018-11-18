@@ -1,11 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../catalog/dto/book';
 import {Magazine} from '../catalog/dto/magazine';
 import {Movie} from '../catalog/dto/movie';
 import {Music} from '../catalog/dto/music';
-import {MatSort, MatTableDataSource} from '@angular/material';
+import {MatSnackBar, MatSort, MatTableDataSource} from '@angular/material';
 import {HomeRedirectService} from '../home/home-redirect.service';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'manage-catalog',
@@ -16,6 +17,7 @@ import {HomeRedirectService} from '../home/home-redirect.service';
 export class ManageCatalogComponent implements OnInit {
 
   displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
+  bookList: Book[];
   matBookList: MatTableDataSource<Book>;
 
   displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate', 'runTime'];
@@ -38,7 +40,7 @@ export class ManageCatalogComponent implements OnInit {
     this.getAllCatalog();
   }
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, public snackBar: MatSnackBar) {
 
   }
 
@@ -71,6 +73,7 @@ export class ManageCatalogComponent implements OnInit {
   getAllCatalog() {
     this.http.get('http://localhost:8080/user/catalog/searchAll', {withCredentials: true}).subscribe(response => {
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
+      this.bookList = response['book'] as Array<Book>;
       this.matBookList.sort = this.bookSort;
       this.matMagazineList = new MatTableDataSource(response['magazine'] as Array<Magazine>);
       this.matMagazineList.sort = this.magazineSort;
@@ -98,9 +101,45 @@ export class ManageCatalogComponent implements OnInit {
               language: string,
               format: string,
               isbn10: string,
-              isbn13: string) {
+              isbn13: string,
+              pages: string,
+              form: NgForm) {
 
-    console.log('Title: ' + title);
+    console.log(form.pristine);
+
+    let body = JSON.stringify( {
+      "Book": {
+        "title": title,
+        "author": author,
+        "publisher": publisher,
+        "pubDate": pubDate,
+        "language": language,
+        "format": format,
+        "isbn10": isbn10,
+        "isbn13": isbn13,
+        "pages": pages
+      }
+    });
+
+    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let options = {headers: headers, withCredentials: true};
+
+    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
+      form.resetForm();
+      this.bookList.push({"title": title,
+        "author": author,
+        "publisher": publisher,
+        "pubDate": pubDate,
+        "language": language,
+        "format": format,
+        "isbn10": isbn10,
+        "isbn13": isbn13,
+        "pages": +pages});
+      this.matBookList = new MatTableDataSource(this.bookList);
+      this.matBookList.sort = this.bookSort;
+    }, error => {
+      console.log(error);
+    });
   }
 
   searchMovies(title: string,
@@ -133,5 +172,13 @@ export class ManageCatalogComponent implements OnInit {
                asin: string) {
 
     console.log('Title: ' + title);
+  }
+
+  saveAll() {
+    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/save', null, {withCredentials: true}).subscribe(response => {
+      this.snackBar.open('Changes saved successfully', 'OK', {
+        duration: 2000,
+      });
+    });
   }
 }
