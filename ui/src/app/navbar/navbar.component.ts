@@ -11,7 +11,11 @@ export class NavbarComponent implements OnInit {
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
+  userType: string;
+
   ngOnInit() {
+    this.userType = sessionStorage.getItem("userType");
+    console.log(this.userType);
   }
 
   logout(){
