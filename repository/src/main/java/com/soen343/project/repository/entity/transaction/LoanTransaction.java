@@ -2,19 +2,15 @@ package com.soen343.project.repository.entity.transaction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
-import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
-import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
-import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.user.Client;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
 
+import static com.soen343.project.repository.dao.transaction.com.DateConverter.DATE_FORMAT;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
@@ -38,14 +34,14 @@ public class LoanTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = super.sqlUpdateValues() + (DUEDATE + " = '" + dueDate + "'");
+        String columnValues = super.sqlUpdateValues() + (DUEDATE + " = '" + dueDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "'");
         return columnValues;
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return super.toSQLValue() + dueDate + "')";
+        return super.toSQLValue() + dueDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "')";
     }
 
     @Override

@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -39,7 +36,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             Item item = new Item(entity.getSpec());
             statement.executeQuery(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
             ResultSet rs = statement.executeQuery("SELECT id FROM Item ORDER BY id DESC LIMIT 1");
-            if(rs.next()) entity.setId(rs.getLong(ID));
+            if (rs.next()) entity.setId(rs.getLong(ID));
             statement.execute(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
         });
         scheduler.writer_v();
@@ -126,7 +123,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         scheduler.writer_v();
     }
 
-    public List<?> findByUserIdAndIsLoaned(Long userId){
+    public List<?> findByUserIdAndIsLoaned(Long userId) {
         scheduler.reader_p();
         Map<String, String> userIdAndLoaned = new HashMap<>();
         userIdAndLoaned.put(USERID, userId.toString());
@@ -135,6 +132,25 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         scheduler.reader_v();
         return list;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<LoanableItem> findLoanablesAreAvailable(List<LoanableItem> loanableItems) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple((statement) -> {
+            List<LoanableItem> tempList = new LinkedList<>();
+            for (LoanableItem loanableItem : loanableItems) {
+                ResultSet rs = statement.executeQuery(
+                        "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + loanableItem.getSpec().getId() +
+                        " and Item.type = '" + loanableItem.getType() +
+                        "' and LoanableItem.available = 1 and LoanableItem.id = Item.id LIMIT 1;");
+                if (!rs.next()) tempList.add(loanableItem);
+            }
+            return tempList;
+        });
+        scheduler.reader_v();
+        return list;
+    }
+
 
     private DatabaseQueryOperation findAllTransaction() {
         return (rs, statement) -> {

@@ -2,7 +2,6 @@ package com.soen343.project.repository.dao.transaction;
 
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.transaction.com.TransactionGateway;
 import com.soen343.project.repository.dao.transaction.com.TransactionOperations;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
-import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.dao.transaction.com.DateConverter.convertToDate;
@@ -40,22 +40,29 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     }
 
 
-
     @Override
     public void save(LoanTransaction entity) {
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
-            ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + entity.getLoanableItem().getSpec().getId()
-                    + " and Item.type  = '" + entity.getLoanableItem().getType() + "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
-            if(rs.next()) {
-                if (rs.getLong("id") != 0) {
-                    entity.setId(rs.getLong("id"));
-                    entity.getLoanableItem().setAvailable(false);
-                    statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
-                }
-            }
+            ResultSet rs = statement.executeQuery(
+                    "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + entity.getLoanableItem().getSpec().getId() +
+                    " and Item.type  = '" + entity.getLoanableItem().getType() +
+                    "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
+            modifyLoanableItem(rs, statement, entity);
         });
         scheduler.writer_v();
+    }
+
+    private void modifyLoanableItem(ResultSet rs, Statement statement, LoanTransaction transaction) throws SQLException {
+        if (rs.next()) {
+            transaction.setId(rs.getLong(ID));
+            transaction.getLoanableItem().setAvailable(false);
+            transaction.getLoanableItem().setClient(transaction.getClient());
+            statement.executeUpdate(
+                    createUpdateQuery(transaction.getLoanableItem().getTable(), transaction.getLoanableItem().sqlUpdateValues(),
+                            transaction.getLoanableItem().getId()));
+            statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
+        }
     }
 
     @Override
@@ -63,17 +70,12 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         UnitOfWork uow = new UnitOfWork();
         for (LoanTransaction transaction : entities) {
             uow.registerOperation(statement -> {
-                        ResultSet rs = statement.executeQuery("SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = "+ transaction.getLoanableItem().getId() + " and Item.type  = " + transaction.getLoanableItem().getType() + " and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
-                        statement.executeUpdate(createSaveQuery(transaction.getLoanableItem().getTableWithColumns(), transaction.getLoanableItem().toSQLValue()));
-                        if(rs.next()) {
-                            if (rs.getLong("id") != 0) {
-                                transaction.setId(rs.getLong("id"));
-                                transaction.getLoanableItem().setAvailable(false);
-                                statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
-                            }
-                        }
-
-                    });
+                ResultSet rs = statement.executeQuery(
+                        "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + transaction.getLoanableItem().getId() +
+                        " and Item.type  = '" + transaction.getLoanableItem().getType() +
+                        "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
+                modifyLoanableItem(rs, statement, transaction);
+            });
         }
         scheduler.writer_p();
         uow.commit();
@@ -180,7 +182,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         return list;
     }
 
-    public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate){
+    public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate) {
         scheduler.reader_p();
         Map<String, String> userAndDates = new HashMap<>();
         userAndDates.put(USERID, userId.toString());
