@@ -36,4 +36,8 @@ public class CatalogSearch {
     public List<?> getAllItemSpecOfSameType(String itemType, Long itemSpecId) {
         return library.getAllItemSpecOfSameType(itemType, itemSpecId);
     }
+
+    public Map<String, ?> getAllItemSpecQuantities() {
+        return library.getAllItemSpecQuantities();
+    }
 }

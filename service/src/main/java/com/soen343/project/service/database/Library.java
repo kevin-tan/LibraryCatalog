@@ -14,13 +14,14 @@ import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.soen343.project.repository.entity.EntityConstants.MAGAZINE_TABLE;
+import static com.soen343.project.repository.entity.EntityConstants.*;
 
 /**
  * Created by Kevin Tan 2018-09-25
@@ -117,8 +118,27 @@ public class Library {
     public List<?> getAllItemSpecOfSameType(String itemType, Long itemSpecId) {
         if (itemType.equals(MAGAZINE_TABLE)) {
             return itemGateway.findByItemSpecId(itemType, itemSpecId);
-        }else{
+        } else {
             return loanableItemGateway.findByItemSpecId(itemType, itemSpecId);
         }
+    }
+
+    public Map<String, ?> getAllItemSpecQuantities() {
+        Map<String, Map<Long, Integer>> itemTypeMapping = new HashMap<>();
+        List<Item> items = itemRepository.findAll();
+        items.forEach(item -> {
+            String itemType = item.getType();
+            if (itemTypeMapping.get(itemType) == null) {
+                Map<Long, Integer> map = new HashMap<>();
+                map.put(item.getSpec().getId(), 1);
+                itemTypeMapping.put(itemType, map);
+            } else if (itemTypeMapping.get(itemType).get(item.getSpec().getId()) == null) {
+                itemTypeMapping.get(itemType).put(item.getSpec().getId(), 1);
+            } else {
+                itemTypeMapping.get(itemType).put(item.getSpec().getId(), itemTypeMapping.get(itemType).get(item.getSpec().getId()) + 1);
+            }
+        });
+
+        return itemTypeMapping;
     }
 }

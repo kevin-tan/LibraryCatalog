@@ -57,4 +57,9 @@ public class CatalogController {
     public ResponseEntity<?> getAllOfSameType(@PathVariable String itemType, @PathVariable Long itemSpecId) {
         return new ResponseEntity<>(catalogSearch.getAllItemSpecOfSameType(itemType, itemSpecId), HttpStatus.OK);
     }
+
+    @GetMapping("/catalog/getAll/itemSpec/quantity")
+    public ResponseEntity<?> getAllItemSpecQuantities() {
+        return new ResponseEntity<>(catalogSearch.getAllItemSpecQuantities(), HttpStatus.OK);
+    }
 }
