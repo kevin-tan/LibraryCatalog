@@ -2,6 +2,7 @@ package com.soen343.project.service.database;
 
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.catalog.item.ItemGateway;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
@@ -35,6 +36,7 @@ public class Library {
     private final ItemGateway itemGateway;
     private final UserGateway userRepository;
     private final ItemGateway itemRepository;
+    private final LoanableItemGateway loanableItemGateway;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static final String BOOK = "book";
@@ -45,7 +47,7 @@ public class Library {
     @Autowired
     public Library(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
                    MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway, UserGateway userRepository,
-                   ItemGateway itemRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+                   ItemGateway itemRepository, LoanableItemGateway loanableItemGateway, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.gatewayMapper = gatewayMapper;
         this.movieRepository = movieRepository;
         this.bookRepository = bookRepository;
@@ -54,6 +56,7 @@ public class Library {
         this.itemGateway = itemGateway;
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
+        this.loanableItemGateway = loanableItemGateway;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -112,6 +115,10 @@ public class Library {
     }
 
     public List<?> getAllItemSpecOfSameType(String itemType, Long itemSpecId) {
-        return itemGateway.findByItemSpecId(itemType, itemSpecId);
+        if (itemType.equals(MAGAZINE_TABLE)) {
+            return itemGateway.findByItemSpecId(itemType, itemSpecId);
+        }else{
+            return loanableItemGateway.findByItemSpecId(itemType, itemSpecId);
+        }
     }
 }
