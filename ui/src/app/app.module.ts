@@ -17,6 +17,8 @@ import {HomeRedirectService} from "./home/home-redirect.service";
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ReturnComponent } from './return/return.component';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     musicSearchComponent,
     movieSearchComponent,
     magazineSearchComponent,
-    activeUsersComponent
+    activeUsersComponent,
+    ReturnComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,

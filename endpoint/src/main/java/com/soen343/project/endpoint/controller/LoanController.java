@@ -50,7 +50,7 @@ public class LoanController {
     }
 
     @GetMapping("/{clientId}/loanedItem")
-    public ResponseEntity<?> searchTransactionByAttribute(@PathVariable Long clientId) {
+    public ResponseEntity<?> getLoanedItems(@PathVariable Long clientId) {
         return new ResponseEntity<>(clientHandler.getLoanedItemsByUserID(clientId), HttpStatus.OK);
     }
 
