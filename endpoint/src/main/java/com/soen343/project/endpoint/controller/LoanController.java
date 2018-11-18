@@ -29,7 +29,7 @@ public class LoanController {
         return new ResponseEntity<>(cartHandler.addItemToCart(clientId, loanableItem), HttpStatus.OK);
     }
 
-    @PostMapping("/cart/{clientId}/remove")
+    @PutMapping("/cart/{clientId}/remove")
     public ResponseEntity<?> removeItemFromCart(@PathVariable Long clientId, @RequestBody LoanableItem loanableItem) {
         return new ResponseEntity<>(cartHandler.removeItemFromCart(clientId, loanableItem), HttpStatus.OK);
     }
@@ -39,7 +39,7 @@ public class LoanController {
         return new ResponseEntity<>(cartHandler.getLoanables(clientId), HttpStatus.OK);
     }
 
-    @PostMapping("/{clientId}/cancelLoan")
+    @DeleteMapping("/{clientId}/cancelLoan")
     public ResponseEntity<?> cancelLoan(@PathVariable Long clientId) {
         return new ResponseEntity<>(clientHandler.cancelLoan(clientId), HttpStatus.OK);
     }

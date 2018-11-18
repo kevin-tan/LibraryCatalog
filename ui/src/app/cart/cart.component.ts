@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {HttpClient} from "@angular/common/http";
-import {MatTableDataSource} from "@angular/material";
-import {Book} from "../catalog/dto/book";
 import {LoanableItem} from "../catalog/dto/loanableItem";
 
 @Component({
@@ -14,9 +12,8 @@ export class CartComponent implements OnInit {
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
-
-
   ngOnInit() {
+    this.getCartItems();
   }
 
   loanableItems: Array<LoanableItem>;
@@ -33,23 +30,45 @@ export class CartComponent implements OnInit {
     });
   }
 
-  getCartItem(){
-    this.http.get<Array<LoanableItem>>('http://localhost:8080/user/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
+  getCartItems(){
+    this.http.get<Array<LoanableItem>>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
       this.loanableItems = response['loanableItems'] as Array<LoanableItem>;
+      console.log(this.loanableItems);
     }, error => {
       console.log(error);
     });
   }
 
-  addItemToCart(){
-
+  addItemToCart(loanableItem: LoanableItem){
+    this.http.post<LoanableItem>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/add", {withCredentials: true, loanableItem}, )
+      .subscribe(response => {
+      console.log(this.loanableItems);
+    }, error => {
+      console.log(error);
+    });
   }
 
-  removeItemFromCart(){
-
+  removeItemFromCart(loanableItem: LoanableItem){
+    this.http.put<LoanableItem>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/remove", {withCredentials: true, loanableItem},)
+      .subscribe(response => {
+      }, error => {
+        console.log(error);
+      });
   }
 
   checkout(){
+    this.http.post<LoanableItem>('http://localhost:8080/client/' + sessionStorage.getItem('user_id') + "/loan", {withCredentials: true},)
+      .subscribe(response => {
+      }, error => {
+        console.log(error);
+      });
+  }
 
+  cancel(){
+    this.http.delete<LoanableItem>('http://localhost:8080/client/' + sessionStorage.getItem('user_id') + "/cancelLoan", {withCredentials: true},)
+      .subscribe(response => {
+      }, error => {
+        console.log(error);
+      });
   }
 }
