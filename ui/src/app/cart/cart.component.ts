@@ -49,6 +49,7 @@ export class CartComponent implements OnInit {
     this.http.put<LoanableItem>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/remove", body, options)
       .subscribe(response => {
         this.getCartItems();
+        this.selectedItem = null;
       }, error => {
         console.log(error);
       });
@@ -90,7 +91,7 @@ export class CartComponent implements OnInit {
     this.http.post(url, body, options).subscribe(response => {
         this.getCartItems();
       }, error => {
-        this.errorMessage = "Invalid Admin Credentials";
+        this.errorMessage = "Invalid";
       })
   }
 
