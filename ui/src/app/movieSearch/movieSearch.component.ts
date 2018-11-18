@@ -72,7 +72,7 @@ export class movieSearchComponent implements OnInit {
     });
   }
 
-  OnSelectItem(itemSpec){
-    this.router.navigate(['/detail', itemSpec.id])
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }

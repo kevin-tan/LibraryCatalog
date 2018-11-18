@@ -57,9 +57,4 @@ public class CatalogController {
     public ResponseEntity<?> getAllOfSameType(@PathVariable String itemType, @PathVariable Long itemSpecId) {
         return new ResponseEntity<>(catalogSearch.getAllOfSameType(itemType, itemSpecId), HttpStatus.OK);
     }
-
-    @GetMapping("/catalog/loanableSpec/{specID}")
-    public ResponseEntity<?> getLoanablesBySpec(@PathVariable Long specID) {
-        return new ResponseEntity<>(catalogSearch.getLoanableItemsBySpec(specID), HttpStatus.OK);
-    }
 }

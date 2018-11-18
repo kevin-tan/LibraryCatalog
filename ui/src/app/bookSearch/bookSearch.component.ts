@@ -71,7 +71,7 @@ export class bookSearchComponent implements OnInit {
       console.log(error);
     });
   }
-  OnSelectItem(itemSpec){
-    this.router.navigate(['/detail', itemSpec.id])
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }
