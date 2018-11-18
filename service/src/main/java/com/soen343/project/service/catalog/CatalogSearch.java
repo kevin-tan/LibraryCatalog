@@ -1,12 +1,6 @@
 package com.soen343.project.service.catalog;
 
-import com.google.common.collect.ImmutableMap;
-import com.soen343.project.repository.dao.catalog.item.ItemGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
-import com.soen343.project.repository.dao.mapper.GatewayMapper;
+import com.soen343.project.service.database.Library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,49 +10,34 @@ import java.util.Map;
 @Service
 public class CatalogSearch {
 
-    private final GatewayMapper gatewayMapper;
-    private final MovieGateway movieRepository;
-    private final BookGateway bookRepository;
-    private final MagazineGateway magazineRepository;
-    private final MusicGateway musicRepository;
-    private final ItemGateway itemGateway;
-
-    private static final String BOOK = "book";
-    private static final String MAGAZINE = "magazine";
-    private static final String MOVIE = "movie";
-    private static final String MUSIC = "music";
+    private final Library library;
 
     @Autowired
-    public CatalogSearch(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
-                         MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway) {
-        this.gatewayMapper = gatewayMapper;
-        this.movieRepository = movieRepository;
-        this.bookRepository = bookRepository;
-        this.magazineRepository = magazineRepository;
-        this.musicRepository = musicRepository;
-        this.itemGateway = itemGateway;
+    public CatalogSearch(Library library) {
+        this.library = library;
     }
-
 
     public List<?> searchCatalogByAttribute(String itemType, Map<String, String> attributeValue) {
-        return gatewayMapper.getGateway(itemType).findByAttribute(attributeValue);
+        return library.searchCatalogByAttribute(itemType, attributeValue);
     }
 
-    public Map<String, List<?>> searchAllByTitle(String titleValue) {
-        return ImmutableMap.of(MOVIE, movieRepository.findByTitle(titleValue), BOOK, bookRepository.findByTitle(titleValue), MUSIC,
-                musicRepository.findByTitle(titleValue), MAGAZINE, magazineRepository.findByTitle(titleValue));
+    public Map<String, List<?>> searchAllItemSpecByTitle(String titleValue) {
+        return library.searchAllItemSpecByTitle(titleValue);
     }
 
     public Map<String, List<?>> getAllItemSpecs() {
-        return ImmutableMap.of(MOVIE, movieRepository.findAll(), BOOK, bookRepository.findAll(), MUSIC,
-                musicRepository.findAll(), MAGAZINE, magazineRepository.findAll());
+        return library.getAllItemSpecs();
     }
 
-    public List<?> getAllOfType(String itemType) {
-        return gatewayMapper.getGateway(itemType).findAll();
+    public List<?> getAllItemSpecOfType(String itemType) {
+        return library.getAllItemSpecOfType(itemType);
     }
 
-    public List<?> getAllOfSameType(String itemType, Long itemSpecId) {
-        return itemGateway.findByItemSpecId(itemType, itemSpecId);
+    public List<?> getAllItemSpecOfSameType(String itemType, Long itemSpecId) {
+        return library.getAllItemSpecOfSameType(itemType, itemSpecId);
+    }
+
+    public Map<String, ?> getAllItemSpecQuantities() {
+        return library.getAllItemSpecQuantities();
     }
 }
