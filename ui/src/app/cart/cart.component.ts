@@ -3,6 +3,7 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 import {HttpClient} from "@angular/common/http";
 import {MatTableDataSource} from "@angular/material";
 import {Book} from "../catalog/dto/book";
+import {LoanableItem} from "../catalog/dto/loanableItem";
 
 @Component({
   selector: 'app-cart',
@@ -13,8 +14,12 @@ export class CartComponent implements OnInit {
 
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
 
+
+
   ngOnInit() {
   }
+
+  loanableItems: Array<LoanableItem>;
 
   logout(): void {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
@@ -29,9 +34,8 @@ export class CartComponent implements OnInit {
   }
 
   getCartItem(){
-    this.http.get<Array<Book>>('http://localhost:8080/user/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
-    //  this.matBookList = new MatTableDataSource(response);
-    //  this.matBookList.sort = this.bookSort;
+    this.http.get<Array<LoanableItem>>('http://localhost:8080/user/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
+      this.loanableItems = response['loanableItems'] as Array<LoanableItem>;
     }, error => {
       console.log(error);
     });
