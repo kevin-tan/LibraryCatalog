@@ -152,7 +152,7 @@ public class ExampleController {
         LoanableItem l2 = new LoanableItem(12L, musicRepository.findById(2L), false, null);
         LoanableItem l3 = new LoanableItem(20L, musicRepository.findById(5L), false, null);
 
-        return new ResponseEntity<>(loanableItemGateway.findLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
+        return new ResponseEntity<>(loanableItemGateway.findIfLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
     }
 
     @GetMapping("/test/findLoanablesAreAvailable2")
@@ -161,7 +161,7 @@ public class ExampleController {
         LoanableItem l2 = new LoanableItem(12L, musicRepository.findById(2L), false, null);
         LoanableItem l3 = new LoanableItem(20L, musicRepository.findById(5L), false, null);
 
-        return new ResponseEntity<>(loanableItemGateway.findLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
+        return new ResponseEntity<>(loanableItemGateway.findIfLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
     }
 
     @PostMapping("/text/loanableItem")
