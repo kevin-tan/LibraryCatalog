@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-import static com.soen343.project.repository.dao.transaction.com.DateConverter.DATE_FORMAT;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data
@@ -37,15 +35,15 @@ public abstract class Transaction implements DatabaseEntity {
 
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = ITEMID + " = '" + loanableItem.getId() + "', ";
-        columnValues += USERID + " = '" + client.getId() + "', ";
-        columnValues += TRANSACTIONDATE + " = '" + transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+        String columnValues = ITEMID + " = " + loanableItem.getId() + ", ";
+        columnValues += USERID + " = " + client.getId() + ", ";
+        columnValues += TRANSACTIONDATE + " = '" + transactionDate + "'";
         return columnValues;
     }
 
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + loanableItem.getId() + "','" + client.getId() +  "','" + transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+        return "(" + loanableItem.getId() + "," + client.getId() +  ",'" + transactionDate;
     }
 
 
