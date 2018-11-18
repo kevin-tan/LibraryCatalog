@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../catalog/dto/item-specification/book';
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -14,7 +15,7 @@ export class bookSearchComponent implements OnInit {
   displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
   matBookList: MatTableDataSource<Book>;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router:Router) { }
 
   @ViewChild('bookSort') bookSort: MatSort;
 
@@ -70,5 +71,7 @@ export class bookSearchComponent implements OnInit {
       console.log(error);
     });
   }
-
+  OnSelectItem(itemSpec){
+    this.router.navigate(['/detail', itemSpec.id])
+  }
 }

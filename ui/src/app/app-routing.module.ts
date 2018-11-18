@@ -26,7 +26,8 @@ const routes: Routes = [
   { path:'search/book', component: bookSearchComponent},
   { path:'activeUsers', component: activeUsersComponent},
   { path:'loanedItems', component: ReturnComponent},
-  { path:'cart', component: CartComponent}
+  { path:'cart', component: CartComponent},
+  { path:'detail', component: CartComponent}
 ];
 
 @NgModule({

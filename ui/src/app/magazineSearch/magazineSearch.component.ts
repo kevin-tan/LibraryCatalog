@@ -3,6 +3,7 @@ import {Magazine} from "../catalog/dto/item-specification/magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -16,7 +17,7 @@ export class magazineSearchComponent implements OnInit {
 
   @ViewChild('magazineSort') magazineSort: MatSort;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router:Router) {
   }
 
   ngOnInit() {
@@ -67,5 +68,9 @@ export class magazineSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemSpec){
+    this.router.navigate(['/detail', itemSpec.id])
   }
 }

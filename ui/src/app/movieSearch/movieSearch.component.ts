@@ -3,6 +3,7 @@ import {Movie} from "../catalog/dto/item-specification/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -16,7 +17,7 @@ export class movieSearchComponent implements OnInit {
 
   @ViewChild('movieSort') movieSort: MatSort;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router: Router) { }
 
   ngOnInit() {
     this.getAllMovies();
@@ -69,5 +70,9 @@ export class movieSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemSpec){
+    this.router.navigate(['/detail', itemSpec.id])
   }
 }
