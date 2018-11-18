@@ -175,6 +175,22 @@
 
   <br>
   <table mat-table #bookSort="matSort" [dataSource]="matBookList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="bookSelection.hasValue() && isAllSelected()"
+                      [indeterminate]="bookSelection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); test(row)"
+                      (change)="$event ? bookSelection.toggle(row) : null"
+                      [checked]="bookSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
       <td mat-cell *matCellDef="let element"> {{element.title}}</td>
@@ -221,7 +237,9 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayBookColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayBookColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayBookColumns;"
+        (click)="bookSelection.toggle(row)">
+    </tr>
   </table>
   <br>
 
@@ -277,13 +295,13 @@
         </tr>
         <tr>
           <th>
-            <label class="formLabel">Actor</label>
+            <label class="formLabel">Actors</label>
             <div>
               <textarea rows="1" cols="47" #mng_movie_actors mng_movie_actors.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
-            <label class="formLabel">Producer</label>
+            <label class="formLabel">Producers</label>
             <div>
               <textarea rows="1" cols="47" #mng_movie_producers mng_movie_producers.value="" name="clear" ngModel required></textarea>
             </div>

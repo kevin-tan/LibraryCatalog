@@ -7,6 +7,7 @@ import {Music} from '../catalog/dto/music';
 import {MatSnackBar, MatSort, MatTableDataSource} from '@angular/material';
 import {HomeRedirectService} from '../home/home-redirect.service';
 import {NgForm} from '@angular/forms';
+import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'manage-catalog',
@@ -16,9 +17,10 @@ import {NgForm} from '@angular/forms';
 
 export class ManageCatalogComponent implements OnInit {
 
-  displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
+  displayBookColumns: string[] = ['select', 'title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
   bookList: Book[];
   matBookList: MatTableDataSource<Book>;
+  bookSelection = new SelectionModel<Book>(false, []);
 
   displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate', 'runTime'];
   movieList: Movie[];
@@ -46,6 +48,21 @@ export class ManageCatalogComponent implements OnInit {
   constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, public snackBar: MatSnackBar) {
 
   }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.bookSelection.selected.length;
+    const numRows = this.matBookList.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.bookSelection.clear() :
+      this.matBookList.data.forEach(row => this.bookSelection.select(row));
+  }
+
 
   logout() {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
@@ -172,8 +189,6 @@ export class ManageCatalogComponent implements OnInit {
       }
     });
 
-    console.log(body);
-
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
 
@@ -275,5 +290,12 @@ export class ManageCatalogComponent implements OnInit {
         duration: 2000,
       });
     });
+  }
+
+  //TODO should do the trick, has ID too nice
+  test(row: Book) {
+    if(!this.bookSelection.isSelected(row)) {
+      console.log(row);
+    }
   }
 }

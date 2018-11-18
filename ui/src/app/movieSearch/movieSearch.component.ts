@@ -48,18 +48,20 @@ export class movieSearchComponent implements OnInit {
                subtitles: string,
                dubbed: string,
                actors: string,
-               producers: string) {
+               producers: string,
+               runTime: string) {
 
-    let body = JSON.stringify({
-      "title": title,
-      "director": director,
-      "releaseDate": releaseDate,
-      "language": language,
-      "actors": actors,
-      "subtitles": subtitles,
-      "dubbed": dubbed,
-      "producers": producers
-    })
+    let body = JSON.stringify( {
+        "title": title,
+        "director": director,
+        "releaseDate": releaseDate,
+        "language": language,
+        "subtitles": subtitles,
+        "dubbed": dubbed.split(", "),
+        "actors": actors.split(", "),
+        "producers": producers.split(", "),
+        "runTime": +runTime
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
