@@ -81,7 +81,6 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
         return movie;
     }
 
-    //TODO Bugged, does not search the foreign key
     @Override
     public List<Movie> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
