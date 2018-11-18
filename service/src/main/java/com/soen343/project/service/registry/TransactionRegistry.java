@@ -3,6 +3,7 @@ package com.soen343.project.service.registry;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
@@ -31,11 +32,14 @@ public class TransactionRegistry {
     private static final String RETURN_TRANSACTION = "returnTransaction";
 
     private final LoanTransactionGateway loanTransactionGateway;
+    private final LoanableItemGateway loanableItemGateway;
     private final ReturnTransactionGateway returnTransactionGateway;
 
     @Autowired
-    public TransactionRegistry(LoanTransactionGateway loanTransactionGateway, ReturnTransactionGateway returnTransactionGateway) {
+    public TransactionRegistry(LoanTransactionGateway loanTransactionGateway, LoanableItemGateway loanableItemGateway,
+                               ReturnTransactionGateway returnTransactionGateway) {
         this.loanTransactionGateway = loanTransactionGateway;
+        this.loanableItemGateway = loanableItemGateway;
         this.returnTransactionGateway = returnTransactionGateway;
     }
 
@@ -44,39 +48,22 @@ public class TransactionRegistry {
     }
 
     public ResponseEntity<?> addLoanTransactions(Client client, List<LoanableItem> loanables) {
-        LocalDateTime transactionDate = LocalDateTime.now();
-        String transactionDateFormatted = transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-        List<LoanableItem> failedItems = new LinkedList<>();
-
         // Check for if the loanables are available
+        List<LoanableItem> failedLoanedItems = loanableItemGateway.findLoanablesAreAvailable(loanables);
 
-
-        // Create loan transaction
-        List<LoanTransaction> transactions = new LinkedList<>();
-        loanables.forEach(loanableItem -> transactions.add(new LoanTransaction(loanableItem, client, transactionDate)));
-
-        // Check + create the loan transaction
-        loanTransactionGateway.saveAll(transactions.toArray(new LoanTransaction[]{}));
-
-        // Retrieve transaction by userId + transactionDate
-        List<?> allTransactions = loanTransactionGateway.findByUserIdAndTransactionDate(client.getId(), transactionDateFormatted);
-
-        // Check between loanables vs. all successful transactions
-        for(LoanTransaction t: transactions){
-            if(!allTransactions.contains(t)){
-                failedItems.add(t.getLoanableItem());
-            }
-        }
-
-        if (failedItems.isEmpty()) {
+        if (failedLoanedItems.isEmpty()) {
+            // Create loan transaction
+            List<LoanTransaction> transactions = new LinkedList<>();
+            loanables.forEach(loanableItem -> transactions.add(new LoanTransaction(loanableItem, client, LocalDateTime.now())));
+            // Check + create the loan transaction
+            loanTransactionGateway.saveAll(transactions.toArray(new LoanTransaction[]{}));
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(failedItems, HttpStatus.EXPECTATION_FAILED);
-
+            return new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
         }
     }
 
-    public ResponseEntity<?> addReturnTransactions(Client client, List<LoanableItem> loanables){
+    public ResponseEntity<?> addReturnTransactions(Client client, List<LoanableItem> loanables) {
         LocalDateTime transactionDate = LocalDateTime.now();
         List<ReturnTransaction> transactions = new LinkedList<>();
         loanables.forEach(loanableItem -> transactions.add(new ReturnTransaction(loanableItem, client, transactionDate)));
