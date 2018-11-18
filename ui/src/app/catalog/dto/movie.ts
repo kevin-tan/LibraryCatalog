@@ -8,4 +8,5 @@ export interface Movie extends MediaItem {
     language: string;
     subtitles: string;
     runTime: number;
+    id: number;
 }

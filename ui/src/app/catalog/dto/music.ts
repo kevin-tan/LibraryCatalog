@@ -5,4 +5,5 @@ export interface Music extends MediaItem {
     type: string;
     label: string;
     asin: string;
+    id: number;
 }

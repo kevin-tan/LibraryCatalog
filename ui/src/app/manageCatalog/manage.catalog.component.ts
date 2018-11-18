@@ -17,6 +17,8 @@ import {SelectionModel} from '@angular/cdk/collections';
 
 export class ManageCatalogComponent implements OnInit {
 
+  selectedRow: Book;
+
   displayBookColumns: string[] = ['select', 'title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
   bookList: Book[];
   matBookList: MatTableDataSource<Book>;
@@ -148,7 +150,9 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.bookList.push({"title": title,
+      this.bookList.push({
+        "id": null,
+        "title": title,
         "author": author,
         "publisher": publisher,
         "pubDate": pubDate,
@@ -159,6 +163,9 @@ export class ManageCatalogComponent implements OnInit {
         "pages": +pages});
       this.matBookList = new MatTableDataSource(this.bookList);
       this.matBookList.sort = this.bookSort;
+      this.snackBar.open('Item added successfully!', 'OK', {
+        duration: 2000,
+      });
     }, error => {
       console.log(error);
     });
@@ -194,7 +201,9 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.movieList.push({"title": title,
+      this.movieList.push({
+        "id": null,
+        "title": title,
         "director": director,
         "releaseDate": releaseDate,
         "language": language,
@@ -234,7 +243,9 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.magazineList.push({"title": title,
+      this.magazineList.push({
+        "id": null,
+        "title": title,
         "publisher": publisher,
         "pubDate": pubDate,
         "language": language,
@@ -271,7 +282,9 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.musicList.push({"title": title,
+      this.musicList.push({
+        "id": null,
+        "title": title,
         "artist": artist,
         "type": type,
         "releaseDate": releaseDate,
@@ -286,16 +299,82 @@ export class ManageCatalogComponent implements OnInit {
 
   saveAll() {
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/save', null, {withCredentials: true}).subscribe(response => {
+      this.getAllCatalog();
+      this.startSession();
       this.snackBar.open('Changes saved successfully', 'OK', {
         duration: 2000,
       });
     });
   }
 
-  //TODO should do the trick, has ID too nice
-  test(row: Book) {
-    if(!this.bookSelection.isSelected(row)) {
-      console.log(row);
+  rowSelected(row: Book) {
+    this.selectedRow = row;
+  }
+
+  editBook(title: string,
+           author: string,
+           publisher: string,
+           pubDate: string,
+           language: string,
+           format: string,
+           isbn10: string,
+           isbn13: string,
+           pages: string,
+           form: NgForm) {
+    if(this.bookSelection.isSelected(this.selectedRow) && this.selectedRow.id !== null) {
+
+      let body = JSON.stringify({
+        "Book": {
+          "id": this.selectedRow.id,
+          "title": title !== "" ? title : this.selectedRow.title,
+          "author": author !== "" ? author : this.selectedRow.author,
+          "publisher": publisher !== "" ? publisher : this.selectedRow.publisher,
+          "pubDate": pubDate !== "" ? pubDate : this.selectedRow.pubDate,
+          "language": language !== "" ? language : this.selectedRow.language,
+          "format": format !== "" ? format : this.selectedRow.format,
+          "isbn10": isbn10 !== "" ? isbn10 : this.selectedRow.isbn10,
+          "isbn13": isbn13 !== "" ? isbn13 : this.selectedRow.isbn13,
+          "pages": pages !== "" ? +pages : this.selectedRow.pages
+        }
+      });
+
+      let headers = new HttpHeaders({"Content-Type": "application/json"});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
+        form.resetForm();
+
+        for (let i = 0; i < this.bookList.length; i++) {
+          if (this.bookList[i].id === this.selectedRow.id) {
+            this.bookList[i] = {
+              "id": this.selectedRow.id,
+              "title": title !== "" ? title : this.selectedRow.title,
+              "author": author !== "" ? author : this.selectedRow.author,
+              "publisher": publisher !== "" ? publisher : this.selectedRow.publisher,
+              "pubDate": pubDate !== "" ? pubDate : this.selectedRow.pubDate,
+              "language": language !== "" ? language : this.selectedRow.language,
+              "format": format !== "" ? format : this.selectedRow.format,
+              "isbn10": isbn10 !== "" ? isbn10 : this.selectedRow.isbn10,
+              "isbn13": isbn13 !== "" ? isbn13 : this.selectedRow.isbn13,
+              "pages": pages !== "" ? +pages : this.selectedRow.pages
+            };
+            break;
+          }
+        }
+        this.matBookList = new MatTableDataSource(this.bookList);
+        this.matBookList.sort = this.bookSort;
+        this.snackBar.open('Item modified successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.bookSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
     }
+
   }
 }

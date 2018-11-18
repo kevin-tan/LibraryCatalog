@@ -4,4 +4,5 @@ export interface Book extends PrintedItem {
     author: string;
     format: string;
     pages: number;
+    id: number;
 }
