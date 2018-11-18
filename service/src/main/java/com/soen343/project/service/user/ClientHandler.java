@@ -43,9 +43,7 @@ public class ClientHandler {
         List<LoanableItem> loanables = cartHandler.getLoanables(clientId);
         cartHandler.clear(clientId);
 
-        long numberOfOwnedItems = loanableItemGateway.findAll().stream()
-                .filter(lItem -> lItem.getClient().getId().equals(clientId))
-                .count();
+        long numberOfOwnedItems = getLoanedItemsByUserID(clientId).size();
 
         if (numberOfOwnedItems + loanables.size() >= MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

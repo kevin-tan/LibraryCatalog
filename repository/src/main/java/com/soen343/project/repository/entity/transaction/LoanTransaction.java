@@ -8,9 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static com.soen343.project.repository.dao.transaction.com.DateConverter.DATE_FORMAT;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Data

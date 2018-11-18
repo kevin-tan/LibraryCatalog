@@ -16,7 +16,7 @@ export class ReturnComponent implements OnInit {
 
   errorMessage: string = "";
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.clientId = +sessionStorage.getItem("user_id");
@@ -63,16 +63,4 @@ export class ReturnComponent implements OnInit {
       this.errorMessage = "Invalid Admin Credentials";
     })
   }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
-  }
-
 }

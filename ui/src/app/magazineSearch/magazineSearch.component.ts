@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Magazine} from "../catalog/dto/item-specification/magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {Router} from "@angular/router";
 
@@ -17,22 +16,11 @@ export class magazineSearchComponent implements OnInit {
 
   @ViewChild('magazineSort') magazineSort: MatSort;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router:Router) {
+  constructor(private http: HttpClient, private router:Router) {
   }
 
   ngOnInit() {
     this.getAllMagazines();
-  }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getAllMagazines(): void {

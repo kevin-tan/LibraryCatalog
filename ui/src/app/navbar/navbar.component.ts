@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 
@@ -9,7 +9,8 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
+  }
 
   userType: string;
 
@@ -18,12 +19,14 @@ export class NavbarComponent implements OnInit {
     console.log(this.userType);
   }
 
-  logout(){
+  logout() {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
+    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
       this.homeRedirectService.redirect();
       sessionStorage.setItem('loggedIn', 'false');
       sessionStorage.setItem('email', '');
+      sessionStorage.setItem("user_id", '');
+      sessionStorage.setItem("userType", '');
     }, error => {
       console.log(error);
     });

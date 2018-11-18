@@ -39,10 +39,10 @@
     </mat-radio-group>
 
     <form *ngIf="selectedItem != null">
-      <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="removeItemFromCart(selectedItem)">
+      <button class="w3-button w3-light-grey w3-padding-large" (click)="removeItemFromCart(selectedItem)">
         Remove Item
       </button>
-      <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="cancelRemove()">
+      <button class="w3-button w3-light-grey w3-padding-large" (click)="cancelRemove()">
         Cancel Remove
       </button>
     </form>

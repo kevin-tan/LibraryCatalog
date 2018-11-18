@@ -34,7 +34,7 @@ public class ReturnTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return super.toSQLValue() + "')";
+        return  super.toSQLValue() + "')";
     }
 
     @Override
