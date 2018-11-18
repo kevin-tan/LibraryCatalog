@@ -39,13 +39,13 @@ public abstract class Transaction implements DatabaseEntity {
     public String sqlUpdateValues() {
         String columnValues = ITEMID + " = '" + loanableItem.getId() + "', ";
         columnValues += USERID + " = '" + client.getId() + "', ";
-        columnValues += TRANSACTIONDATE + " = '" + transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "', ";
+        columnValues += TRANSACTIONDATE + " = '" + transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         return columnValues;
     }
 
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + loanableItem.getId() + "','" + client.getId() +  "','" + transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "','";
+        return "('" + loanableItem.getId() + "','" + client.getId() +  "','" + transactionDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
 

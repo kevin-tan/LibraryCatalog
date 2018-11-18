@@ -39,18 +39,20 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         this.scheduler = scheduler;
     }
 
-
     @Override
     public void save(LoanTransaction entity) {
         scheduler.writer_p();
         executeBatchUpdate(statement -> {
-            ResultSet rs = statement.executeQuery(
-                    "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + entity.getLoanableItem().getSpec().getId() +
-                    " and Item.type  = '" + entity.getLoanableItem().getType() +
-                    "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
+            ResultSet rs = statement.executeQuery(saveQuery(entity));
             modifyLoanableItem(rs, statement, entity);
         });
         scheduler.writer_v();
+    }
+
+    private String saveQuery(LoanTransaction transaction) {
+        return "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + transaction.getLoanableItem().getSpec().getId() +
+               " and Item.type  = '" + transaction.getLoanableItem().getType() +
+               "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;";
     }
 
     private void modifyLoanableItem(ResultSet rs, Statement statement, LoanTransaction transaction) throws SQLException {
@@ -70,10 +72,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
         UnitOfWork uow = new UnitOfWork();
         for (LoanTransaction transaction : entities) {
             uow.registerOperation(statement -> {
-                ResultSet rs = statement.executeQuery(
-                        "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + transaction.getLoanableItem().getId() +
-                        " and Item.type  = '" + transaction.getLoanableItem().getType() +
-                        "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;");
+                ResultSet rs = statement.executeQuery(saveQuery(transaction));
                 modifyLoanableItem(rs, statement, transaction);
             });
         }

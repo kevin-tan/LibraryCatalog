@@ -22,6 +22,7 @@ import com.soen343.project.repository.entity.catalog.itemspec.media.Music;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Book;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import com.soen343.project.repository.entity.transaction.LoanTransaction;
+import com.soen343.project.repository.entity.transaction.ReturnTransaction;
 import com.soen343.project.repository.entity.user.Admin;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
@@ -112,6 +113,20 @@ public class ExampleController {
                 new LoanTransaction(0L, loanableItemGateway.findById(4L), (Client) userRepository.findById(3L), LocalDateTime.now(),
                         LocalDateTime.now());
         loanTransactionGateway.saveAll(l1, l2, l3);
+        return new ResponseEntity<>("Worked", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveReturnTransaction2")
+    public ResponseEntity<?> testSaveReturnTransaction2() {
+        ReturnTransaction l1 =
+                new ReturnTransaction(0L, loanableItemGateway.findById(2L), (Client) userRepository.findById(3L), LocalDateTime.now());
+
+        ReturnTransaction l2 =
+                new ReturnTransaction(0L, loanableItemGateway.findById(3L), (Client) userRepository.findById(3L), LocalDateTime.now());
+
+        ReturnTransaction l3 =
+                new ReturnTransaction(0L, loanableItemGateway.findById(4L), (Client) userRepository.findById(3L), LocalDateTime.now());
+        returnTransactionGateway.saveAll(l1, l2, l3);
         return new ResponseEntity<>("Worked", HttpStatus.OK);
     }
 

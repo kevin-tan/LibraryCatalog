@@ -34,14 +34,13 @@ public class LoanTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = super.sqlUpdateValues() + (DUEDATE + " = '" + dueDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "'");
-        return columnValues;
+        return super.sqlUpdateValues() + "', " + DUEDATE + " = '" + dueDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "')";
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return super.toSQLValue() + dueDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "')";
+        return super.toSQLValue() + "','" + dueDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)) + "')";
     }
 
     @Override

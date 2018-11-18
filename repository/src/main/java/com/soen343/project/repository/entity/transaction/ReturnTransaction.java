@@ -20,6 +20,7 @@ public class ReturnTransaction extends Transaction {
     public ReturnTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         super(id, loanableItem, client, transactionDate);
     }
+
     public ReturnTransaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         super(loanableItem, client, transactionDate);
     }
@@ -27,14 +28,13 @@ public class ReturnTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = super.sqlUpdateValues();
-        return columnValues;
+        return super.sqlUpdateValues() + "')";
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return  super.toSQLValue() + "')";
+        return super.toSQLValue() + "')";
     }
 
     @Override
