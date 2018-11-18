@@ -1,4 +1,4 @@
-import {ItemSpecification} from "./item_specification";
+import {ItemSpecification} from "./item-specification/item_specification";
 import {User} from "../../registration/user";
 
 export interface LoanableItem{

@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HomeRedirectService} from './home-redirect.service';
 import {HttpClient} from '@angular/common/http';
-import {Book} from '../catalog/dto/book';
-import {Magazine} from '../catalog/dto/magazine';
-import {Movie} from '../catalog/dto/movie';
-import {Music} from '../catalog/dto/music';
+import {Book} from '../catalog/dto/item-specification/book';
+import {Magazine} from '../catalog/dto/item-specification/magazine';
+import {Movie} from '../catalog/dto/item-specification/movie';
+import {Music} from '../catalog/dto/item-specification/music';
 import {MatSort, MatTableDataSource} from '@angular/material';
 
 @Component({

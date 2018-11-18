@@ -1,5 +1,5 @@
-import {User} from "../../registration/user";
-import {LoanableItem} from "./loanableItem";
+import {User} from "../../../registration/user";
+import {LoanableItem} from "../loanableItem";
 
 export interface Transaction{
   id: Number;
