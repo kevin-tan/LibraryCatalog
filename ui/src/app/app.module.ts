@@ -22,6 +22,7 @@ import { ReturnComponent } from './return/return.component';
 import { CartComponent } from './cart/cart.component'
 import {MatListModule} from '@angular/material/list';
 import { NavbarComponent } from './navbar/navbar.component';
+import { DetailsComponent } from './details/details.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     activeUsersComponent,
     ReturnComponent,
     CartComponent,
-    NavbarComponent
+    NavbarComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,

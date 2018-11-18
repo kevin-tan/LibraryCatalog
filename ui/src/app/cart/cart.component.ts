@@ -87,7 +87,7 @@ export class CartComponent implements OnInit {
 
     });
   }
-  
+
   logout(): void {
     let body = JSON.stringify({'email': sessionStorage.getItem('email')});
     this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
