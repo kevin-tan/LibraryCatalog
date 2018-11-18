@@ -15,3 +15,9 @@ hr {
 Footer{
   margin-top: 10%;
 }
+
+.error-message {
+  color: red;
+  text-decoration: underline;
+  text-decoration-color: red;
+}

@@ -19,8 +19,8 @@ export class RegistrationComponent implements OnInit {
   register(username: string, password: string, userType: string) {
 
     let headers = new HttpHeaders({'Authorization': 'Basic ' + btoa(username+':'+password), 'Content-Type': 'application/json'});
-    let options = {headers: headers}
-    let body = JSON.stringify({[userType]:this.newUser})
+    let options = {headers: headers};
+    let body = JSON.stringify({[userType]:this.newUser});
     this.http.post('http://localhost:8080/app/v1/register', body, options).subscribe(response => {
 
     })
