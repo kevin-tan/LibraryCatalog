@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {HomeRedirectService} from "../home/home-redirect.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {LoanableItem} from "../catalog/dto/loanableItem";
 
@@ -10,7 +9,7 @@ import {LoanableItem} from "../catalog/dto/loanableItem";
 })
 export class CartComponent implements OnInit {
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.getCartItems();
@@ -95,15 +94,4 @@ export class CartComponent implements OnInit {
       })
   }
 
-  logout(): void {
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-      sessionStorage.setItem('user_id', '');
-    }, error => {
-      console.log(error);
-    });
-  }
 }

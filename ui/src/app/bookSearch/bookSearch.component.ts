@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../catalog/dto/item-specification/book';
-import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {Router} from "@angular/router";
 
@@ -15,23 +14,12 @@ export class bookSearchComponent implements OnInit {
   displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
   matBookList: MatTableDataSource<Book>;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router:Router) { }
+  constructor(private http: HttpClient, private router:Router) { }
 
   @ViewChild('bookSort') bookSort: MatSort;
 
   ngOnInit() {
     this.getAllBooks();
-  }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getAllBooks(): void {
@@ -60,7 +48,7 @@ export class bookSearchComponent implements OnInit {
       "format": format,
       "isbn10": isbn10,
       "isbn13": isbn13
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
