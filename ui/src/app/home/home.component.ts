@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HomeRedirectService} from './home-redirect.service';
 import {HttpClient} from '@angular/common/http';
 import {Book} from '../catalog/dto/item-specification/book';
 import {Magazine} from '../catalog/dto/item-specification/magazine';
@@ -37,21 +36,8 @@ export class HomeComponent implements OnInit {
     this.getAllCatalog();
   }
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
+  constructor(private http: HttpClient) {
 
-  }
-
-  logout(): void {
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-      sessionStorage.setItem("user_id", '');
-      sessionStorage.setItem("userType", '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   searchAllTitle(searchTitle: string) {

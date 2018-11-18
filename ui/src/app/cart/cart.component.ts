@@ -10,7 +10,7 @@ import {LoanableItem} from "../catalog/dto/loanableItem";
 })
 export class CartComponent implements OnInit {
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.getCartItems();
@@ -18,18 +18,6 @@ export class CartComponent implements OnInit {
 
   loanableItems: Array<LoanableItem>;
   displayColumn: string[] = ['title'];
-
-  logout(): void {
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-      sessionStorage.setItem('user_id', '');
-    }, error => {
-      console.log(error);
-    });
-  }
 
   getCartItems(){
     this.http.get<Array<LoanableItem>>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
