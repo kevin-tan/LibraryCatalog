@@ -65,7 +65,7 @@ public class Book extends PrintedItem {
         columnValues += ISBN13 + " = '" + getIsbn13() + "'";
         columnValues += AUTHOR + " = '" + author + "'";
         columnValues += FORMAT + " = '" + format.name() + "'";
-        columnValues += PAGES + " = '" + pages + "'";
+        columnValues += PAGES + " = " + pages + "";
 
         return columnValues;
     }
@@ -74,7 +74,7 @@ public class Book extends PrintedItem {
     @JsonIgnore
     public String toSQLValue() {
         return "('" + getTitle() + "','" + getPublisher() + "','" + getPubDate() + "','" + getLanguage() + "','" + getIsbn10() + "','" +
-               getIsbn13() + "','" + author + "','" + format.name() + "','" + pages + "')";
+               getIsbn13() + "','" + author + "','" + format.name() + "'," + pages + ")";
     }
 
     @Override

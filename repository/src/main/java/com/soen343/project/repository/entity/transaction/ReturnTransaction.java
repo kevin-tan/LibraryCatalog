@@ -28,13 +28,13 @@ public class ReturnTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
-        return super.sqlUpdateValues() + "')";
+        return super.sqlUpdateValues();
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return super.toSQLValue() + "')";
+        return  super.toSQLValue() + "')";
     }
 
     @Override
