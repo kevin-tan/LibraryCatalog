@@ -27,14 +27,14 @@ export class DetailsComponent implements OnInit {
 
   getAllItems(){
     if(this.type == 'Magazine'){
-      this.http.get<ItemSpecification[]>('http://localhost:8080//user/catalog/getAll/' + this.type +'/' + this.specID, {withCredentials: true},)
+      this.http.get<ItemSpecification[]>('http://localhost:8080/user/catalog/getAll/' + this.type +'/' + this.specID, {withCredentials: true},)
         .subscribe(response => {
           this.magazines = response;
         }, error => {
           console.log(error);
         });
     }else{
-      this.http.get<LoanableItem[]>('http://localhost:8080//user/catalog/getAll/' + this.type +'/' + this.specID, {withCredentials: true},)
+      this.http.get<LoanableItem[]>('http://localhost:8080/user/catalog/getAll/' + this.type +'/' + this.specID, {withCredentials: true},)
         .subscribe(response => {
           this.loanables = response;
         }, error => {
