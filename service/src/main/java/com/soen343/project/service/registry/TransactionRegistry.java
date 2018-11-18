@@ -54,7 +54,7 @@ public class TransactionRegistry {
     }
 
     public List<?> searchLoanByDueDate(ObjectNode dueDate) {
-        return ImmutableList.of(LOAN_TRANSACTION, loanTransactionGateway.findByDueDate(dueDate.get(DUEDATE).asText()));
+        return ImmutableList.of(loanTransactionGateway.findByDueDate(dueDate.get(DUEDATE).asText()));
     }
 
     public List<?> searchReturnByTransactionDate(ObjectNode transactionDate) {
