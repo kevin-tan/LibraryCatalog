@@ -179,6 +179,21 @@ public class ExampleController {
         return new ResponseEntity<>(loanableItemGateway.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/test/saveLoanableItems")
+    public ResponseEntity<?> findSaveLoanableItemTest() {
+        LoanableItem l1 = new LoanableItem(0L, movieRepository.findById(1L), true,null);
+        loanableItemGateway.save(l1);
+        return new ResponseEntity<>("DONE", HttpStatus.OK);
+    }
+
+    @GetMapping("/test/saveAllLoanableItems")
+    public ResponseEntity<?> findSaveAllLoanableItemTest() {
+        LoanableItem l1 = new LoanableItem(0L, movieRepository.findById(1L), true,null);
+        LoanableItem l2 = new LoanableItem(0L, bookRepository.findById(1L), true,null);
+        loanableItemGateway.saveAll(l1, l2);
+        return new ResponseEntity<>("DONE", HttpStatus.OK);
+    }
+
     @GetMapping("/test/findAllReturnTransactions")
     public ResponseEntity<?> findAllReturnTransactionsTest() {
         return new ResponseEntity<>(returnTransactionGateway.findAll(), HttpStatus.OK);

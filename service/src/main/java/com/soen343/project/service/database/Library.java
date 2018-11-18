@@ -3,6 +3,7 @@ package com.soen343.project.service.database;
 import com.soen343.project.repository.dao.catalog.item.ItemGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
+
+import static com.soen343.project.repository.entity.EntityConstants.MAGAZINE_TABLE;
 
 /**
  * Created by Kevin Tan 2018-09-25
@@ -31,7 +34,7 @@ public class Library {
     public List<User> register(User userToRegister) {
         List<User> registeredUsers = userRepository.findAll();
 
-        if(userToRegister.isUniqueFrom(registeredUsers)) {
+        if (userToRegister.isUniqueFrom(registeredUsers)) {
             String password = userToRegister.getPassword();
             userToRegister.setPassword(bCryptPasswordEncoder.encode(password));
             userRepository.save(userToRegister);
@@ -40,23 +43,27 @@ public class Library {
         return userRepository.findAll();
     }
 
-    public User getUserByEmail(String email){
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public User getUserByID(Long id){
+    public User getUserByID(Long id) {
         return userRepository.findById(id);
     }
 
     public Item createItem(ItemSpecification itemSpec) {
-        return new Item(itemSpec);
+        if (itemSpec.getTable().equals(MAGAZINE_TABLE)) {
+            return new Item(itemSpec);
+        } else {
+            return new LoanableItem(0L, itemSpec, true, null);
+        }
     }
 
     public Item getItem(Long itemID) {
         return itemRepository.findById(itemID);
     }
 
-    public List<Item> findAllItems(){
+    public List<Item> findAllItems() {
         return itemRepository.findAll();
     }
 }

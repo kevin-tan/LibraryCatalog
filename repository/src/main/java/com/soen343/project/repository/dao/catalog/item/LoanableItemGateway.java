@@ -17,6 +17,7 @@ import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -33,13 +34,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     public void save(LoanableItem entity) {
         scheduler.writer_p();
-        executeBatchUpdate(statement -> {
-            Item item = new Item(entity.getSpec());
-            statement.executeQuery(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
-            ResultSet rs = statement.executeQuery("SELECT id FROM Item ORDER BY id DESC LIMIT 1");
-            if (rs.next()) entity.setId(rs.getLong(ID));
-            statement.execute(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
-        });
+        executeBatchUpdate(saveQuery(entity));
         scheduler.writer_v();
     }
 
@@ -47,8 +42,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     public void saveAll(LoanableItem... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (LoanableItem loanableItem : entities) {
-            uow.registerOperation(
-                    statement -> executeUpdate(createSaveQuery(loanableItem.getTableWithColumns(), loanableItem.toSQLValue())));
+            uow.registerOperation(saveQuery(loanableItem));
         }
         scheduler.writer_p();
         uow.commit();

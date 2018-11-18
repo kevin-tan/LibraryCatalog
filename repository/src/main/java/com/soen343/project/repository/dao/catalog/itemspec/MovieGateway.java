@@ -84,7 +84,8 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
     @Override
     public List<Movie> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributesQuery(MOVIE_TABLE, attributeValue), databaseQueryOperation());
+        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributesQuery(MOVIE_TABLE, attributeValue),
+                databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -107,7 +108,8 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
     @Override
     public List<Movie> findByTitle(String title) {
         scheduler.reader_p();
-        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, TITLE, title), databaseQueryOperation());
+        List<Movie> list =
+                (List<Movie>) executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, TITLE, title), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
