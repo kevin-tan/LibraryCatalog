@@ -41,7 +41,6 @@ public class ClientHandler {
     public ResponseEntity<?> loanItems(Long clientId) {
         setClient(clientId);
         List<LoanableItem> loanables = cartHandler.getLoanables(clientId);
-        cartHandler.clear(clientId);
 
         long numberOfOwnedItems = getLoanedItemsByUserID(clientId).size();
 
@@ -49,6 +48,7 @@ public class ClientHandler {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        cartHandler.clear(clientId);
         return transactionService.createLoanTransactions(client,loanables);
     }
 
