@@ -23,15 +23,15 @@ public class LoanableItem extends Item {
 
     @Override
     public String sqlUpdateValues() {
-        String columnValues = USERID + " = '" + client.getId() + "', ";
-        columnValues += AVAILABLE + " = '" + available + "'";
+        String columnValues = USERID + " = " + client.getId() + ", ";
+        columnValues += AVAILABLE + " = " + available + "";
         return columnValues;
     }
 
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + this.getId() + "','" + (client == null ? "NULL" : client.getId()) + "','" + available + "')";
+        return "(" + this.getId() + "," + (client == null ? "NULL" : client.getId()) + "," + available + ")";
     }
 
     @Override

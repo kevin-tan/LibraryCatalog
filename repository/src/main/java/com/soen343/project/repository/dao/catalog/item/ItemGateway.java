@@ -1,7 +1,9 @@
 package com.soen343.project.repository.dao.catalog.item;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.soen343.project.database.base.DatabaseEntity;
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
@@ -83,7 +85,29 @@ public class ItemGateway implements Gateway<Item> {
     @SuppressWarnings("unchecked")
     public List<Item> findAll() {
         scheduler.reader_p();
-        List<Item> list = (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), (rs, statement) -> {
+        List<Item> list = (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @Override
+    public void update(Item entity) {
+        scheduler.writer_p();
+        executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
+        scheduler.writer_v();
+    }
+
+    public List<?> findByItemSpecId(String itemType, Long itemSpecId) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(
+                createSearchByAttributesQuery(ITEM_TABLE, ImmutableMap.of(TYPE, itemType, ITEMSPECID, itemSpecId.toString())),
+                databaseQueryOperation());
+        scheduler.reader_v();
+        return list;
+    }
+
+    private DatabaseQueryOperation databaseQueryOperation() {
+        return (rs, statement) -> {
             List<DatabaseEntity> listTemp = new ArrayList<>();
             Map<String, LinkedHashMultimap<Long, Item>> itemTempInfo = new HashMap<>();
 
@@ -109,16 +133,6 @@ public class ItemGateway implements Gateway<Item> {
                 }
             }
             return listTemp;
-        });
-        scheduler.reader_v();
-        return list;
+        };
     }
-
-    @Override
-    public void update(Item entity) {
-        scheduler.writer_p();
-        executeUpdate(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
-        scheduler.writer_v();
-    }
-
 }
