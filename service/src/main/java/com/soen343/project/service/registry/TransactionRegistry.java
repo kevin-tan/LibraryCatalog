@@ -2,6 +2,7 @@ package com.soen343.project.service.registry;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
@@ -53,11 +54,9 @@ public class TransactionRegistry {
             List<LoanTransaction> transactions = new LinkedList<>();
             loanables.forEach(loanableItem -> transactions.add(new LoanTransaction(loanableItem, client, LocalDateTime.now())));
             // Check + create the loan transaction
-            loanTransactionGateway.saveAll(transactions.toArray(new LoanTransaction[]{}));
-            System.err.print("On transaction");
+            loanTransactionGateway.saveAll(Iterables.toArray(transactions, LoanTransaction.class));
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            System.err.print("EROROR");
             return new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
         }
     }
