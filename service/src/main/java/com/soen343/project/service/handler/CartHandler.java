@@ -41,6 +41,11 @@ public class CartHandler implements Observer<User> {
         }
     }
 
+    public Cart getCartItem(Long clientId){
+        Cart cart = carts.get(clientId);
+        return cart;
+    }
+
     public Cart addItemToCart(Long clientId, LoanableItem loanableItem) {
         Cart cart = carts.get(clientId);
         cart.addItemToCart(loanableItem);

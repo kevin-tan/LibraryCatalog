@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {HttpClient} from "@angular/common/http";
+import {MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-return',
@@ -14,6 +15,7 @@ export class ReturnComponent implements OnInit {
   ngOnInit() {
   }
 
-
+  getLoanedItems(): void{
+  }
 
 }
