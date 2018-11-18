@@ -13,6 +13,7 @@ import {musicSearchComponent} from "./musicSearch/musicSearch.component";
 import {movieSearchComponent} from "./movieSearch/movieSearch.component";
 import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
 import {activeUsersComponent} from "./activeUsers/activeUsers.component";
+import {transactionComponent} from "./transaction/transaction.component";
 import {HomeRedirectService} from "./home/home-redirect.service";
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
@@ -29,7 +30,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     musicSearchComponent,
     movieSearchComponent,
     magazineSearchComponent,
-    activeUsersComponent
+    activeUsersComponent,
+    transactionComponent
   ],
   imports: [
     BrowserModule,

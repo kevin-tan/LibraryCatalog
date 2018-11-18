@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html>
+<title>Library Catalog</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+<body class="w3-black">
+
+<div>
+  <!-- Side Bar -->
+  <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
+    <a href="/home" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-home w3-xxlarge"></i>
+      <p>HOME</p>
+    </a>
+    <a href="/search/book" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-book w3-xxlarge"></i>
+      <p>BOOK</p>
+    </a>
+    <a href="/search/magazine" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-book-open w3-xxlarge"></i>
+      <p>MAGAZINE</p>
+    </a>
+    <a href="/search/music" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-music w3-xxlarge"></i>
+      <p>MUSIC</p>
+    </a>
+    <a href="/search/movie" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-compact-disc w3-xxlarge"></i>
+      <p>MOVIE</p>
+    </a>
+    <a href="/activeUsers" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-users w3-xxlarge"></i>
+      <p>ACTIVEUSERS</p>
+    </a>
+    <a href="/transactionHistory" class="w3-bar-item w3-button w3-padding-large w3-black">
+      <i class="fa fa-history w3-xxlarge"></i>
+      <p>TRANSACTION HISTORY</p>
+    </a>
+    <a href="/catalog" [routerLink]="" (click)="logout()" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <i class="fa fa-sign-out-alt w3-xxlarge"></i>
+      <p>LOGOUT</p>
+    </a>
+  </nav>
+</div>
+<!-- end of side bar -->
+
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+  <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+    <a href="/home" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
+    <a href="/search/book" class="w3-bar-item w3-button" style="width:25% !important">BOOK</a>
+    <a href="/search/magazine" class="w3-bar-item w3-button" style="width:25% !important">MAGAZINE</a>
+    <a href="/search/music" class="w3-bar-item w3-button" style="width:25% !important">MUSIC</a>
+    <a href="/search/movie" class="w3-bar-item w3-button" style="width:25% !important">MOVIE</a>
+    <a href="/activeUsers" class="w3-bar-item w3-button" style="width:25% !important">ACTIVEUSERS</a>
+    <a href="/transactionHistory" class="w3-bar-item w3-button" style="width:25% !important">TRANSACTION HISTORY</a>
+    <a href="/catalog" class="w3-bar-item w3-button" style="width:25% !important">LOGOUT</a>
+  </div>
+</div>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" >
+    <h2 class="w3-jumbo">What would you like to search <br>in <span style="font-size: 115%;"><i>transaction history</i></span></h2>
+    <h3>Please enter the transaction information that you would like to search for.</h3>
+    <hr style="width:100%" class="w3-opacity">
+  </header>
+
+  <h4>Check the transaction detail to enter the keyword for searching</h4>
+  <div>
+    <form>
+      <table>
+        <tr>
+          <th>
+            <input id="toggleItemType" type="checkbox">
+            <label for="toggleItemType">ItemType</label>
+            <div id="expandItemType">
+              <textarea rows="1" cols="47" #itemType itemType.value=""></textarea>
+            </div>
+          </th>
+          <th>
+            <input id="toggleUserId" type="checkbox">
+            <label for="toggleUserId">UserId</label>
+            <div id="expandUserId">
+              <textarea rows="1" cols="47" #userId userId.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <input id="toggleTransactionDate" type="checkbox">
+            <label for="toggleTransactionDate">Transaction Date</label>
+            <div id="expandTransactionDate">
+              <textarea rows="1" cols="47" #transactionDate transactionDate.value=""></textarea>
+              <button class="w3-bar-item w3-button" (click)="searchByDate(transactionDate.value)">
+                Search <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </th>
+          <th>
+            <input id="toggleDueDate" type="checkbox">
+            <label for="toggleDueDate">Due Date</label>
+            <div id="expandDueDate">
+              <textarea rows="1" cols="47" #dueDate dueDate.value=""></textarea>
+            </div>
+          </th>
+        </tr>
+      </table>
+      <button class="w3-bar-item w3-button" (click)="searchTransactionByIdType(userId.value, itemType.value)">
+        Search <i class="fa fa-search"></i>
+      </button>
+    </form>
+  </div>
+
+  <div>
+    <h2><i>Loan Transactions</i></h2><hr>
+    <table mat-table #loanTransactionSort="matSort" [dataSource]="matLoanTransactionList" matSort class="mat-elevation-z8"  width="100%">
+      <ng-container matColumnDef="itemId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Item ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.loanableItem.LoanableItem.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> User ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.client.Client.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+        <td mat-cell *matCellDef="let element"> {{element.client.Client.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+        <td mat-cell *matCellDef="let element"> {{element.loanableItem.LoanableItem.spec[element.loanableItem.LoanableItem.type].title}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.loanableItem.LoanableItem.type}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="transactionDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Transaction Date </th>
+        <td mat-cell *matCellDef="let element"> {{convertDate(element.transactionDate)}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dueDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </th>
+        <td mat-cell *matCellDef="let element"> {{convertDate(element.dueDate)}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayLoanTransactionColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayLoanTransactionColumns;"></tr>
+    </table>
+  </div>
+
+  <div>
+    <h2><i>Return Transactions</i></h2><hr>
+    <table mat-table #returnTransactionSort="matSort" [dataSource]="matReturnTransactionList" matSort class="mat-elevation-z8"  width="100%">
+      <ng-container matColumnDef="itemId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Item ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.loanableItem.LoanableItem.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> User ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.client.Client.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+        <td mat-cell *matCellDef="let element"> {{element.client.Client.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+        <td mat-cell *matCellDef="let element"> {{element.loanableItem.LoanableItem.spec[element.loanableItem.LoanableItem.type].title}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.loanableItem.LoanableItem.type}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="transactionDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Transaction Date </th>
+        <td mat-cell *matCellDef="let element"> {{convertDate(element.transactionDate)}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayReturnTransactionColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayReturnTransactionColumns;"></tr>
+    </table>
+  </div>
+
+
+
+
+  <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <p class="w3-medium">Created by SOEN343 team#10</p>
+    <!-- End footer -->
+  </footer>
+
+  <!-- END PAGE CONTENT -->
+</div>
+</body>
+</html>
+

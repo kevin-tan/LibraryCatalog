@@ -109,7 +109,7 @@ INSERT INTO LoanTransaction (itemId, userId, transactionDate, dueDate) VALUES
 (11,2, DateTime('now'),DateTime('now')),
 (16,2, DateTime('now'),DateTime('now'));
 
--- INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
--- (1,2, DateTime('now')),
--- (11,2, DateTime('now')),
--- (16,2, DateTime('now'));
+INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
+(1,2, DateTime('now')),
+(11,2, DateTime('now')),
+(16,2, DateTime('now'));
