@@ -23,7 +23,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody ObjectNode email) {
-        loginManager.loginUser(email.get("email").asText());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(loginManager.loginUser(email.get("email").asText()), HttpStatus.OK);
     }
 }

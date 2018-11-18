@@ -10,6 +10,9 @@ Textarea{
   float: right;
   resize: none;
 }
+Footer{
+  margin-top: 15%;
+}
 input {
   display: none;
   visibility: hidden;
