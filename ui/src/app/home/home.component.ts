@@ -6,6 +6,7 @@ import {Magazine} from '../catalog/dto/item-specification/magazine';
 import {Movie} from '../catalog/dto/item-specification/movie';
 import {Music} from '../catalog/dto/item-specification/music';
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -31,13 +32,14 @@ export class HomeComponent implements OnInit {
   @ViewChild('movieSort') movieSort: MatSort;
   @ViewChild('magazineSort') magazineSort: MatSort;
   @ViewChild('musicSort') musicSort: MatSort;
+  route: any;
 
   ngOnInit() {
     //Gets all itemSpecs at beginning
     this.getAllCatalog();
   }
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router:Router) {
 
   }
 
@@ -82,5 +84,9 @@ export class HomeComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }

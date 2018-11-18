@@ -1,6 +1,7 @@
 package com.soen343.project.service.catalog;
 
 import com.google.common.collect.ImmutableMap;
+import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.item.ItemGateway;
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
@@ -8,6 +9,7 @@ import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
 import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.mapper.GatewayMapper;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

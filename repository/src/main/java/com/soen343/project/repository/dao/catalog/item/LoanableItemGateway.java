@@ -193,6 +193,5 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             return loanableItems;
         };
     }
-
 }
 

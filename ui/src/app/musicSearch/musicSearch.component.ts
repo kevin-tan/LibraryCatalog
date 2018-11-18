@@ -3,6 +3,7 @@ import {Music} from "../catalog/dto/item-specification/music";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -16,7 +17,7 @@ export class musicSearchComponent implements OnInit {
 
   @ViewChild('musicSort') musicSort: MatSort;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private router:Router) { }
 
   ngOnInit() {
     this.getAllMusics();
@@ -65,5 +66,9 @@ export class musicSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }
