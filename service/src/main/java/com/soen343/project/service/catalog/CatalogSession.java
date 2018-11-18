@@ -1,13 +1,15 @@
 package com.soen343.project.service.catalog;
 
-import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
+import com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation;
 import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.uow.UnitOfWork;
 import lombok.Data;
 
-import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+import static com.soen343.project.database.query.QueryBuilder.*;
+import static com.soen343.project.repository.entity.EntityConstants.MAGAZINE_TABLE;
 
 @Data
 class CatalogSession {
@@ -23,26 +25,30 @@ class CatalogSession {
     }
 
     void updateEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(statement -> statement.executeUpdate(
-                QueryBuilder.createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
+        unitOfWork.registerOperation(
+                statement -> statement.executeUpdate(createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
     }
 
     void addEntry(Item item) {
-        unitOfWork
-                .registerOperation(statement -> statement.executeUpdate(QueryBuilder.createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
+        if (item.getTable().equals(MAGAZINE_TABLE)) {
+            unitOfWork.registerOperation(
+                    statement -> statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
+        } else {
+            unitOfWork.registerOperation(LoanableItemOperation.saveQuery((LoanableItem) item));
+        }
     }
 
     void addEntry(ItemSpecification itemSpec) {
-        unitOfWork
-                .registerOperation(statement -> statement.executeUpdate(QueryBuilder.createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+        unitOfWork.registerOperation(
+                statement -> statement.executeUpdate(createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
     }
 
     void removeEntry(Item item) {
-        unitOfWork.registerOperation(statement -> statement.executeUpdate(QueryBuilder.createDeleteQuery(item.getTable(), item.getId())));
+        unitOfWork.registerOperation(statement -> statement.executeUpdate(createDeleteQuery(item.getTable(), item.getId())));
     }
 
     void removeEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(statement -> statement.executeUpdate(QueryBuilder.createDeleteQuery(itemSpec.getTable(), itemSpec.getId())));
+        unitOfWork.registerOperation(statement -> statement.executeUpdate(createDeleteQuery(itemSpec.getTable(), itemSpec.getId())));
     }
 
     void endSession() {

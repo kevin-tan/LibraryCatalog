@@ -38,7 +38,6 @@ public class DatabaseConnector {
     public static void executeBatchUpdate(DatabaseBatchOperation databaseBatchOperation) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
             databaseBatchOperation.execute(createStatement(connection)); // Execute batch statements
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
