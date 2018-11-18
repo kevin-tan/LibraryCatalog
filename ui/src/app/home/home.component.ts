@@ -47,7 +47,8 @@ export class HomeComponent implements OnInit {
       this.homeRedirectService.redirect();
       sessionStorage.setItem('loggedIn', 'false');
       sessionStorage.setItem('email', '');
-      sessionStorage.setItem('user_id', '');
+      sessionStorage.setItem("user_id", '');
+      sessionStorage.setItem("userType", '');
     }, error => {
       console.log(error);
     });

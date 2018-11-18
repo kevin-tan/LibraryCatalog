@@ -1,7 +1,7 @@
 import {ItemSpecification} from "./item-specification/item_specification";
 import {User} from "../../registration/user";
 
-export interface LoanableItem {
+export interface LoanableItem{
   id: number;
   spec: ItemSpecification;
   type: string;

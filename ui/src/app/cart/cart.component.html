@@ -36,9 +36,9 @@
       <i class="fa fa-compact-disc w3-xxlarge"></i>
       <p>MOVIE</p>
     </a>
-    <a href="/activeUsers" class="w3-bar-item w3-button w3-padding-large w3-black">
+    <a href="/cart" class="w3-bar-item w3-button w3-padding-large w3-black">
       <i class="fa fa-users w3-xxlarge"></i>
-      <p>ACTIVEUSERS</p>
+      <p>CART</p>
     </a>
     <a href="/catalog" [routerLink]="" (click)="logout()" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
       <i class="fa fa-sign-out-alt w3-xxlarge"></i>
@@ -64,9 +64,39 @@
 <!-- Page Content -->
 <div class="w3-padding-large" id="main">
   <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <h1 class="w3-jumbo">Library Catalog</h1>
+    <p>Welcome to library catalog.</p>
+  </header>
+
+  <!-- About Catalog Section -->
+  <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+    <h2 class="w3-text-light-grey">Cart</h2>
+    <hr style="width:200px" class="w3-opacity">
+
+    <!-- Library Catalog Items -->
+    <h3 class="w3-padding-16 w3-text-light-grey">Loanable Items</h3>
+
+    <div>
+      <table mat-table #bookSort="matSort" [dataSource]="loanableItems" matSort class="mat-elevation-z8" width="100%">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+          <td mat-cell *matCellDef="let element"> {{element.spec.title}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumn"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumn;"></tr>
+      </table>
+    </div>
+    <div>
+      <button type="button" class="btn btn-primary">Confirm Oder</button>
+    </div>
+    <div>
+      <button type="button" class="btn btn-warning">Cancel Order</button>
+    </div>
 
 
-
+  </div>
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
     <p class="w3-medium">Created by SOEN343 team#10</p>

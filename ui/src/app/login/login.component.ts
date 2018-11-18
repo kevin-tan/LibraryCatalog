@@ -21,6 +21,8 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem("email", email);
       sessionStorage.setItem("user_id", response['id']);
       sessionStorage.setItem("loggedIn", "true");
+      sessionStorage.setItem("user_id", response['id']);
+      sessionStorage.setItem("userType", response['userType']);
       this.loginRedirectService.redirect();
     }, error => {
       console.log(error);
