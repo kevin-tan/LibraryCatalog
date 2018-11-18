@@ -1,7 +1,6 @@
 package com.soen343.project.service.authenticate;
 
 import com.google.common.collect.ImmutableMap;
-import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.EntityConstants;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.service.database.Library;
@@ -19,24 +18,22 @@ import java.util.Map;
 public class LoginManager implements Subject<User> {
 
     private Library library;
-    private final UserGateway userGateway;
     private List<Observer> observers;
 
     @Autowired
-    LoginManager(UserRegistry userRegistry, Library library, UserGateway userGateway) {
+    LoginManager(UserRegistry userRegistry, Library library) {
         this.library = library;
-        this.userGateway = userGateway;
         observers = new LinkedList<>();
         addObserver(userRegistry);
     }
 
-    public Map<String, Long> loginUser(String email) {
+    public Map<String, ?> loginUser(String email) {
         User user = library.getUserByEmail(email);
         if (user != null) {
             notifyObservers(user, true);
-            return ImmutableMap.of(EntityConstants.ID, userGateway.findByEmail(email).getId());
+            return ImmutableMap.of(EntityConstants.ID, user.getId(), EntityConstants.USER_TYPE, user.getUserType());
         }
-        return ImmutableMap.of(EntityConstants.ID, 0L);
+        return ImmutableMap.of(EntityConstants.ID, "", EntityConstants.USER_TYPE, "");
     }
 
     public boolean logoutUser(String email) {
