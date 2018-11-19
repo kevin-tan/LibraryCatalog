@@ -274,7 +274,7 @@
               <i class="fa fa-minus"></i><b> Delete Movie</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
-                    (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+                    (click)="editMovie(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value, mng_movie_runtime.value, movieForm)">
               <i class="fa fa-wrench"></i><b> Edit Movie</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
@@ -362,7 +362,7 @@
   <br>
 
   <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
-          (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+          (click)="deleteMovieItem()">
     <i class="fa fa-minus"></i>
   </button>
   <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
@@ -427,7 +427,7 @@
               <i class="fa fa-minus"></i><b> Delete Magazine</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
-                    (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+                    (click)="editMagazine(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value, magazineForm)">
               <i class="fa fa-wrench"></i><b> Edit Magazine</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
@@ -500,7 +500,7 @@
   <br>
 
   <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
-          (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+          (click)="deleteMagazineItem()">
     <i class="fa fa-minus"></i>
   </button>
   <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
@@ -565,7 +565,7 @@
               <i class="fa fa-minus"></i><b> Delete Music</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
-                    (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+                    (click)="editMusic(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value, musicForm)">
               <i class="fa fa-wrench"></i><b> Edit Music</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
@@ -639,7 +639,7 @@
 
   <hr style="width:100%" class="w3-opacity">
   <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-right w3-right"
-          (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+          (click)="deleteMusicItem()">
     <i class="fa fa-minus"></i>
   </button>
   <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-right w3-right"

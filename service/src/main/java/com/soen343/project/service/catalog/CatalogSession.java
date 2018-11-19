@@ -13,7 +13,6 @@ import lombok.Data;
 import java.sql.ResultSet;
 
 import static com.soen343.project.database.query.QueryBuilder.*;
-import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.deleteQuery;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.*;
@@ -34,12 +33,16 @@ class CatalogSession {
     }
 
     void updateEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(
-                statement -> statement.executeUpdate(createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
+        if (itemSpec.getTable().equals(MOVIE_TABLE)) {
+            unitOfWork.registerOperation(ItemSpecificationOperation.movieUpdateOperation((Movie) itemSpec));
+        } else {
+            unitOfWork.registerOperation(statement -> statement.executeUpdate(
+                    createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
+        }
     }
 
     void addEntry(Item item) {
-        if (item.getTable()
+        if (item.getSpec().getTable()
                 .equals(MAGAZINE_TABLE)) {
             unitOfWork.registerOperation(
                     statement -> statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
@@ -65,7 +68,7 @@ class CatalogSession {
                 .equals(MAGAZINE_TABLE)) {
             unitOfWork.registerOperation(statement -> {
                 ResultSet rs = statement.executeQuery(
-                        "SELECT * ALL FROM " + ITEM_TABLE + " WHERE " + TYPE + " = '" + itemSpec.getTable() + "' and " + ITEMSPECID +
+                        "SELECT * FROM " + ITEM_TABLE + " WHERE " + TYPE + " = '" + itemSpec.getTable() + "' and " + ITEMSPECID +
                         " = " + itemSpec.getId() + " LIMIT 1;");
                 rs.next(); // Move to query result
                 statement.executeUpdate(createDeleteQuery(ITEM_TABLE, rs.getLong(ID)));

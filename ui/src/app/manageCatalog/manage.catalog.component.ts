@@ -15,6 +15,8 @@ import {SelectionModel} from '@angular/cdk/collections';
   styleUrls: ['./manage.catalog.component.css']
 })
 
+//TODO MASSIVE REFACTOR
+
 export class ManageCatalogComponent implements OnInit {
 
   displayBookColumns: string[] = ['select', 'title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language', 'quantity'];
@@ -125,8 +127,10 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.bookList.push({'id': null, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
-        'format': format, 'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages, 'quantity': 0});
+      this.bookList.push({
+        'id': null, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
+        'format': format, 'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages, 'quantity': 0
+      });
       this.matBookList = new MatTableDataSource(this.bookList);
       this.matBookList.sort = this.bookSort;
       this.snackBar.open('Item added successfully!', 'OK', {
@@ -159,9 +163,11 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.movieList.push({'id': null, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
+      this.movieList.push({
+        'id': null, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
         'subtitles': subtitles, 'dubbed': dubbed.split(', '), 'actors': actors.split(', '),
-        'producers': producers.split(', '), 'runTime': +runTime, 'quantity': 0});
+        'producers': producers.split(', '), 'runTime': +runTime, 'quantity': 0
+      });
       this.matMovieList = new MatTableDataSource(this.movieList);
       this.matMovieList.sort = this.movieSort;
     }, error => {
@@ -186,8 +192,10 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.magazineList.push({'id': null, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
-        'isbn10': isbn10, 'isbn13': isbn13,'quantity': 0});
+      this.magazineList.push({
+        'id': null, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
+        'isbn10': isbn10, 'isbn13': isbn13, 'quantity': 0
+      });
       this.matMagazineList = new MatTableDataSource(this.magazineList);
       this.matMagazineList.sort = this.magazineSort;
     }, error => {
@@ -212,9 +220,31 @@ export class ManageCatalogComponent implements OnInit {
 
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
       form.resetForm();
-      this.musicList.push({'id': null, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label, 'asin': asin, 'quantity': 0});
+      this.musicList.push({
+        'id': null, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label,
+        'asin': asin, 'quantity': 0
+      });
       this.matMusicList = new MatTableDataSource(this.musicList);
       this.matMusicList.sort = this.musicSort;
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let book of this.bookList) {
+        book.quantity = response['Book'][book.id] >= 0 ? response['Book'][book.id] : 0;
+      }
+      for (let movie of this.movieList) {
+        movie.quantity = response['Movie'][movie.id] >= 0 ? response['Movie'][movie.id] : 0;
+      }
+      for (let magazine of this.magazineList) {
+        magazine.quantity = response['Magazine'][magazine.id] >= 0 ? response['Magazine'][magazine.id] : 0;
+      }
+      for (let music of this.musicList) {
+        music.quantity = response['Music'][music.id] >= 0 ? response['Music'][music.id] : 0;
+      }
     }, error => {
       console.log(error);
     });
@@ -255,9 +285,9 @@ export class ManageCatalogComponent implements OnInit {
       (<HTMLInputElement>document.getElementById('mng_movie_title')).value = row.title;
       (<HTMLInputElement>document.getElementById('mng_movie_language')).value = row.language;
       (<HTMLInputElement>document.getElementById('mng_movie_director')).value = row.director;
-      (<HTMLInputElement>document.getElementById('mng_movie_producers')).value = row.producers.join(", ");
-      (<HTMLInputElement>document.getElementById('mng_movie_actors')).value = row.actors.join(", ");
-      (<HTMLInputElement>document.getElementById('mng_movie_dubbed')).value = row.dubbed.join(", ");
+      (<HTMLInputElement>document.getElementById('mng_movie_producers')).value = row.producers.join(', ');
+      (<HTMLInputElement>document.getElementById('mng_movie_actors')).value = row.actors.join(', ');
+      (<HTMLInputElement>document.getElementById('mng_movie_dubbed')).value = row.dubbed.join(', ');
       (<HTMLInputElement>document.getElementById('mng_movie_subtitles')).value = row.subtitles;
       (<HTMLInputElement>document.getElementById('mng_movie_releaseDate')).value = row.releaseDate;
       (<HTMLInputElement>document.getElementById('mng_movie_runtime')).value = row.runTime.toString();
@@ -322,8 +352,19 @@ export class ManageCatalogComponent implements OnInit {
 
         for (let i = 0; i < this.bookList.length; i++) {
           if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList[i] = {'id': this.bookSelectedRow.id, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate,
-              'language': language, 'format': format, 'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages, 'quantity': 0};
+            this.bookList[i] = {
+              'id': this.bookSelectedRow.id,
+              'title': title,
+              'author': author,
+              'publisher': publisher,
+              'pubDate': pubDate,
+              'language': language,
+              'format': format,
+              'isbn10': isbn10,
+              'isbn13': isbn13,
+              'pages': +pages,
+              'quantity': this.bookSelectedRow.quantity
+            };
             break;
           }
         }
@@ -341,25 +382,6 @@ export class ManageCatalogComponent implements OnInit {
         duration: 2000,
       });
     }
-  }
-
-  getAllInventory() {
-    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
-      for( let book of this.bookList){
-        book.quantity = response['Book'][book.id] >= 0 ? response['Book'][book.id] : 0;
-      }
-      for( let movie of this.movieList){
-        movie.quantity = response['Movie'][movie.id] >= 0 ? response['Movie'][movie.id] : 0;
-      }
-      for( let magazine of this.magazineList){
-        magazine.quantity = response['Magazine'][magazine.id] >= 0 ? response['Magazine'][magazine.id] : 0;
-      }
-      for( let music of this.musicList){
-        music.quantity = response['Music'][music.id] >= 0 ? response['Music'][music.id] : 0;
-      }
-    }, error => {
-      console.log(error);
-    });
   }
 
   addBookItem() {
@@ -385,10 +407,19 @@ export class ManageCatalogComponent implements OnInit {
       this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
         for (let i = 0; i < this.bookList.length; i++) {
           if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList[i] = {'id': this.bookSelectedRow.id, 'title': this.bookSelectedRow.title, 'author': this.bookSelectedRow.author,
-              'publisher': this.bookSelectedRow.publisher, 'pubDate': this.bookSelectedRow.pubDate, 'language': this.bookSelectedRow.language,
-              'format': this.bookSelectedRow.format, 'isbn10': this.bookSelectedRow.isbn10, 'isbn13': this.bookSelectedRow.isbn13,
-              'pages': +this.bookSelectedRow.pages, 'quantity': ++this.bookSelectedRow.quantity};
+            this.bookList[i] = {
+              'id': this.bookSelectedRow.id,
+              'title': this.bookSelectedRow.title,
+              'author': this.bookSelectedRow.author,
+              'publisher': this.bookSelectedRow.publisher,
+              'pubDate': this.bookSelectedRow.pubDate,
+              'language': this.bookSelectedRow.language,
+              'format': this.bookSelectedRow.format,
+              'isbn10': this.bookSelectedRow.isbn10,
+              'isbn13': this.bookSelectedRow.isbn13,
+              'pages': +this.bookSelectedRow.pages,
+              'quantity': ++this.bookSelectedRow.quantity
+            };
             break;
           }
         }
@@ -409,7 +440,7 @@ export class ManageCatalogComponent implements OnInit {
   }
 
   deleteBookItem() {
-    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null) {
+    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null && this.bookSelectedRow.quantity > 0) {
       let body = JSON.stringify({
         'Book': {
           'id': this.bookSelectedRow.id,
@@ -431,10 +462,19 @@ export class ManageCatalogComponent implements OnInit {
       this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
         for (let i = 0; i < this.bookList.length; i++) {
           if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList[i] = {'id': this.bookSelectedRow.id, 'title': this.bookSelectedRow.title, 'author': this.bookSelectedRow.author,
-              'publisher': this.bookSelectedRow.publisher, 'pubDate': this.bookSelectedRow.pubDate, 'language': this.bookSelectedRow.language,
-              'format': this.bookSelectedRow.format, 'isbn10': this.bookSelectedRow.isbn10, 'isbn13': this.bookSelectedRow.isbn13,
-              'pages': +this.bookSelectedRow.pages, 'quantity': --this.bookSelectedRow.quantity};
+            this.bookList[i] = {
+              'id': this.bookSelectedRow.id,
+              'title': this.bookSelectedRow.title,
+              'author': this.bookSelectedRow.author,
+              'publisher': this.bookSelectedRow.publisher,
+              'pubDate': this.bookSelectedRow.pubDate,
+              'language': this.bookSelectedRow.language,
+              'format': this.bookSelectedRow.format,
+              'isbn10': this.bookSelectedRow.isbn10,
+              'isbn13': this.bookSelectedRow.isbn13,
+              'pages': +this.bookSelectedRow.pages,
+              'quantity': --this.bookSelectedRow.quantity
+            };
             break;
           }
         }
@@ -447,7 +487,64 @@ export class ManageCatalogComponent implements OnInit {
         console.log(error);
       });
     } else {
-      this.bookSelection.clear();
+      if (this.bookSelectedRow.quantity === 0) {
+        this.movieSelection.clear();
+        this.snackBar.open('No items to delete!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.movieSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
+  editMovie(title: string, director: string, releaseDate: string, language: string, subtitles: string, dubbed: string, actors: string,
+            producers: string, runTime: string, form: NgForm) {
+    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Movie': {
+          'id': this.movieSelectedRow.id,
+          'title': title,
+          'director': director,
+          'releaseDate': releaseDate,
+          'language': language,
+          'subtitles': subtitles,
+          'dubbed': dubbed.split(', '),
+          'actors': actors.split(', '),
+          'producers': producers.split(', '),
+          'runTime': +runTime
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
+        form.resetForm();
+
+        for (let i = 0; i < this.movieList.length; i++) {
+          if (this.movieList[i].id === this.movieSelectedRow.id) {
+            this.movieList[i] = {
+              'id': this.movieSelectedRow.id, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
+              'subtitles': subtitles, 'dubbed': dubbed.split(', '), 'actors': actors.split(', '), 'producers': producers.split(', '),
+              'runTime': +runTime, 'quantity': this.movieSelectedRow.quantity
+            };
+            break;
+          }
+        }
+        this.matMovieList = new MatTableDataSource(this.movieList);
+        this.matMovieList.sort = this.movieSort;
+        this.snackBar.open('Item modified successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.movieSelection.clear();
       this.snackBar.open('Please select a valid row first', 'OK', {
         duration: 2000,
       });
@@ -477,10 +574,19 @@ export class ManageCatalogComponent implements OnInit {
       this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
         for (let i = 0; i < this.movieList.length; i++) {
           if (this.movieList[i].id === this.movieSelectedRow.id) {
-            this.movieList[i] = {'id': this.movieSelectedRow.id, 'title': this.movieSelectedRow.title, 'director': this.movieSelectedRow.director,
-              'releaseDate': this.movieSelectedRow.releaseDate, 'language': this.movieSelectedRow.language, 'subtitles': this.movieSelectedRow.subtitles,
-              'dubbed': this.movieSelectedRow.dubbed, 'actors': this.movieSelectedRow.actors, 'producers': this.movieSelectedRow.producers,
-              'runTime': this.movieSelectedRow.runTime, 'quantity': ++this.movieSelectedRow.quantity};
+            this.movieList[i] = {
+              'id': this.movieSelectedRow.id,
+              'title': this.movieSelectedRow.title,
+              'director': this.movieSelectedRow.director,
+              'releaseDate': this.movieSelectedRow.releaseDate,
+              'language': this.movieSelectedRow.language,
+              'subtitles': this.movieSelectedRow.subtitles,
+              'dubbed': this.movieSelectedRow.dubbed,
+              'actors': this.movieSelectedRow.actors,
+              'producers': this.movieSelectedRow.producers,
+              'runTime': this.movieSelectedRow.runTime,
+              'quantity': ++this.movieSelectedRow.quantity
+            };
             break;
           }
         }
@@ -494,6 +600,113 @@ export class ManageCatalogComponent implements OnInit {
       });
     } else {
       this.movieSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
+
+  deleteMovieItem() {
+    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null && this.movieSelectedRow.quantity > 0) {
+      let body = JSON.stringify({
+        'Movie': {
+          'id': this.movieSelectedRow.id,
+          'title': this.movieSelectedRow.title,
+          'director': this.movieSelectedRow.director,
+          'releaseDate': this.movieSelectedRow.releaseDate,
+          'language': this.movieSelectedRow.language,
+          'subtitles': this.movieSelectedRow.subtitles,
+          'dubbed': this.movieSelectedRow.dubbed,
+          'actors': this.movieSelectedRow.actors,
+          'producers': this.movieSelectedRow.producers,
+          'runTime': this.movieSelectedRow.runTime
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
+        for (let i = 0; i < this.movieList.length; i++) {
+          if (this.movieList[i].id === this.movieSelectedRow.id) {
+            this.movieList[i] = {
+              'id': this.movieSelectedRow.id,
+              'title': this.movieSelectedRow.title,
+              'director': this.movieSelectedRow.director,
+              'releaseDate': this.movieSelectedRow.releaseDate,
+              'language': this.movieSelectedRow.language,
+              'subtitles': this.movieSelectedRow.subtitles,
+              'dubbed': this.movieSelectedRow.dubbed,
+              'actors': this.movieSelectedRow.actors,
+              'producers': this.movieSelectedRow.producers,
+              'runTime': this.movieSelectedRow.runTime,
+              'quantity': --this.movieSelectedRow.quantity
+            };
+            break;
+          }
+        }
+        this.matMovieList = new MatTableDataSource(this.movieList);
+        this.matMovieList.sort = this.movieSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      if (this.movieSelectedRow.quantity === 0) {
+        this.movieSelection.clear();
+        this.snackBar.open('No items to delete!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.movieSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
+  editMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
+    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Magazine': {
+          'id': this.magazineSelectedRow.id,
+          'title': title,
+          'publisher': publisher,
+          'pubDate': pubDate,
+          'language': language,
+          'isbn10': isbn10,
+          'isbn13': isbn13
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
+        form.resetForm();
+
+        for (let i = 0; i < this.magazineList.length; i++) {
+          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
+            this.magazineList[i] = {
+              'id': this.magazineSelectedRow.id, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
+              'isbn10': isbn10, 'isbn13': isbn13, 'quantity': this.magazineSelectedRow.quantity
+            };
+            break;
+          }
+        }
+        this.matMagazineList = new MatTableDataSource(this.magazineList);
+        this.matMagazineList.sort = this.magazineSort;
+        this.snackBar.open('Item modified successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.magazineSelection.clear();
       this.snackBar.open('Please select a valid row first', 'OK', {
         duration: 2000,
       });
@@ -520,9 +733,16 @@ export class ManageCatalogComponent implements OnInit {
       this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
         for (let i = 0; i < this.magazineList.length; i++) {
           if (this.magazineList[i].id === this.magazineSelectedRow.id) {
-            this.magazineList[i] = {'id': this.magazineSelectedRow.id, 'title': this.magazineSelectedRow.title, 'publisher': this.magazineSelectedRow.publisher,
-              'pubDate': this.magazineSelectedRow.pubDate, 'language': this.magazineSelectedRow.language, 'isbn10': this.magazineSelectedRow.isbn10,
-              'isbn13': this.magazineSelectedRow.isbn13, 'quantity': ++this.magazineSelectedRow.quantity};
+            this.magazineList[i] = {
+              'id': this.magazineSelectedRow.id,
+              'title': this.magazineSelectedRow.title,
+              'publisher': this.magazineSelectedRow.publisher,
+              'pubDate': this.magazineSelectedRow.pubDate,
+              'language': this.magazineSelectedRow.language,
+              'isbn10': this.magazineSelectedRow.isbn10,
+              'isbn13': this.magazineSelectedRow.isbn13,
+              'quantity': ++this.magazineSelectedRow.quantity
+            };
             break;
           }
         }
@@ -536,6 +756,107 @@ export class ManageCatalogComponent implements OnInit {
       });
     } else {
       this.magazineSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
+
+  deleteMagazineItem() {
+    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null && this.magazineSelectedRow.quantity > 0) {
+      let body = JSON.stringify({
+        'Magazine': {
+          'id': this.magazineSelectedRow.id,
+          'title': this.magazineSelectedRow.title,
+          'publisher': this.magazineSelectedRow.publisher,
+          'pubDate': this.magazineSelectedRow.pubDate,
+          'language': this.magazineSelectedRow.language,
+          'isbn10': this.magazineSelectedRow.isbn10,
+          'isbn13': this.magazineSelectedRow.isbn13
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
+        for (let i = 0; i < this.magazineList.length; i++) {
+          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
+            this.magazineList[i] = {
+              'id': this.magazineSelectedRow.id,
+              'title': this.magazineSelectedRow.title,
+              'publisher': this.magazineSelectedRow.publisher,
+              'pubDate': this.magazineSelectedRow.pubDate,
+              'language': this.magazineSelectedRow.language,
+              'isbn10': this.magazineSelectedRow.isbn10,
+              'isbn13': this.magazineSelectedRow.isbn13,
+              'quantity': --this.magazineSelectedRow.quantity
+            };
+            break;
+          }
+        }
+        this.matMagazineList = new MatTableDataSource(this.magazineList);
+        this.matMagazineList.sort = this.magazineSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      if (this.bookSelectedRow.quantity === 0) {
+        this.magazineSelection.clear();
+        this.snackBar.open('No items to delete!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.magazineSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
+  editMusic(title: string, artist: string, type: string, releaseDate: string, label: string, asin: string, form: NgForm) {
+    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Music': {
+          'id': this.musicSelectedRow.id,
+          'title': title,
+          'artist': artist,
+          'type': type,
+          'releaseDate': releaseDate,
+          'label': label,
+          'asin': asin
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
+        form.resetForm();
+
+        for (let i = 0; i < this.musicList.length; i++) {
+          if (this.musicList[i].id === this.musicSelectedRow.id) {
+            this.musicList[i] = {
+              'id': this.musicSelectedRow.id, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label,
+              'asin': asin, 'quantity': this.musicSelectedRow.quantity
+            };
+            break;
+          }
+        }
+        this.matMusicList = new MatTableDataSource(this.musicList);
+        this.matMusicList.sort = this.musicSort;
+        this.snackBar.open('Item modified successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.musicSelection.clear();
       this.snackBar.open('Please select a valid row first', 'OK', {
         duration: 2000,
       });
@@ -562,9 +883,11 @@ export class ManageCatalogComponent implements OnInit {
       this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
         for (let i = 0; i < this.musicList.length; i++) {
           if (this.musicList[i].id === this.musicSelectedRow.id) {
-            this.musicList[i] = {'id': this.musicSelectedRow.id, 'title': this.musicSelectedRow.title, 'artist': this.musicSelectedRow.artist,
+            this.musicList[i] = {
+              'id': this.musicSelectedRow.id, 'title': this.musicSelectedRow.title, 'artist': this.musicSelectedRow.artist,
               'type': this.musicSelectedRow.type, 'releaseDate': this.musicSelectedRow.releaseDate, 'label': this.musicSelectedRow.label,
-              'asin': this.musicSelectedRow.asin, 'quantity': ++this.musicSelectedRow.quantity};
+              'asin': this.musicSelectedRow.asin, 'quantity': ++this.musicSelectedRow.quantity
+            };
             break;
           }
         }
@@ -581,6 +904,57 @@ export class ManageCatalogComponent implements OnInit {
       this.snackBar.open('Please select a valid row first', 'OK', {
         duration: 2000,
       });
+    }
+  }
+
+  deleteMusicItem() {
+    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null && this.musicSelectedRow.quantity > 0) {
+      let body = JSON.stringify({
+        'Music': {
+          'id': this.musicSelectedRow.id,
+          'title': this.musicSelectedRow.title,
+          'artist': this.musicSelectedRow.artist,
+          'type': this.musicSelectedRow.type,
+          'releaseDate': this.musicSelectedRow.releaseDate,
+          'label': this.musicSelectedRow.label,
+          'asin': this.musicSelectedRow.asin
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
+        for (let i = 0; i < this.musicList.length; i++) {
+          if (this.musicList[i].id === this.musicSelectedRow.id) {
+            this.musicList[i] = {
+              'id': this.musicSelectedRow.id, 'title': this.musicSelectedRow.title, 'artist': this.musicSelectedRow.artist,
+              'type': this.musicSelectedRow.type, 'releaseDate': this.musicSelectedRow.releaseDate, 'label': this.musicSelectedRow.label,
+              'asin': this.musicSelectedRow.asin, 'quantity': --this.musicSelectedRow.quantity
+            };
+            break;
+          }
+        }
+        this.matMusicList = new MatTableDataSource(this.musicList);
+        this.matMusicList.sort = this.musicSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      if (this.musicSelectedRow.quantity === 0) {
+        this.musicSelection.clear();
+        this.snackBar.open('No items to delete', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.musicSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
     }
   }
 }
