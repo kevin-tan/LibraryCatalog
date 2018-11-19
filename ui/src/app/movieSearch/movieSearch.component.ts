@@ -12,7 +12,8 @@ import {NgForm} from '@angular/forms';
 })
 export class movieSearchComponent implements OnInit {
 
-  displayMovieColumns: string[] = ['title', 'language', 'director', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime'];
+  displayMovieColumns: string[] = ['title', 'language', 'director', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime', 'quantity'];
+  movieList: Movie[];
   matMovieList: MatTableDataSource<Movie>;
 
   @ViewChild('movieSort') movieSort: MatSort;
@@ -28,7 +29,10 @@ export class movieSearchComponent implements OnInit {
     this.http.get<Array<Movie>>('http://localhost:8080/user/catalog/getAll/movie', {withCredentials: true}).subscribe(response => {
       this.movieForm.resetForm();
       this.matMovieList = new MatTableDataSource(response);
+      this.movieList = response;
       this.matMovieList.sort = this.movieSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
@@ -54,7 +58,20 @@ export class movieSearchComponent implements OnInit {
     this.http.post<Array<Movie>>('http://localhost:8080/user/catalog/search/movie', body, options).subscribe(response => {
       this.movieForm.resetForm();
       this.matMovieList = new MatTableDataSource(response);
+      this.movieList = response;
       this.matMovieList.sort = this.movieSort;
+
+      this.getAllInventory();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let movie of this.movieList) {
+        movie.quantity = response['Movie'][movie.id] >= 0 ? response['Movie'][movie.id] : 0;
+      }
     }, error => {
       console.log(error);
     });

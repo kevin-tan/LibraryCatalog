@@ -12,7 +12,8 @@ import {NgForm} from '@angular/forms';
 })
 export class musicSearchComponent implements OnInit {
 
-  displayMusicColumns: string[] = ['title', 'artist', 'label', 'type', 'asin', 'releaseDate'];
+  displayMusicColumns: string[] = ['title', 'artist', 'label', 'type', 'asin', 'releaseDate', 'quantity'];
+  musicList: Music[];
   matMusicList: MatTableDataSource<Music>;
 
   @ViewChild('musicSort') musicSort: MatSort;
@@ -28,7 +29,10 @@ export class musicSearchComponent implements OnInit {
     this.http.get<Array<Music>>('http://localhost:8080/user/catalog/getAll/music', {withCredentials: true}).subscribe(response => {
       this.musicForm.resetForm();
       this.matMusicList = new MatTableDataSource(response);
+      this.musicList = response;
       this.matMusicList.sort = this.musicSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
@@ -47,14 +51,27 @@ export class musicSearchComponent implements OnInit {
       "label": label,
       "type": type,
       "asin": asin
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Music>>('http://localhost:8080/user/catalog/search/music', body, options).subscribe(response => {
       this.musicForm.resetForm();
       this.matMusicList = new MatTableDataSource(response);
+      this.musicList = response;
       this.matMusicList.sort = this.musicSort;
+
+      this.getAllInventory();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let music of this.musicList) {
+        music.quantity = response['Music'][music.id] >= 0 ? response['Music'][music.id] : 0;
+      }
     }, error => {
       console.log(error);
     });

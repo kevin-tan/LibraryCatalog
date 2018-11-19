@@ -12,7 +12,8 @@ import {Router} from "@angular/router";
 })
 export class bookSearchComponent implements OnInit {
 
-  displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
+  displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language', 'quantity'];
+  bookList: Book[];
   matBookList: MatTableDataSource<Book>;
 
   constructor(private http: HttpClient, private router:Router) { }
@@ -28,7 +29,10 @@ export class bookSearchComponent implements OnInit {
     this.http.get<Array<Book>>('http://localhost:8080/user/catalog/getAll/book', {withCredentials: true}).subscribe(response => {
       this.bookForm.resetForm();
       this.matBookList = new MatTableDataSource(response);
+      this.bookList = response;
       this.matBookList.sort = this.bookSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
@@ -58,11 +62,25 @@ export class bookSearchComponent implements OnInit {
     this.http.post<Array<Book>>('http://localhost:8080/user/catalog/search/book', body, options).subscribe(response => {
       this.bookForm.resetForm();
       this.matBookList = new MatTableDataSource(response);
+      this.bookList = response;
       this.matBookList.sort = this.bookSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
   }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let book of this.bookList) {
+        book.quantity = response['Book'][book.id] >= 0 ? response['Book'][book.id] : 0;
+      }
+    }, error => {
+      console.log(error);
+    });
+  }
+
   OnSelectItem(itemType: string, itemSpecID: string){
     this.router.navigate(['/detail', itemType, itemSpecID])
   }

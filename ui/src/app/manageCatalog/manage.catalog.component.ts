@@ -64,17 +64,6 @@ export class ManageCatalogComponent implements OnInit {
 
   }
 
-  logout() {
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
-  }
-
   getAllCatalog() {
     this.http.get('http://localhost:8080/user/catalog/searchAll', {withCredentials: true}).subscribe(response => {
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
@@ -382,7 +371,6 @@ export class ManageCatalogComponent implements OnInit {
       }
     }
   }
-
 
   editBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
            isbn13: string, pages: string, form: NgForm) {

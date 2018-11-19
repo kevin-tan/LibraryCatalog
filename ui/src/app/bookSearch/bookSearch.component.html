@@ -151,6 +151,11 @@
             <td mat-cell *matCellDef="let element"> {{element.language}} </td>
           </ng-container>
 
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity </th>
+            <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+          </ng-container>
+
           <tr mat-header-row *matHeaderRowDef="displayBookColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayBookColumns;"></tr>
         </table>

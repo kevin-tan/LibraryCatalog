@@ -12,7 +12,8 @@ import {NgForm} from '@angular/forms';
 })
 export class magazineSearchComponent implements OnInit {
 
-  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13'];
+  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13', 'quantity'];
+  magazineList: Magazine[];
   matMagazineList: MatTableDataSource<Magazine>;
 
   @ViewChild('magazineSort') magazineSort: MatSort;
@@ -29,7 +30,10 @@ export class magazineSearchComponent implements OnInit {
     this.http.get<Array<Magazine>>('http://localhost:8080/user/catalog/getAll/magazine', {withCredentials: true}).subscribe(response => {
       this.magazineForm.resetForm();
       this.matMagazineList = new MatTableDataSource(response);
+      this.magazineList = response;
       this.matMagazineList.sort = this.magazineSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
@@ -56,7 +60,20 @@ export class magazineSearchComponent implements OnInit {
     this.http.post<Array<Magazine>>('http://localhost:8080/user/catalog/search/magazine', body, options).subscribe(response => {
       this.magazineForm.resetForm();
       this.matMagazineList = new MatTableDataSource(response);
+      this.magazineList = response;
       this.matMagazineList.sort = this.magazineSort;
+
+      this.getAllInventory();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let magazine of this.magazineList) {
+        magazine.quantity = response['Magazine'][magazine.id] >= 0 ? response['Magazine'][magazine.id] : 0;
+      }
     }, error => {
       console.log(error);
     });
