@@ -36,47 +36,42 @@ class CatalogSession {
         if (itemSpec.getTable().equals(MOVIE_TABLE)) {
             unitOfWork.registerOperation(ItemSpecificationOperation.movieUpdateOperation((Movie) itemSpec));
         } else {
-            unitOfWork.registerOperation(statement -> statement.executeUpdate(
-                    createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
+            unitOfWork.registerOperation(statement -> statement
+                    .executeUpdate(createUpdateQuery(itemSpec.getTable(), itemSpec.sqlUpdateValues(), itemSpec.getId())));
         }
     }
 
     void addEntry(Item item) {
-        if (item.getSpec().getTable()
-                .equals(MAGAZINE_TABLE)) {
+        if (item.getSpec().getTable().equals(MAGAZINE_TABLE)) {
             unitOfWork.registerOperation(
                     statement -> statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
-        }
-        else {
+        } else {
             unitOfWork.registerOperation(saveQuery((LoanableItem) item));
         }
     }
 
     void addEntry(ItemSpecification itemSpec) {
-        if (itemSpec.getTable()
-                .equals(MOVIE_TABLE)) {
+        if (itemSpec.getTable().equals(MOVIE_TABLE)) {
             unitOfWork.registerOperation(ItemSpecificationOperation.movieSaveOperation((Movie) itemSpec));
-        }
-        else {
+        } else {
             unitOfWork.registerOperation(
                     statement -> statement.executeUpdate(createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
         }
     }
 
     void removeItem(ItemSpecification itemSpec) {
-        if (itemSpec.getTable()
-                .equals(MAGAZINE_TABLE)) {
+        if (itemSpec.getTable().equals(MAGAZINE_TABLE)) {
             unitOfWork.registerOperation(statement -> {
                 ResultSet rs = statement.executeQuery(
-                        "SELECT * FROM " + ITEM_TABLE + " WHERE " + TYPE + " = '" + itemSpec.getTable() + "' and " + ITEMSPECID +
-                        " = " + itemSpec.getId() + " LIMIT 1;");
+                        "SELECT * FROM " + ITEM_TABLE + " WHERE " + TYPE + " = '" + itemSpec.getTable() + "' and " + ITEMSPECID + " = " +
+                        itemSpec.getId() + " LIMIT 1;");
                 rs.next(); // Move to query result
                 statement.executeUpdate(createDeleteQuery(ITEM_TABLE, rs.getLong(ID)));
             });
-        }
-        else {
-            unitOfWork.registerOperation(statement->{
-                ResultSet rs = statement.executeQuery(queryLoanableAndItemByItemspecType(itemSpec.getTable(), itemSpec.getId()) + " LIMIT 1;");
+        } else {
+            unitOfWork.registerOperation(statement -> {
+                ResultSet rs = statement.executeQuery(queryLoanableAndItemByItemspecType(itemSpec.getTable(), itemSpec.getId()) +
+                                                      " and LoanableItem.available = 1 LIMIT 1;");
                 rs.next();
                 Long id = rs.getLong(ID);
                 statement.execute(createDeleteQuery(ITEM_TABLE, id));
@@ -86,17 +81,13 @@ class CatalogSession {
     }
 
     void removeEntry(ItemSpecification itemSpec) {
-        if (!itemSpec.getTable()
-                .equals(MOVIE_TABLE)) {
-            if (itemSpec.getTable()
-                    .equals(MAGAZINE_TABLE)) {
+        if (!itemSpec.getTable().equals(MOVIE_TABLE)) {
+            if (itemSpec.getTable().equals(MAGAZINE_TABLE)) {
                 unitOfWork.registerOperation(deleteMagazine((Magazine) itemSpec));
-            }
-            else {
+            } else {
                 unitOfWork.registerOperation(deleteItemSpecOperation(itemSpec));
             }
-        }
-        else {
+        } else {
             unitOfWork.registerOperation(movieDeleteOperation((Movie) itemSpec));
         }
     }
