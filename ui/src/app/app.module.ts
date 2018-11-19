@@ -23,6 +23,7 @@ import { CartComponent } from './cart/cart.component'
 import {MatListModule} from '@angular/material/list';
 import { NavbarComponent } from './navbar/navbar.component';
 import { DetailsComponent } from './details/details.component';
+import {Location} from "@angular/common";
 
 
 @NgModule({
@@ -53,7 +54,7 @@ import { DetailsComponent } from './details/details.component';
     MatListModule,
     BrowserAnimationsModule
   ],
-  providers: [LoginRedirectService, HomeRedirectService],
+  providers: [LoginRedirectService, HomeRedirectService, Location],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
