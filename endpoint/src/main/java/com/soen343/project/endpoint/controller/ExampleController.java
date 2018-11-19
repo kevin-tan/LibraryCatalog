@@ -80,6 +80,14 @@ public class ExampleController {
         this.loanTransactionGateway = loanTransactionGateway;
     }
 
+    @GetMapping("/test/deleteLoanableItem")
+    public ResponseEntity<?> deleteLoanable() {
+        LoanableItem loanableItem = loanableItemGateway.findById(3L);
+        loanableItemGateway.delete(loanableItem);
+        return new ResponseEntity<>("DONE", HttpStatus.OK);
+    }
+
+
     @PostMapping("/text/loanableItem")
     public ResponseEntity<?> loanableitemTest(@RequestBody Item item) {
         return new ResponseEntity<>(item, HttpStatus.OK);

@@ -1,6 +1,5 @@
 package com.soen343.project.repository.dao.catalog.item;
 
-import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -12,13 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
-import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -53,11 +51,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     public void delete(LoanableItem entity) {
         scheduler.writer_p();
-        Item item = new Item(entity.getSpec());
-        executeBatchUpdate(statement -> {
-            statement.execute(createDeleteQuery(item.getTable(), item.getId()));
-            statement.execute(createDeleteQuery(entity.getTable(), entity.getId()));
-        });
+        executeBatchUpdate(deleteQuery(entity));
         scheduler.writer_v();
     }
 
@@ -103,7 +97,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     public List<LoanableItem> findAll() {
         scheduler.reader_p();
         List<LoanableItem> list =
-                (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), findAllTransaction());
+                (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), findAllLoanables());
         scheduler.reader_v();
         return list;
     }
@@ -121,52 +115,10 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
 
     public List<?> findByItemSpecId(String itemType, Long itemSpecId) {
         scheduler.reader_p();
-        List list = executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + ";", findAllTransaction());
+        List list = executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + ";", findAllLoanables());
         scheduler.reader_v();
         return list;
     }
 
-    private String queryLoanableAndItemByItemspecType(String itemType, Long itemSpecId) {
-        return "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + itemSpecId + " and Item.type = '" + itemType +
-               "' and LoanableItem.id = Item.id";
-    }
-
-    private DatabaseQueryOperation findAllTransaction() {
-        return (rs, statement) -> {
-            List<LoanableItem> loanableItems = new ArrayList<>();
-
-            while (rs.next()) {
-                Client client = (rs.getLong(USERID) == 0) ? null : new Client(rs.getLong(USERID));
-                loanableItems.add(new LoanableItem(rs.getLong(ID), null, rs.getString(AVAILABLE).equals(BOOL_VAL_TRUE), client));
-            }
-
-            for (LoanableItem loanableItem : loanableItems) {
-                Long itemSpecId = null;
-                String itemSpecType = null;
-
-                ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItem.getId()));
-                while (itemRS.next()) {
-                    itemSpecId = itemRS.getLong(ITEMSPECID);
-                    itemSpecType = itemRS.getString(TYPE);
-                }
-
-                ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
-                while (itemSpecRS.next()) {
-                    loanableItem.setSpec(getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId));
-                }
-
-                if (loanableItem.getClient() != null) {
-                    ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient().getId()));
-                    while (clientRS.next()) {
-                        loanableItem.setClient(
-                                new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
-                                        clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL), clientRS.getString(PHONE_NUMBER),
-                                        clientRS.getString(PASSWORD)));
-                    }
-                }
-            }
-            return loanableItems;
-        };
-    }
 }
 

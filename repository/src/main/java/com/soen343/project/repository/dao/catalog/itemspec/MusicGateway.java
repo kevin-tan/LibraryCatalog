@@ -50,7 +50,7 @@ public class MusicGateway implements ItemSpecificationGateway<Music> {
     @Override
     public void delete(Music music) {
         scheduler.writer_p();
-        executeBatchUpdate(ItemSpecificationOperation.musicDeleteOperation(music));
+        executeBatchUpdate(ItemSpecificationOperation.deleteItemSpecOperation(music));
         scheduler.writer_v();
     }
 

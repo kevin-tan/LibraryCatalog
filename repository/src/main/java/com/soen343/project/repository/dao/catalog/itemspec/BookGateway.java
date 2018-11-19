@@ -50,7 +50,7 @@ public class BookGateway implements ItemSpecificationGateway<Book> {
     @Override
     public void delete(Book book) {
         scheduler.writer_p();
-        executeBatchUpdate(ItemSpecificationOperation.bookDeleteOperation(book));
+        executeBatchUpdate(ItemSpecificationOperation.deleteItemSpecOperation(book));
         scheduler.writer_v();
     }
 
