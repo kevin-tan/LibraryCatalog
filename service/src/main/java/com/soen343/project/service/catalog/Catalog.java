@@ -45,10 +45,9 @@ public class Catalog {
         session.addEntry(itemToAdd);
     }
 
-    public void deleteCatalogItem(String sessionID, Long itemID) {
-        Item itemToDelete = library.getItem(itemID);
+    public void deleteCatalogItem(String sessionID, ItemSpecification itemSpecification) {
         CatalogSession session = getSession(sessionID);
-        session.removeEntry(itemToDelete);
+        session.removeItem(itemSpecification);
     }
 
     public void addItemSpec(String sessionID, ItemSpecification itemSpec) {

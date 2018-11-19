@@ -3,6 +3,7 @@ import {Magazine} from "../catalog/dto/item-specification/magazine";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {Router} from "@angular/router";
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-catalog',
@@ -11,10 +12,12 @@ import {Router} from "@angular/router";
 })
 export class magazineSearchComponent implements OnInit {
 
-  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13'];
+  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13', 'quantity'];
+  magazineList: Magazine[];
   matMagazineList: MatTableDataSource<Magazine>;
 
   @ViewChild('magazineSort') magazineSort: MatSort;
+  @ViewChild('magazineForm') magazineForm: NgForm;
 
   constructor(private http: HttpClient, private router:Router) {
   }
@@ -25,8 +28,12 @@ export class magazineSearchComponent implements OnInit {
 
   getAllMagazines(): void {
     this.http.get<Array<Magazine>>('http://localhost:8080/user/catalog/getAll/magazine', {withCredentials: true}).subscribe(response => {
+      this.magazineForm.resetForm();
       this.matMagazineList = new MatTableDataSource(response);
+      this.magazineList = response;
       this.matMagazineList.sort = this.magazineSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
@@ -46,13 +53,27 @@ export class magazineSearchComponent implements OnInit {
       "language": language,
       "isbn10": isbn10,
       "isbn13": isbn13
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
     this.http.post<Array<Magazine>>('http://localhost:8080/user/catalog/search/magazine', body, options).subscribe(response => {
+      this.magazineForm.resetForm();
       this.matMagazineList = new MatTableDataSource(response);
+      this.magazineList = response;
       this.matMagazineList.sort = this.magazineSort;
+
+      this.getAllInventory();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let magazine of this.magazineList) {
+        magazine.quantity = response['Magazine'][magazine.id] >= 0 ? response['Magazine'][magazine.id] : 0;
+      }
     }, error => {
       console.log(error);
     });

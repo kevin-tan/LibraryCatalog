@@ -25,21 +25,21 @@
   </header>
   <h4>Check the item detail to enter the keyword for searching</h4>
   <div>
-    <form>
+    <form ngNativeValidate #musicForm="ngForm">
       <table>
         <tr>
           <th>
             <input id="toggleTitle" type="checkbox" >
             <label for="toggleTitle">Title</label>
             <div id="expandTitle">
-              <textarea rows="1" cols="47" #title title.value=""></textarea>
+              <textarea rows="1" cols="47" #title title.value="" name="clear" ngModel></textarea>
             </div>
           </th>
           <th>
             <input id="toggleArtist" type="checkbox" >
             <label for="toggleArtist">Artist</label>
             <div id="expandArtist">
-              <textarea rows="1" cols="47" #artist artist.value=""></textarea>
+              <textarea rows="1" cols="47" #artist artist.value="" name="clear" ngModel></textarea>
             </div>
           </th>
         </tr>
@@ -49,14 +49,14 @@
             <input id="toggleRelease" type="checkbox" >
             <label for="toggleRelease">Release Date</label>
             <div id="expandRelease">
-              <textarea rows="1" cols="47" #releaseDate releaseDate.value></textarea>
+              <textarea rows="1" cols="47" #releaseDate releaseDate.value name="clear" ngModel></textarea>
             </div>
           </th>
           <th>
             <input id="toggleType" type="checkbox" >
             <label for="toggleType">Type</label>
             <div id="expandType">
-              <textarea rows="1" cols="47" #type type.value></textarea>
+              <textarea rows="1" cols="47" #type type.value name="clear" ngModel></textarea>
             </div>
           </th>
         </tr>
@@ -66,14 +66,14 @@
             <input id="toggleLabel" type="checkbox" >
             <label for="toggleLabel">Label</label>
             <div id="expandLabel">
-              <textarea rows="1" cols="47" #label label.value></textarea>
+              <textarea rows="1" cols="47" #label label.value name="clear" ngModel></textarea>
             </div>
           </th>
           <th>
             <input id="toggleASIN" type="checkbox" >
             <label for="toggleASIN">ASIN</label>
             <div id="expandASIN">
-              <textarea rows="1" cols="47" #asin asin.value></textarea>
+              <textarea rows="1" cols="47" #asin asin.value name="clear" ngModel></textarea>
             </div>
           </th>
         </tr>
@@ -115,10 +115,20 @@
           <td mat-cell *matCellDef="let element"> {{element.releaseDate}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity </th>
+          <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayMusicColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayMusicColumns;"></tr>
       </table>
     </div>
+
+  <br>
+  <h5>Reset filter
+    <button class="w3-bar-item w3-button w3-xlarge" (click)="getAllMusics()"><i class="fa fa-refresh"></i></button>
+  </h5>
 
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">

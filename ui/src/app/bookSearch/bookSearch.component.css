@@ -12,6 +12,7 @@ Footer{
 }
 Textarea{
   float: right;
+  resize: none;
 }
 input {
   display: none;

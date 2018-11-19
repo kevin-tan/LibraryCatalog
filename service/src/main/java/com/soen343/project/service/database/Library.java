@@ -87,8 +87,12 @@ public class Library {
         }
     }
 
-    public Item getItem(Long itemID) {
-        return itemGateway.findById(itemID);
+    public Item getItem(ItemSpecification itemSpecification) {
+        if(itemSpecification.getTable().equals(MAGAZINE_TABLE)){
+            return itemGateway.findFirstByItemSpecId(itemSpecification.getTable(), itemSpecification.getId());
+        }else{
+            return loanableItemGateway.findFirstByItemSpecId(itemSpecification.getTable(), itemSpecification.getId());
+        }
     }
 
     public List<Item> findAllItems() {

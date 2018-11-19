@@ -104,6 +104,7 @@ public class QueryBuilder {
         return query.toString();
     }
 
+
     public static String createUpdateQuery(String table, String updatedValues, Long id) {
         return UPDATE + table + SET + updatedValues + WHERE + ID + EQUAL + id + END_QUERY;
     }

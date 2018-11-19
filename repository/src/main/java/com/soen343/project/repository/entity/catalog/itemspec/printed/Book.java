@@ -62,10 +62,10 @@ public class Book extends PrintedItem {
         columnValues += PUBDATE + " = '" + getPubDate() + "', ";
         columnValues += LANGUAGE + " = '" + getLanguage() + "', ";
         columnValues += ISBN10 + " = '" + getIsbn10() + "', ";
-        columnValues += ISBN13 + " = '" + getIsbn13() + "'";
-        columnValues += AUTHOR + " = '" + author + "'";
-        columnValues += FORMAT + " = '" + format.name() + "'";
-        columnValues += PAGES + " = " + pages + "";
+        columnValues += ISBN13 + " = '" + getIsbn13() + "', ";
+        columnValues += AUTHOR + " = '" + author + "', ";
+        columnValues += FORMAT + " = '" + format.name() + "', ";
+        columnValues += PAGES + " = " + pages;
 
         return columnValues;
     }

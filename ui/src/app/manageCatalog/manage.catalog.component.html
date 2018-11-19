@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+
+<html>
+<title>Library Catalog</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+<body class="w3-black">
+
+<app-navbar></app-navbar>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <h3 class="w3-jumbo">Manage Library Catalog</h3> <br>
+    <hr style="width:100%" class="w3-opacity">
+    <h3 class="w3-xxlarge">Catalog Items</h3>
+    <h5>On this page you may do any of the following:<br><br>- Add items by filling out the fields and hitting add<br>- Edit an item by selecting it and changing any of its fields<br>- Delete an item if it is removable by selecting it and pressing delete<br>- Add/remove inventory by selecting an item and hitting the + or -<br><br>Once you're done, hit save changes at the bottom</h5>
+    <hr style="width:100%" class="w3-opacity">
+  </header>
+
+  <h2><i>Books</i></h2>
+  <hr>
+  <div>
+    <form ngNativeValidate #bookForm="ngForm">
+      <table width="60%">
+        <tr>
+          <th>
+            <label class="formLabel">Title</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_title" #mng_book_title mng_book_title.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Author</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_author" #mng_book_author mng_book_author.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Publisher</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_publisher" #mng_book_publisher mng_book_publisher.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Publish Date</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_pubDate" #mng_book_pubDate mng_book_pubDate.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Language</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_language" #mng_book_language mng_book_language.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Format</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_format" #mng_book_format mng_book_format.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">ISBN10</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_isbn10" #mng_book_isbn10 mng_book_isbn10.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">ISBN13</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_isbn13" #mng_book_isbn13 mng_book_isbn13.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Pages</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_book_pages" #mng_book_pages mng_book_pages.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right"
+                    (click)="deleteBook()">
+              <i class="fa fa-minus"></i><b> Delete Book</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+              <i class="fa fa-wrench"></i><b> Edit Book</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
+                    (click)="addBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+              <i class="fa fa-plus"></i><b> Add Book</b>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+
+  <br>
+  <table mat-table #bookSort="matSort" [dataSource]="matBookList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox [checked]="bookSelection.hasValue()"
+                      [indeterminate]="bookSelection.hasValue()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); bookRowSelected(row)"
+                      (change)="$event ? bookSelection.toggle(row) : null"
+                      [checked]="bookSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="author">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Author</th>
+      <td mat-cell *matCellDef="let element"> {{element.author}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="pages">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Pages</th>
+      <td mat-cell *matCellDef="let element"> {{element.pages}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="format">
+      <th mat-header-cell *matHeaderCellDef> Format</th>
+      <td mat-cell *matCellDef="let element"> {{element.format}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="publisher">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publisher</th>
+      <td mat-cell *matCellDef="let element"> {{element.publisher}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isbn10">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-10</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn10}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isbn13">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-13</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn13}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="pubDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publish Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.pubDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="language">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language</th>
+      <td mat-cell *matCellDef="let element"> {{element.language}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity</th>
+      <td mat-cell *matCellDef="let element"> {{element.quantity}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayBookColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayBookColumns;"
+        (click)="bookSelection.toggle(row)">
+    </tr>
+  </table>
+
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="deleteBookItem()">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="addBookItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
+  <h2><i>Movies</i></h2>
+  <hr>
+  <div>
+    <form ngNativeValidate #movieForm="ngForm">
+      <table width="70%">
+        <tr>
+          <th>
+            <label class="formLabel">Title</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_title" #mng_movie_title mng_movie_title.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Director</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_director" #mng_movie_director mng_movie_director.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Release Date</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_releaseDate" #mng_movie_releaseDate mng_movie_releaseDate.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Language</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_language" #mng_movie_language mng_movie_language.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Subtitle Language</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_subtitles" #mng_movie_subtitles mng_movie_subtitles.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Dubbed Language</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_dubbed" #mng_movie_dubbed mng_movie_dubbed.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <label class="formLabel">Actors</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_actors" #mng_movie_actors mng_movie_actors.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Producers</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_producers" #mng_movie_producers mng_movie_producers.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <label class="formLabel">Runtime</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_movie_runtime" #mng_movie_runtime mng_movie_runtime.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right"
+                    (click)="deleteMovie()">
+              <i class="fa fa-minus"></i><b> Delete Movie</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="editMovie(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value, mng_movie_runtime.value, movieForm)">
+              <i class="fa fa-wrench"></i><b> Edit Movie</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
+                    (click)="addMovie(mng_movie_title.value, mng_movie_director.value, mng_movie_releaseDate.value, mng_movie_language.value, mng_movie_subtitles.value, mng_movie_dubbed.value, mng_movie_actors.value, mng_movie_producers.value, mng_movie_runtime.value, movieForm)">
+              <i class="fa fa-plus"></i><b> Add Movie</b>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <br>
+
+  <table mat-table #movieSort="matSort" [dataSource]="matMovieList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox [checked]="movieSelection.hasValue()"
+                      [indeterminate]="movieSelection.hasValue()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); movieRowSelected(row)"
+                      (change)="$event ? movieSelection.toggle(row) : null"
+                      [checked]="movieSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="language">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language</th>
+      <td mat-cell *matCellDef="let element"> {{element.language}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="director">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Director </th>
+      <td mat-cell *matCellDef="let element"> {{element.director}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="producers">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Producers</th>
+      <td mat-cell *matCellDef="let element"> {{element.producers}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actors">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Actors</th>
+      <td mat-cell *matCellDef="let element"> {{element.actors}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dubbed">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Dubbed</th>
+      <td mat-cell *matCellDef="let element"> {{element.dubbed}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="subtitles">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subtitles</th>
+      <td mat-cell *matCellDef="let element"> {{element.subtitles}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="releaseDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.releaseDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="runTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Run Time</th>
+      <td mat-cell *matCellDef="let element"> {{element.runTime}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity</th>
+      <td mat-cell *matCellDef="let element"> {{element.quantity}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayMovieColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayMovieColumns;"
+        (click)="movieSelection.toggle(row)">
+    </tr>
+  </table>
+  <br>
+
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="deleteMovieItem()">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="addMovieItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
+  <h2><i>Magazine</i></h2>
+  <hr>
+  <div>
+    <form ngNativeValidate #magazineForm="ngForm">
+      <table width="65%">
+        <tr>
+          <th>
+            <label class="formLabel">Title</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_magazine_title" #mng_magazine_title mng_magazine_title.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Language</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_magazine_language" #mng_magazine_language mng_magazine_language.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Publisher</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_magazine_publisher" #mng_magazine_publisher mng_magazine_publisher.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Publish Date</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_magazine_pubDate" #mng_magazine_pubDate mng_magazine_pubDate.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">ISBN10</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_magazine_isbn10" #mng_magazine_isbn10 mng_magazine_isbn10.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">ISBN13</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_magazine_isbn13" #mng_magazine_isbn13 mng_magazine_isbn13.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right"
+                    (click)="deleteMagazine()">
+              <i class="fa fa-minus"></i><b> Delete Magazine</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="editMagazine(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value, magazineForm)">
+              <i class="fa fa-wrench"></i><b> Edit Magazine</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
+                    (click)="addMagazine(mng_magazine_title.value, mng_magazine_publisher.value, mng_magazine_pubDate.value, mng_magazine_language.value, mng_magazine_isbn10.value, mng_magazine_isbn13.value, magazineForm)">
+              <i class="fa fa-plus"></i><b> Add Magazine</b>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <br>
+
+  <table mat-table #magazineSort="matSort" [dataSource]="matMagazineList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox [checked]="magazineSelection.hasValue()"
+                      [indeterminate]="magazineSelection.hasValue()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); magazineRowSelected(row)"
+                      (change)="$event ? magazineSelection.toggle(row) : null"
+                      [checked]="magazineSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="publisher">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publisher</th>
+      <td mat-cell *matCellDef="let element"> {{element.publisher}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="pubDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Publish Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.pubDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="language">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Language</th>
+      <td mat-cell *matCellDef="let element"> {{element.language}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isbn10">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-10</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn10}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isbn13">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ISBN-13</th>
+      <td mat-cell *matCellDef="let element"> {{element.isbn13}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity</th>
+      <td mat-cell *matCellDef="let element"> {{element.quantity}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayMagazineColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayMagazineColumns;"
+        (click)="magazineSelection.toggle(row)">
+    </tr>
+  </table>
+  <br>
+
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="deleteMagazineItem()">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="addMagazineItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
+  <h2><i>Music</i></h2>
+  <hr>
+  <div>
+    <form ngNativeValidate #musicForm="ngForm">
+      <table width="65%">
+        <tr>
+          <th>
+            <label class="formLabel">Title</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_music_title" #mng_music_title mng_music_title.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Artist</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_music_artist" #mng_music_artist mng_music_artist.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Release Date</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_music_releaseDate" #mng_music_releaseDate mng_music_releaseDate.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Type</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_music_type" #mng_music_type mng_music_type.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Label</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_music_label" #mng_music_label mng_music_label.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">ASIN</label>
+            <div>
+              <textarea rows="1" cols="47" id="mng_music_asin" #mng_music_asin mng_music_asin.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right"
+                    (click)="deleteMusic()">
+              <i class="fa fa-minus"></i><b> Delete Music</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="editMusic(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value, musicForm)">
+              <i class="fa fa-wrench"></i><b> Edit Music</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-left"
+                    (click)="addMusic(mng_music_title.value, mng_music_artist.value, mng_music_type.value, mng_music_releaseDate.value, mng_music_label.value, mng_music_asin.value, musicForm)">
+              <i class="fa fa-plus"></i><b> Add Music</b>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <br>
+
+  <table mat-table #musicSort="matSort" [dataSource]="matMusicList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox [checked]="musicSelection.hasValue()"
+                      [indeterminate]="musicSelection.hasValue()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); musicRowSelected(row)"
+                      (change)="$event ? musicSelection.toggle(row) : null"
+                      [checked]="musicSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title</th>
+      <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="artist">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist</th>
+      <td mat-cell *matCellDef="let element"> {{element.artist}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="label">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Label</th>
+      <td mat-cell *matCellDef="let element"> {{element.label}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Type</th>
+      <td mat-cell *matCellDef="let element"> {{element.type}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="asin">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> ASIN</th>
+      <td mat-cell *matCellDef="let element"> {{element.asin}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="releaseDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Release Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.releaseDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity</th>
+      <td mat-cell *matCellDef="let element"> {{element.quantity}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayMusicColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayMusicColumns;"
+        (click)="musicSelection.toggle(row)">
+    </tr>
+  </table>
+  <br>
+
+  <hr style="width:100%" class="w3-opacity">
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-right w3-right"
+          (click)="deleteMusicItem()">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-right w3-right"
+          (click)="addMusicItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
+  <button class="w3-bar-item w3-button w3-grey w3-round"
+          (click)="saveAll()">
+    <b>Save Changes </b><i class="fa fa-check-circle"></i>
+  </button>
+
+  <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <p class="w3-medium">Created by SOEN343 team#10</p>
+    <!-- End footer -->
+  </footer>
+
+  <!-- END PAGE CONTENT -->
+</div>
+</body>
+</html>

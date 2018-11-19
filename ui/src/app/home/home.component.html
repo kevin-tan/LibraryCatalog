@@ -22,9 +22,9 @@
       <h3 class="w3-jumbo">Welcome to Library Catalog</h3> <br>
       <h2>What would you like to search for today?</h2><br><br>
       <h2>
-        <form action="">
+        <form action="" ngNativeValidate #homeForm="ngForm">
           <label>To search in all categories, enter the item title</label><br>
-          <input type="text" size="30" name="keywordSearch" style="line-height: 50px; padding-bottom: 6px;" placeholder="Enter item title" #searchTitle searchTitle.value=''>
+          <input type="text" size="30" name="keywordSearch" style="line-height: 50px; padding-bottom: 6px;" placeholder="Enter item title" #searchTitle searchTitle.value='' ngModel>
           <button class="w3-bar-item w3-button" (click)="searchAllTitle(searchTitle.value)"><i class="fa fa-search"></i></button>
         </form>
       </h2><br><br>

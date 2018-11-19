@@ -15,7 +15,9 @@ import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component
 import {activeUsersComponent} from "./activeUsers/activeUsers.component";
 import {transactionComponent} from "./transaction/transaction.component";
 import {HomeRedirectService} from "./home/home-redirect.service";
+import {ManageCatalogComponent} from './manageCatalog/manage.catalog.component';
 import {MatTableModule} from '@angular/material/table';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSortModule} from '@angular/material/sort';
 import {MatRadioModule} from '@angular/material/radio';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -26,6 +28,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { DetailsComponent } from './details/details.component';
 import {Location} from "@angular/common";
 
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -43,7 +46,8 @@ import {Location} from "@angular/common";
     ReturnComponent,
     CartComponent,
     NavbarComponent,
-    DetailsComponent
+    DetailsComponent,
+    ManageCatalogComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +58,8 @@ import {Location} from "@angular/common";
     MatTableModule,
     MatSortModule,
     MatListModule,
+    MatSnackBarModule,
+    MatCheckboxModule,
     BrowserAnimationsModule
   ],
   providers: [LoginRedirectService, HomeRedirectService, Location],
