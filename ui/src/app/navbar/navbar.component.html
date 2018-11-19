@@ -1,29 +1,29 @@
 <div>
   <!-- Side Bar -->
   <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
-    <a href="/home" class="w3-bar-item w3-button w3-padding-large w3-black">
+    <a href="/home" id="home" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('home')">
       <i class="fa fa-home w3-xxlarge"></i>
       <p>HOME</p>
     </a>
-    <a href="/search/book" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/book" id="book" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('search/book')">
       <i class="fa fa-book w3-xxlarge"></i>
       <p>BOOK</p>
     </a>
-    <a href="/search/magazine" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/magazine" id="magazine" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('search/magazine')">
       <i class="fa fa-book-open w3-xxlarge"></i>
       <p>MAGAZINE</p>
     </a>
-    <a href="/search/music" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/music" id="music" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('search/music')">
       <i class="fa fa-music w3-xxlarge"></i>
       <p>MUSIC</p>
     </a>
-    <a href="/search/movie" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/search/movie" id="movie" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('search/movie')">
       <i class="fa fa-compact-disc w3-xxlarge"></i>
       <p>MOVIE</p>
     </a>
     <!--For Admins Only-->
     <div *ngIf="userType == 'Admin'">
-      <a href="/activeUsers" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <a href="/activeUsers" id="activeUsers" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('activeUsers')">
         <i class="fa fa-users w3-xxlarge"></i>
         <p>ACTIVEUSERS</p>
       </a>
@@ -32,17 +32,17 @@
         <p>MANAGE CATALOG</p>
       </a>
     </div>
-    <a href="/transactionHistory" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+    <a href="/transactionHistory" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('transactionHistory')">
       <i class="fa fa-history w3-xxlarge"></i>
       <p>TRANSACTION HISTORY</p>
     </a>
     <!--For Clients Only-->
     <div *ngIf="userType == 'Client'">
-      <a href="/loanedItems" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <a href="/loanedItems" id="loanedItems" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('loanedItems')">
         <i class="fa fa-box w3-xxlarge"></i>
         <p>LOANED<br>ITEMS</p>
       </a>
-      <a href="/cart" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <a href="/cart" id="cart" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('cart')">
         <i class="fa fa-shopping-cart w3-xxlarge"></i>
         <p>CART</p>
       </a>
