@@ -164,6 +164,14 @@ public class ExampleController {
         return new ResponseEntity<>(loanableItemGateway.findIfLoanablesAreAvailable(Arrays.asList(l1, l2, l3)), HttpStatus.OK);
     }
 
+    @GetMapping("/test/deleteLoanableItem")
+    public ResponseEntity<?> deleteLoanable() {
+        LoanableItem loanableItem = loanableItemGateway.findById(3L);
+        loanableItemGateway.delete(loanableItem);
+        return new ResponseEntity<>("DONE", HttpStatus.OK);
+    }
+
+
     @PostMapping("/text/loanableItem")
     public ResponseEntity<?> loanableitemTest(@RequestBody Item item) {
         return new ResponseEntity<>(item, HttpStatus.OK);

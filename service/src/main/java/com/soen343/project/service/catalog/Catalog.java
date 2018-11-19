@@ -2,12 +2,22 @@ package com.soen343.project.service.catalog;
 
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.entity.catalog.item.Item;
+import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.service.database.Library;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.findAllLoanables;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
 
 @Service
 public class Catalog {
@@ -46,9 +56,17 @@ public class Catalog {
         session.addEntry(itemSpec);
     }
 
-    public void deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
-        CatalogSession session = getSession(sessionID);
-        session.removeEntry(itemSpec);
+    @SuppressWarnings("unchecked")
+    public ResponseEntity<?> deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
+        List<LoanableItem> loanedItems = (List<LoanableItem>) executeQueryExpectMultiple(
+                queryLoanableAndItemByItemspecType(itemSpec) + " and LoanableItem.available = 0;", findAllLoanables());
+        if (loanedItems.isEmpty()) {
+            CatalogSession session = getSession(sessionID);
+            session.removeEntry(itemSpec);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     public void modifyItemSpec(String sessionID, ItemSpecification itemSpec) {

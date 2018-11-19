@@ -3,7 +3,6 @@ package com.soen343.project.repository.dao.catalog.itemspec;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.catalog.itemspec.com.ItemSpecificationGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import java.util.Map;
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.defaultSaveOperation;
+import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.deleteMagazine;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
@@ -50,7 +50,7 @@ public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
     @Override
     public void delete(Magazine magazine) {
         scheduler.writer_p();
-        executeBatchUpdate(ItemSpecificationOperation.magazineDeleteOperation(magazine));
+        executeBatchUpdate(deleteMagazine(magazine));
         scheduler.writer_v();
     }
 

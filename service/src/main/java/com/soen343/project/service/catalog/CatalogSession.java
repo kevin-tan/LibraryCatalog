@@ -1,15 +1,21 @@
 package com.soen343.project.service.catalog;
 
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation;
+import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import com.soen343.project.repository.uow.UnitOfWork;
 import lombok.Data;
 
 import static com.soen343.project.database.query.QueryBuilder.*;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.deleteQuery;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
+import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.*;
 import static com.soen343.project.repository.entity.EntityConstants.MAGAZINE_TABLE;
+import static com.soen343.project.repository.entity.EntityConstants.MOVIE_TABLE;
 
 @Data
 class CatalogSession {
@@ -34,21 +40,37 @@ class CatalogSession {
             unitOfWork.registerOperation(
                     statement -> statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));
         } else {
-            unitOfWork.registerOperation(LoanableItemOperation.saveQuery((LoanableItem) item));
+            unitOfWork.registerOperation(saveQuery((LoanableItem) item));
         }
     }
 
     void addEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(
-                statement -> statement.executeUpdate(createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+        if (itemSpec.getTable().equals(MOVIE_TABLE)) {
+            unitOfWork.registerOperation(ItemSpecificationOperation.movieSaveOperation((Movie) itemSpec));
+        } else {
+            unitOfWork.registerOperation(
+                    statement -> statement.executeUpdate(createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+        }
     }
 
     void removeEntry(Item item) {
-        unitOfWork.registerOperation(statement -> statement.executeUpdate(createDeleteQuery(item.getTable(), item.getId())));
+        if (item.getTable().equals(MAGAZINE_TABLE)) {
+            unitOfWork.registerOperation(statement -> statement.executeUpdate(createDeleteQuery(item.getTable(), item.getId())));
+        } else {
+            unitOfWork.registerOperation(deleteQuery((LoanableItem) item));
+        }
     }
 
     void removeEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(statement -> statement.executeUpdate(createDeleteQuery(itemSpec.getTable(), itemSpec.getId())));
+        if (!itemSpec.getTable().equals(MOVIE_TABLE)) {
+            if (itemSpec.getTable().equals(MAGAZINE_TABLE)) {
+                unitOfWork.registerOperation(deleteMagazine((Magazine) itemSpec));
+            } else {
+                unitOfWork.registerOperation(deleteItemSpecOperation(itemSpec));
+            }
+        } else {
+            unitOfWork.registerOperation(movieDeleteOperation((Movie) itemSpec));
+        }
     }
 
     void endSession() {
