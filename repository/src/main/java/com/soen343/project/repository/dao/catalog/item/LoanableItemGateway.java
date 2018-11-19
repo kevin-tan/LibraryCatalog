@@ -1,7 +1,6 @@
 package com.soen343.project.repository.dao.catalog.item;
 
 import com.google.common.collect.ImmutableMap;
-import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -13,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -118,7 +119,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(
                 createSearchByAttributesQuery(LOANABLEITEM_TABLE, ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")),
-                findAllTransaction());
+                findAllLoanables());
         scheduler.reader_v();
         return list;
     }
