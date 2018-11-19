@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
+import {Location} from "@angular/common";
+
 
 @Component({
   selector: 'app-navbar',
@@ -9,14 +11,17 @@ import {HomeRedirectService} from "../home/home-redirect.service";
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
+  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, private location: Location) {
   }
 
   userType: string;
 
   ngOnInit() {
     this.userType = sessionStorage.getItem("userType");
-    console.log(this.userType);
+  }
+
+  isPath(path: string): string {
+    return (this.location.path() === "/" + path) ? "w3-black" : "w3-hover-black";
   }
 
   logout() {
