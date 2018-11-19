@@ -1,4 +1,4 @@
-import {ItemSpecification} from "../catalog/dto/item_specification";
+import {ItemSpecification} from "../catalog/dto/item-specification/item_specification";
 
 
 export interface Transaction {

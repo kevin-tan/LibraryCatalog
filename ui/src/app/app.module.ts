@@ -17,7 +17,14 @@ import {transactionComponent} from "./transaction/transaction.component";
 import {HomeRedirectService} from "./home/home-redirect.service";
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
+import {MatRadioModule} from '@angular/material/radio';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ReturnComponent } from './return/return.component';
+import { CartComponent } from './cart/cart.component';
+import {MatListModule} from '@angular/material/list';
+import { NavbarComponent } from './navbar/navbar.component';
+import { DetailsComponent } from './details/details.component';
+
 
 @NgModule({
   declarations: [
@@ -31,15 +38,21 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     movieSearchComponent,
     magazineSearchComponent,
     activeUsersComponent,
-    transactionComponent
+    transactionComponent,
+    ReturnComponent,
+    CartComponent,
+    NavbarComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,
+    MatRadioModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
     MatTableModule,
     MatSortModule,
+    MatListModule,
     BrowserAnimationsModule
   ],
   providers: [LoginRedirectService, HomeRedirectService],

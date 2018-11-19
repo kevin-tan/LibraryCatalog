@@ -1,8 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Movie} from "../catalog/dto/movie";
+import {Movie} from "../catalog/dto/item-specification/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -16,21 +16,10 @@ export class movieSearchComponent implements OnInit {
 
   @ViewChild('movieSort') movieSort: MatSort;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.getAllMovies();
-  }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getAllMovies(): void {
@@ -59,7 +48,7 @@ export class movieSearchComponent implements OnInit {
       "subtitles": subtitles,
       "dubbed": dubbed,
       "producers": producers
-    })
+    });
 
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
@@ -69,5 +58,9 @@ export class movieSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
 import {MatSort, MatTableDataSource} from "@angular/material";
-import {LoanTransaction, ReturnTransaction, Transaction} from "./transaction";
+import {LoanTransaction, ReturnTransaction} from "./transaction";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {HomeRedirectService} from "../home/home-redirect.service";
 
@@ -17,8 +17,7 @@ export class transactionComponent implements OnInit {
   matReturnTransactionList: MatTableDataSource<ReturnTransaction>;
 
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) {
-  }
+  constructor(private http: HttpClient) {}
 
   @ViewChild('loanTransactionSort') loanTransactionSort: MatSort;
   @ViewChild('returnTransactionSort') returnTransactionSort: MatSort;
@@ -26,17 +25,6 @@ export class transactionComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTransactions();
-  }
-
-  logout() {
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials: true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getAllTransactions(): void {
@@ -89,12 +77,12 @@ export class transactionComponent implements OnInit {
   }
 
   searchTransactionByDueDate(dueDate: Date) {
-    let body2 = JSON.stringify({
+    let body = JSON.stringify({
       "dueDate": dueDate
     })
     let headers = new HttpHeaders({"Content-Type": "application/json"});
     let options = {headers: headers, withCredentials: true};
-    this.http.post('http://localhost:8080/admin/transactionHistory/loanTransactions/searchByDueDate', body2, options).subscribe(response => {
+    this.http.post('http://localhost:8080/admin/transactionHistory/loanTransactions/searchByDueDate', body, options).subscribe(response => {
       this.matLoanTransactionList = new MatTableDataSource(response as Array<LoanTransaction>);
       this.matLoanTransactionList.sort = this.loanTransactionSort;
     }, error => {

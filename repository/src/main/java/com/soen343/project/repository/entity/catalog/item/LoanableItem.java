@@ -23,7 +23,7 @@ public class LoanableItem extends Item {
 
     @Override
     public String sqlUpdateValues() {
-        String columnValues = USERID + " = " + client.getId() + ", ";
+        String columnValues = USERID + " = " + (client == null ? null : client.getId()) + ", ";
         columnValues += AVAILABLE + " = " + available + "";
         return columnValues;
     }
@@ -31,7 +31,7 @@ public class LoanableItem extends Item {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "(" + this.getId() + "," + (client == null ? "NULL" : client.getId()) + "," + available + ")";
+        return "(" + this.getId() + "," + (client == null ? null : client.getId()) + "," + available + ")";
     }
 
     @Override

@@ -11,6 +11,9 @@ import {bookSearchComponent} from "./bookSearch/bookSearch.component";
 import {magazineSearchComponent} from "./magazineSearch/magazineSearch.component";
 import {activeUsersComponent} from "./activeUsers/activeUsers.component";
 import {transactionComponent} from "./transaction/transaction.component";
+import {CartComponent} from "./cart/cart.component";
+import {ReturnComponent} from "./return/return.component";
+import {DetailsComponent} from "./details/details.component";
 
 
 const routes: Routes = [
@@ -24,8 +27,11 @@ const routes: Routes = [
   { path:'search/music', component: musicSearchComponent},
   { path:'search/book', component: bookSearchComponent},
   { path:'activeUsers', component: activeUsersComponent},
-  { path:'transactionHistory', component: transactionComponent}
-
+  { path:'transactionHistory', component: transactionComponent},
+  { path:'loanedItems', component: ReturnComponent},
+  { path:'cart', component: CartComponent},
+  { path:'detail', component: DetailsComponent},
+  { path:'detail/:type/:id', component: DetailsComponent}
 ];
 
 @NgModule({
