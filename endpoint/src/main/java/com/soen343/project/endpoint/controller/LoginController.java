@@ -1,6 +1,7 @@
 package com.soen343.project.endpoint.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.service.authenticate.LoginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController {
 
     private final LoginManager loginManager;
+    private final UserGateway userGateway;
 
     @Autowired
-    public LoginController(LoginManager loginManager){
+    public LoginController(LoginManager loginManager, UserGateway userGateway){
         this.loginManager = loginManager;
+        this.userGateway= userGateway;
     }
 
     @PostMapping("/login")

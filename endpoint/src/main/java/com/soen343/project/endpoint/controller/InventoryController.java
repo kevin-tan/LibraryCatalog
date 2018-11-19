@@ -15,7 +15,7 @@ public class InventoryController {
     private final Catalog catalog;
 
     @Autowired
-    public InventoryController(Catalog catalog){
+    public InventoryController(Catalog catalog) {
         this.catalog = catalog;
     }
 
@@ -25,7 +25,7 @@ public class InventoryController {
     }
 
     @PostMapping("/catalog/{sessionID}/add")
-    public ResponseEntity<?> addItem(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+    public ResponseEntity<?> addItem(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec) {
         catalog.addCatalogItem(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -37,7 +37,7 @@ public class InventoryController {
     }
 
     @PostMapping("/catalog/{sessionID}/addSpec")
-    public ResponseEntity<?> addItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+    public ResponseEntity<?> addItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec) {
         catalog.addItemSpec(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -48,13 +48,13 @@ public class InventoryController {
     }
 
     @PostMapping("/catalog/{sessionID}/modifySpec")
-    public ResponseEntity<?> modifyItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
+    public ResponseEntity<?> modifyItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec) {
         catalog.modifyItemSpec(sessionID, itemSpec);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/catalog/{sessionID}/save")
-    public ResponseEntity<?> save(@PathVariable String sessionID){
+    public ResponseEntity<?> save(@PathVariable String sessionID) {
         return new ResponseEntity<>(catalog.endSession(sessionID), HttpStatus.OK);
     }
 }

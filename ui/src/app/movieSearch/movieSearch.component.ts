@@ -1,8 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Movie} from "../catalog/dto/movie";
+import {Movie} from "../catalog/dto/item-specification/movie";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {HomeRedirectService} from "../home/home-redirect.service";
 import {MatSort, MatTableDataSource} from '@angular/material';
+import {Router} from "@angular/router";
 import {NgForm} from '@angular/forms';
 
 @Component({
@@ -18,21 +18,10 @@ export class movieSearchComponent implements OnInit {
   @ViewChild('movieSort') movieSort: MatSort;
   @ViewChild('movieForm') movieForm: NgForm;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.getAllMovies();
-  }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getAllMovies(): void {
@@ -69,5 +58,9 @@ export class movieSearchComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
   }
 }

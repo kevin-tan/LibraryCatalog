@@ -1,9 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Book} from '../catalog/dto/book';
-import {HomeRedirectService} from "../home/home-redirect.service";
+import {Book} from '../catalog/dto/item-specification/book';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {NgForm} from '@angular/forms';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-catalog',
@@ -15,24 +15,13 @@ export class bookSearchComponent implements OnInit {
   displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
   matBookList: MatTableDataSource<Book>;
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient, private router:Router) { }
 
   @ViewChild('bookSort') bookSort: MatSort;
   @ViewChild('bookForm') bookForm: NgForm;
 
   ngOnInit() {
     this.getAllBooks();
-  }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getAllBooks(): void {
@@ -74,5 +63,7 @@ export class bookSearchComponent implements OnInit {
       console.log(error);
     });
   }
-
+  OnSelectItem(itemType: string, itemSpecID: string){
+    this.router.navigate(['/detail', itemType, itemSpecID])
+  }
 }

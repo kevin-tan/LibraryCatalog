@@ -1,0 +1,16 @@
+#remove{
+  margin: 15px 15px 15px 0px;
+}
+
+.group{
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.button {
+  margin: 5px;
+}
+
+.mat-radio-group{
+  width:100%;
+}
