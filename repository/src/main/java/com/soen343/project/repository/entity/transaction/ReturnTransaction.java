@@ -21,6 +21,10 @@ public class ReturnTransaction extends Transaction {
         super(id, loanableItem, client, transactionDate);
     }
 
+    public ReturnTransaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
+        super(loanableItem, client, transactionDate);
+    }
+
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
@@ -30,7 +34,7 @@ public class ReturnTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return  super.toSQLValue() + "')";
+        return super.toSQLValue() + "')";
     }
 
     @Override

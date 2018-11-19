@@ -88,6 +88,15 @@ public class DatabaseConnector {
         return null;
     }
 
+    public static List executeQueryExpectMultiple(DatabaseBatchQueryOperation databaseQueryOperation) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+            return (List) databaseQueryOperation.execute(createStatement(connection));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static Statement createStatement(Connection connection) throws SQLException {
         Statement statement = connection.createStatement();
         statement.setQueryTimeout(30); // Time-out if database does not execute any queries in 30 seconds

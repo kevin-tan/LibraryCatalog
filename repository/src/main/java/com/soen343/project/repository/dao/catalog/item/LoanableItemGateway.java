@@ -1,5 +1,7 @@
 package com.soen343.project.repository.dao.catalog.item;
 
+import com.google.common.collect.ImmutableMap;
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.Gateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -11,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
@@ -63,7 +64,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
                     rs.next();// Move to query result
                     Long loanableItemId = rs.getLong(ID);
                     Long userId = rs.getLong(USERID);
-                    Boolean available = Boolean.valueOf(rs.getString(AVAILABLE));
+                    Boolean available = rs.getString(AVAILABLE).equals(BOOL_VAL_TRUE);
 
                     ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItemId));
                     itemRS.next();
@@ -111,6 +112,32 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             statement.execute(createUpdateQuery(entity.getTable(), entity.sqlUpdateValues(), entity.getId()));
         });
         scheduler.writer_v();
+    }
+
+    public List<?> findByUserIdAndIsLoaned(Long userId) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(
+                createSearchByAttributesQuery(LOANABLEITEM_TABLE, ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")),
+                findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<LoanableItem> findIfLoanablesAreAvailable(List<LoanableItem> loanableItems) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple((statement) -> {
+            List<LoanableItem> tempList = new LinkedList<>();
+            for (LoanableItem loanableItem : loanableItems) {
+                ResultSet rs = statement.executeQuery(
+                        queryLoanableAndItemByItemspecType(loanableItem.getType(), loanableItem.getSpec().getId()) +
+                        " and LoanableItem.available = 1 LIMIT 1;");
+                if (!rs.next()) tempList.add(loanableItem);
+            }
+            return tempList;
+        });
+        scheduler.reader_v();
+        return list;
     }
 
     public List<?> findByItemSpecId(String itemType, Long itemSpecId) {
