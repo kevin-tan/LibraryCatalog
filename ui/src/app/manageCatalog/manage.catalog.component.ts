@@ -326,6 +326,64 @@ export class ManageCatalogComponent implements OnInit {
     }
   }
 
+  deleteBook() {
+    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null && this.bookSelectedRow.quantity === 0) {
+      let body = JSON.stringify({
+        'Book': {
+          'id': this.bookSelectedRow.id,
+          'title': this.bookSelectedRow.title,
+          'author': this.bookSelectedRow.author,
+          'publisher': this.bookSelectedRow.publisher,
+          'pubDate': this.bookSelectedRow.pubDate,
+          'language': this.bookSelectedRow.language,
+          'format': this.bookSelectedRow.format,
+          'isbn10': this.bookSelectedRow.isbn10,
+          'isbn13': this.bookSelectedRow.isbn13,
+          'pages': this.bookSelectedRow.pages
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
+
+        this.bookForm.resetForm();
+
+        for (let i = 0; i < this.bookList.length; i++) {
+          if (this.bookList[i].id === this.bookSelectedRow.id) {
+            this.bookList.splice(i, 1);
+            break;
+          }
+        }
+        this.matBookList = new MatTableDataSource(this.bookList);
+        this.matBookList.sort = this.bookSort;
+        this.snackBar.open('Item deleted successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        this.bookSelection.clear();
+        this.snackBar.open('An item of this type is out on loan!', 'OK', {
+          duration: 2000,
+        });
+      });
+
+    } else {
+      if (this.bookSelectedRow.quantity > 0) {
+        this.bookSelection.clear();
+        this.snackBar.open('That item still has inventory!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.bookSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
+
   editBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
            isbn13: string, pages: string, form: NgForm) {
     if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null) {
@@ -490,6 +548,60 @@ export class ManageCatalogComponent implements OnInit {
       if (this.bookSelectedRow.quantity === 0) {
         this.movieSelection.clear();
         this.snackBar.open('No items to delete!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.movieSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
+  deleteMovie() {
+    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null && this.movieSelectedRow.quantity === 0) {
+      let body = JSON.stringify({
+        'Movie': {
+          'id': this.movieSelectedRow.id,
+          'title': this.movieSelectedRow.title,
+          'director': this.movieSelectedRow.director,
+          'releaseDate': this.movieSelectedRow.releaseDate,
+          'language': this.movieSelectedRow.language,
+          'subtitles': this.movieSelectedRow.subtitles,
+          'dubbed': this.movieSelectedRow.dubbed,
+          'actors': this.movieSelectedRow.actors,
+          'producers': this.movieSelectedRow.producers,
+          'runTime': this.movieSelectedRow.runTime
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
+        this.movieForm.resetForm();
+        for (let i = 0; i < this.movieList.length; i++) {
+          if (this.movieList[i].id === this.movieSelectedRow.id) {
+            this.movieList.splice(i, 1);
+            break;
+          }
+        }
+        this.matMovieList = new MatTableDataSource(this.movieList);
+        this.matMovieList.sort = this.movieSort;
+        this.snackBar.open('Item deleted succesfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        this.movieSelection.clear();
+        this.snackBar.open('An item of this type is out on loan!', 'OK', {
+          duration: 2000,
+        });
+      });
+    } else {
+      if (this.movieSelectedRow.quantity > 0) {
+        this.movieSelection.clear();
+        this.snackBar.open('That item still has inventory!', 'OK', {
           duration: 2000,
         });
       } else {
@@ -668,6 +780,58 @@ export class ManageCatalogComponent implements OnInit {
     }
   }
 
+  deleteMagazine() {
+    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null && this.magazineSelectedRow.quantity === 0) {
+      let body = JSON.stringify({
+        'Magazine': {
+          'id': this.magazineSelectedRow.id,
+          'title': this.magazineSelectedRow.title,
+          'publisher': this.magazineSelectedRow.publisher,
+          'pubDate': this.magazineSelectedRow.pubDate,
+          'language': this.magazineSelectedRow.language,
+          'isbn10': this.magazineSelectedRow.isbn10,
+          'isbn13': this.magazineSelectedRow.isbn13
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
+        this.magazineForm.resetForm();
+
+        for (let i = 0; i < this.magazineList.length; i++) {
+          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
+            this.magazineList.splice(i, 1);
+            break;
+          }
+        }
+        this.matMagazineList = new MatTableDataSource(this.magazineList);
+        this.matMagazineList.sort = this.magazineSort;
+        this.snackBar.open('Item deleted successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        this.magazineSelection.clear();
+        this.snackBar.open('An item of this type is out on loan!', 'OK', {
+          duration: 2000,
+        });
+      });
+    } else {
+      if(this.magazineSelectedRow.quantity > 0) {
+        this.magazineSelection.clear();
+        this.snackBar.open('That item still has inventory!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.magazineSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
   editMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
     if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null) {
       let body = JSON.stringify({
@@ -811,6 +975,57 @@ export class ManageCatalogComponent implements OnInit {
         });
       } else {
         this.magazineSelection.clear();
+        this.snackBar.open('Please select a valid row first', 'OK', {
+          duration: 2000,
+        });
+      }
+    }
+  }
+
+  deleteMusic() {
+    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null && this.musicSelectedRow.quantity === 0) {
+      let body = JSON.stringify({
+        'Music': {
+          'id': this.musicSelectedRow.id,
+          'title': this.musicSelectedRow.title,
+          'artist': this.musicSelectedRow.artist,
+          'type': this.musicSelectedRow.type,
+          'releaseDate': this.musicSelectedRow.releaseDate,
+          'label': this.musicSelectedRow.label,
+          'asin': this.musicSelectedRow.asin
+        }
+      });
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
+        this.musicForm.resetForm();
+
+        for (let i = 0; i < this.musicList.length; i++) {
+          if (this.musicList[i].id === this.musicSelectedRow.id) {
+            this.musicList.splice(i, 1);
+            break;
+          }
+        }
+        this.matMusicList = new MatTableDataSource(this.musicList);
+        this.matMusicList.sort = this.musicSort;
+        this.snackBar.open('Item deleted successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        this.musicSelection.clear();
+        this.snackBar.open('An item of this type is out on loan!', 'OK', {
+          duration: 2000,
+        });
+      });
+    } else {
+      if(this.musicSelectedRow.quantity > 0) {
+        this.musicSelection.clear();
+        this.snackBar.open('That item still has inventory!', 'OK', {
+          duration: 2000,
+        });
+      } else {
+        this.musicSelection.clear();
         this.snackBar.open('Please select a valid row first', 'OK', {
           duration: 2000,
         });
