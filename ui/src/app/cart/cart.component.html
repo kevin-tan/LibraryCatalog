@@ -29,10 +29,10 @@
     <hr style="width:200px" class="w3-opacity">
 
     <mat-radio-group class="group" [(ngModel)]="selectedItem" >
-      <br>
-      <mat-radio-button *ngFor="let item of this.loanableItems" [value]="item">
-        <p matLine>Title: {{item.spec[item.type].title}}</p>
-        <p matLine>Type: {{item.type}}</p>
+      <mat-radio-button class="button" *ngFor="let item of this.loanableItems" [value]="item">
+        <span matLine>{{item.spec[item.type].title}}</span>
+        <br>
+        <span matLine>{{item.type}}</span>
       </mat-radio-button>
     </mat-radio-group>
 

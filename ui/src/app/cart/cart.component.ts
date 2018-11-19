@@ -86,8 +86,6 @@ export class CartComponent implements OnInit {
 
       let body = JSON.stringify(final);
 
-    console.log(body);
-
     this.http.post(url, body, options).subscribe(response => {
         this.getCartItems();
       }, error => {
