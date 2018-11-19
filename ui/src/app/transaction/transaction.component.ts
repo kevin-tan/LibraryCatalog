@@ -50,15 +50,7 @@ export class transactionComponent implements OnInit {
     });
   }
 
-  searchTransactionByIdType(userId: number, itemType: string){
-    this.http.get('http://localhost:8080/admin/transactionHistory/searchByUserId/' + userId, {withCredentials: true}).subscribe(response => {
-      this.matLoanTransactionList = new MatTableDataSource(response ['loanTransaction'] as Array<LoanTransaction>);
-      this.matLoanTransactionList.sort = this.loanTransactionSort;
-      this.matReturnTransactionList = new MatTableDataSource(response ['returnTransaction'] as Array<ReturnTransaction>);
-      this.matReturnTransactionList.sort = this.returnTransactionSort;
-    }, error => {
-      console.log(error);
-    });
+  searchTransactionByItemType(itemType: string) {
     this.http.get('http://localhost:8080/admin/transactionHistory/search/' + itemType, {withCredentials: true}).subscribe(response => {
       this.matLoanTransactionList = new MatTableDataSource(response ['loanTransaction'] as Array<LoanTransaction>);
       this.matLoanTransactionList.sort = this.loanTransactionSort;
@@ -69,7 +61,18 @@ export class transactionComponent implements OnInit {
     });
   }
 
-  searchByDate(transactionDate: string) {
+  searchTransactionByUserId(userId: number) {
+    this.http.get('http://localhost:8080/admin/transactionHistory/searchByUserId/' + userId, {withCredentials: true}).subscribe(response => {
+      this.matLoanTransactionList = new MatTableDataSource(response ['loanTransaction'] as Array<LoanTransaction>);
+      this.matLoanTransactionList.sort = this.loanTransactionSort;
+      this.matReturnTransactionList = new MatTableDataSource(response ['returnTransaction'] as Array<ReturnTransaction>);
+      this.matReturnTransactionList.sort = this.returnTransactionSort;
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  searchTransactionByTransactionDate(transactionDate: Date) {
     let body = JSON.stringify({
       "transactionDate": transactionDate
     })
@@ -85,7 +88,21 @@ export class transactionComponent implements OnInit {
     });
   }
 
-  convertDate(dateToConvert: Date){
+  searchTransactionByDueDate(dueDate: Date) {
+    let body2 = JSON.stringify({
+      "dueDate": dueDate
+    })
+    let headers = new HttpHeaders({"Content-Type": "application/json"});
+    let options = {headers: headers, withCredentials: true};
+    this.http.post('http://localhost:8080/admin/transactionHistory/loanTransactions/searchByDueDate', body2, options).subscribe(response => {
+      this.matLoanTransactionList = new MatTableDataSource(response as Array<LoanTransaction>);
+      this.matLoanTransactionList.sort = this.loanTransactionSort;
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  convertDate(dateToConvert: Date) {
     let date = new Date(dateToConvert); // had to remove the colon (:) after the T in order to make it work
     let day = date.getDate();
     let monthIndex = date.getMonth();
@@ -93,7 +110,7 @@ export class transactionComponent implements OnInit {
     let minutes = date.getMinutes();
     let hours = date.getHours();
     let seconds = date.getSeconds();
-    let myFormattedDate = year+"-"+(monthIndex+1)+"-"+day+" "+ hours+":"+minutes+":"+seconds;
+    let myFormattedDate = year + "-" + (monthIndex + 1) + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
     return myFormattedDate;
   }
 

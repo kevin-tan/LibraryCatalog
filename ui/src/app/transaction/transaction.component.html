@@ -85,13 +85,21 @@
             <label for="toggleItemType">ItemType</label>
             <div id="expandItemType">
               <textarea rows="1" cols="47" #itemType itemType.value=""></textarea>
+              <button class="w3-bar-item w3-button" (click)="searchTransactionByItemType(itemType.value)">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
           </th>
+        </tr>
+        <tr>
           <th>
             <input id="toggleUserId" type="checkbox">
             <label for="toggleUserId">UserId</label>
             <div id="expandUserId">
               <textarea rows="1" cols="47" #userId userId.value=""></textarea>
+              <button class="w3-bar-item w3-button" (click)="searchTransactionByUserId(userId.value)">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
           </th>
         </tr>
@@ -102,23 +110,25 @@
             <label for="toggleTransactionDate">Transaction Date</label>
             <div id="expandTransactionDate">
               <textarea rows="1" cols="47" #transactionDate transactionDate.value=""></textarea>
-              <button class="w3-bar-item w3-button" (click)="searchByDate(transactionDate.value)">
-                Search <i class="fa fa-search"></i>
-              </button>
+                <button class="w3-bar-item w3-button" (click)="searchTransactionByTransactionDate(transactionDate.value)">
+                  <i class="fa fa-search"></i>
+                </button>
             </div>
           </th>
+        </tr>
+        <tr>
           <th>
             <input id="toggleDueDate" type="checkbox">
             <label for="toggleDueDate">Due Date</label>
             <div id="expandDueDate">
               <textarea rows="1" cols="47" #dueDate dueDate.value=""></textarea>
+              <button class="w3-bar-item w3-button" (click)="searchTransactionByDueDate(dueDate.value)">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
           </th>
         </tr>
       </table>
-      <button class="w3-bar-item w3-button" (click)="searchTransactionByIdType(userId.value, itemType.value)">
-        Search <i class="fa fa-search"></i>
-      </button>
     </form>
   </div>
 

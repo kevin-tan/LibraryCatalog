@@ -39,7 +39,7 @@ label::before {
   height: 50px;
 }
 
-#toggleItemType:checked ~ label::before, #expandItemType:checked ~ label::before,
+#toggleItemType:checked ~ label::before, #toggleUserId:checked ~ label::before,
 #toggleTransactionDate:checked ~label::before, #toggleDueDate:checked ~label::before{
   content: "-";
 }
