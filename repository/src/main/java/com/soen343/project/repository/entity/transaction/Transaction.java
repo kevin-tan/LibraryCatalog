@@ -28,15 +28,15 @@ public abstract class Transaction implements DatabaseEntity {
 
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = ITEMID + " = '" + loanableItem.getId() + "', ";
-        columnValues += USERID + " = '" + client.getId() + "', ";
-        columnValues += TRANSACTIONDATE + " = '" + transactionDate + "', ";
+        String columnValues = ITEMID + " = " + loanableItem.getId() + ", ";
+        columnValues += USERID + " = " + client.getId() + ", ";
+        columnValues += TRANSACTIONDATE + " = '" + transactionDate + "'";
         return columnValues;
     }
 
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + loanableItem.getId() + "','" + client.getId() +  "','" + transactionDate + "','";
+        return "(" + loanableItem.getId() + "," + client.getId() +  ",'" + transactionDate;
     }
 
 

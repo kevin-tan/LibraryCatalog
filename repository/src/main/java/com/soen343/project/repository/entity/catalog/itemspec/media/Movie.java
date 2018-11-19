@@ -61,7 +61,7 @@ public class Movie extends MediaItem {
         columnValues += DIRECTOR + " = '" + director + "', ";
         columnValues += LANGUAGE + " = '" + language + "', ";
         columnValues += SUBTITLES + " = '" + subtitles + "', ";
-        columnValues += RUNTIME + " = '" + runTime + "'";
+        columnValues += RUNTIME + " = " + runTime + "";
 
         return columnValues;
     }
@@ -69,8 +69,8 @@ public class Movie extends MediaItem {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return "('" + getTitle() + "','" + getReleaseDate() + "','" + director + "','" + language + "','" + subtitles + "','" + runTime +
-               "')";
+        return "('" + getTitle() + "','" + getReleaseDate() + "','" + director + "','" + language + "','" + subtitles + "'," + runTime +
+               ")";
     }
 
     @Override

@@ -27,7 +27,7 @@ public class LoanTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String sqlUpdateValues() {
-        String columnValues = super.sqlUpdateValues() + (DUEDATE + " = '" + dueDate + "'");
+        String columnValues = super.sqlUpdateValues() + ", " + DUEDATE + " = '" + dueDate + "'";
 
         return columnValues;
 
@@ -36,7 +36,7 @@ public class LoanTransaction extends Transaction {
     @Override
     @JsonIgnore
     public String toSQLValue() {
-        return  super.toSQLValue() + dueDate + "')";
+        return super.toSQLValue() + "','" + dueDate + "')";
     }
 
     @Override

@@ -36,7 +36,6 @@ public class Library {
     private final MusicGateway musicRepository;
     private final ItemGateway itemGateway;
     private final UserGateway userRepository;
-    private final ItemGateway itemRepository;
     private final LoanableItemGateway loanableItemGateway;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -48,7 +47,7 @@ public class Library {
     @Autowired
     public Library(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
                    MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway, UserGateway userRepository,
-                   ItemGateway itemRepository, LoanableItemGateway loanableItemGateway, BCryptPasswordEncoder bCryptPasswordEncoder) {
+                   LoanableItemGateway loanableItemGateway, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.gatewayMapper = gatewayMapper;
         this.movieRepository = movieRepository;
         this.bookRepository = bookRepository;
@@ -56,7 +55,6 @@ public class Library {
         this.musicRepository = musicRepository;
         this.itemGateway = itemGateway;
         this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
         this.loanableItemGateway = loanableItemGateway;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -90,11 +88,11 @@ public class Library {
     }
 
     public Item getItem(Long itemID) {
-        return itemRepository.findById(itemID);
+        return itemGateway.findById(itemID);
     }
 
     public List<Item> findAllItems() {
-        return itemRepository.findAll();
+        return itemGateway.findAll();
     }
 
     public List<?> searchCatalogByAttribute(String itemType, Map<String, String> attributeValue) {
@@ -125,20 +123,38 @@ public class Library {
 
     public Map<String, ?> getAllItemSpecQuantities() {
         Map<String, Map<Long, Integer>> itemTypeMapping = new HashMap<>();
-        List<Item> items = itemRepository.findAll();
-        items.forEach(item -> {
-            String itemType = item.getType();
-            if (itemTypeMapping.get(itemType) == null) {
-                Map<Long, Integer> map = new HashMap<>();
-                map.put(item.getSpec().getId(), 1);
-                itemTypeMapping.put(itemType, map);
-            } else if (itemTypeMapping.get(itemType).get(item.getSpec().getId()) == null) {
-                itemTypeMapping.get(itemType).put(item.getSpec().getId(), 1);
-            } else {
-                itemTypeMapping.get(itemType).put(item.getSpec().getId(), itemTypeMapping.get(itemType).get(item.getSpec().getId()) + 1);
-            }
-        });
+
+        // Map
+        fillMapForMagazine((List<Item>) itemGateway.findByItemSpec(MAGAZINE_TABLE), itemTypeMapping);
+        fillMapForLoanable(loanableItemGateway.findAll(), itemTypeMapping);
 
         return itemTypeMapping;
     }
+
+
+    private void fillMapForLoanable(List<LoanableItem> items, Map<String, Map<Long, Integer>> map) {
+        items.forEach(item -> {
+            if (item.getAvailable()) {
+                String itemType = item.getType();
+                fillMap(map, itemType, item);
+            }
+        });
+    }
+
+    private void fillMapForMagazine(List<? extends Item> items, Map<String, Map<Long, Integer>> map) {
+        items.forEach(item -> fillMap(map, MAGAZINE_TABLE, item));
+    }
+
+    private void fillMap(Map<String, Map<Long, Integer>> map, String itemType, Item item) {
+        if (map.get(itemType) == null) {
+            Map<Long, Integer> temp = new HashMap<>();
+            temp.put(item.getSpec().getId(), 1);
+            map.put(itemType, temp);
+        } else if (map.get(itemType).get(item.getSpec().getId()) == null) {
+            map.get(itemType).put(item.getSpec().getId(), 1);
+        } else {
+            map.get(itemType).put(item.getSpec().getId(), map.get(itemType).get(item.getSpec().getId()) + 1);
+        }
+    }
+
 }
