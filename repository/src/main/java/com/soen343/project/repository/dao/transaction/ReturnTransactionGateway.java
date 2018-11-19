@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +40,23 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     @Override
     public void save(ReturnTransaction entity) {
         scheduler.writer_p();
-        executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
+        executeBatchUpdate(statement -> modifyTransaction(statement, entity));
         scheduler.writer_v();
+    }
+
+    private void modifyTransaction(Statement statement, ReturnTransaction transaction) throws SQLException {
+        transaction.getLoanableItem().setAvailable(true);
+        transaction.getLoanableItem().setClient(null);
+        statement.executeUpdate(createUpdateQuery(transaction.getLoanableItem().getTable(), transaction.getLoanableItem().sqlUpdateValues(),
+                transaction.getLoanableItem().getId()));
+        statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
     }
 
     @Override
     public void saveAll(ReturnTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (ReturnTransaction transaction : entities) {
-            uow.registerOperation(statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+            uow.registerOperation(statement -> modifyTransaction(statement, transaction));
         }
         scheduler.writer_p();
         uow.commit();

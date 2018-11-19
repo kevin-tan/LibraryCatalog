@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {User} from "../registration/user";
 import {ActiveUser} from "./ActiveUser";
 import {isNullOrUndefined} from "util";
-import {HomeRedirectService} from "../home/home-redirect.service";
 
 @Component({
   selector: 'app-activeUsers',
@@ -14,21 +13,10 @@ export class activeUsersComponent implements OnInit {
 
   userList: Array<User> = [];
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.getActiveUsers();
-  }
-
-  logout(){
-    let body = JSON.stringify({'email': sessionStorage.getItem('email')});
-    this.http.post('http://localhost:8080/logout', body, {withCredentials:true}).subscribe(response => {
-      this.homeRedirectService.redirect();
-      sessionStorage.setItem('loggedIn', 'false');
-      sessionStorage.setItem('email', '');
-    }, error => {
-      console.log(error);
-    });
   }
 
   getActiveUsers(){

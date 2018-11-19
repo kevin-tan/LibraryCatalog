@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.transaction;
 
+import com.google.common.collect.ImmutableMap;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.transaction.com.TransactionGateway;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +42,39 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     @Override
     public void save(LoanTransaction entity) {
         scheduler.writer_p();
-        executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
+        executeBatchUpdate(statement -> {
+            ResultSet rs = statement.executeQuery(saveQuery(entity));
+            modifyLoanableItem(rs, statement, entity);
+        });
         scheduler.writer_v();
+    }
+
+    private String saveQuery(LoanTransaction transaction) {
+        return "SELECT LoanableItem.* FROM LoanableItem, Item WHERE Item.itemSpecId = " + transaction.getLoanableItem().getSpec().getId() +
+               " and Item.type  = '" + transaction.getLoanableItem().getType() +
+               "' and LoanableItem.id = Item.id and LoanableItem.available = 1 LIMIT 1;";
+    }
+
+    private void modifyLoanableItem(ResultSet rs, Statement statement, LoanTransaction transaction) throws SQLException {
+        if (rs.next()) {
+            transaction.setId(rs.getLong(ID));
+            transaction.getLoanableItem().setAvailable(false);
+            transaction.getLoanableItem().setClient(transaction.getClient());
+            statement.executeUpdate(
+                    createUpdateQuery(transaction.getLoanableItem().getTable(), transaction.getLoanableItem().sqlUpdateValues(),
+                            transaction.getLoanableItem().getId()));
+            statement.executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue()));
+        }
     }
 
     @Override
     public void saveAll(LoanTransaction... entities) {
         UnitOfWork uow = new UnitOfWork();
         for (LoanTransaction transaction : entities) {
-            uow.registerOperation(statement -> executeUpdate(createSaveQuery(transaction.getTableWithColumns(), transaction.toSQLValue())));
+            uow.registerOperation(statement -> {
+                ResultSet rs = statement.executeQuery(saveQuery(transaction));
+                modifyLoanableItem(rs, statement, transaction);
+            });
         }
         scheduler.writer_p();
         uow.commit();
@@ -150,6 +177,14 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     public List<?> findByDueDate(String dueDate) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, DUEDATE, dueDate), findAllTransaction());
+        scheduler.reader_v();
+        return list;
+    }
+
+    public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate) {
+        scheduler.reader_p();
+        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE,
+                ImmutableMap.of(USERID, userId.toString(), TRANSACTIONDATE, transactionDate)), findAllTransaction());
         scheduler.reader_v();
         return list;
     }

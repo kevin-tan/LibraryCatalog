@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+<title>Library Catalog</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+<body class="w3-black">
+
+<app-navbar></app-navbar>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <h2>Loaned Items</h2><br><br>
+  </header>
+  <h3>Here are the items you own. Select items if you want to return them.</h3>
+  <br>
+
+  <div class="w3-padding-64 w3-content w3-text-grey">
+
+
+      <mat-selection-list [(ngModel)]="selectedItems" >
+        <mat-list-option *ngFor="let item of this.loanedItems" [value]="item">
+          <p matLine> {{item.spec.title}} </p>
+          <p matLine>{{item.type}}</p>
+        </mat-list-option>
+      </mat-selection-list>
+
+      <br>
+
+    <form *ngIf="selectedItems?.length > 0">
+      <p>To confirm you are actually returning these selected item<span *ngIf="selectedItems.length > 1">s</span>, please seek a library admin to verify.</p>
+      <hr style="width:200px" class="w3-opacity">
+      <p *ngIf="errorMessage != ''" class="error-message">{{errorMessage}}</p>
+      <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="username" #username  username.value=''></p>
+      <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="password" #password  password.value=''></p>
+      <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="returnItems(username.value, password.value)">
+          Return Items
+      </button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <p class="w3-medium">Created by SOEN343 team#10</p>
+    <!-- End footer -->
+  </footer>
+
+  <!-- END PAGE CONTENT -->
+</div>
+</body>
+</html>

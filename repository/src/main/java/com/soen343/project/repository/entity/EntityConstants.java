@@ -33,7 +33,7 @@ public final class EntityConstants {
     public static final String LOANTRANSACTION_TABLE = "LoanTransaction";
     public static final String LOANTRANSACTION_TABLE_WITH_COLUMNS = LOANTRANSACTION_TABLE + "(itemId, userId, transactionDate, dueDate)";
     public static final String RETURNTRANSACTION_TABLE = "ReturnTransaction";
-    public static final String RETURNTRANSACTION_TABLE_WITH_COLUMNS = RETURNTRANSACTION_TABLE + "(itemId, userId, transactionDate,)";
+    public static final String RETURNTRANSACTION_TABLE_WITH_COLUMNS = RETURNTRANSACTION_TABLE + "(itemId, userId, transactionDate)";
 
     //User
     public static final String FIRST_NAME = "firstName";
