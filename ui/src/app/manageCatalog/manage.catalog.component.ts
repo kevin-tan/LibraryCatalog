@@ -1,9 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Book} from '../catalog/dto/book';
-import {Magazine} from '../catalog/dto/magazine';
-import {Movie} from '../catalog/dto/movie';
-import {Music} from '../catalog/dto/music';
+import {Book} from '../catalog/dto/item-specification/book';
+import {Magazine} from '../catalog/dto/item-specification/magazine';
+import {Movie} from '../catalog/dto/item-specification/movie';
+import {Music} from '../catalog/dto/item-specification/music';
 import {MatSnackBar, MatSort, MatTableDataSource} from '@angular/material';
 import {HomeRedirectService} from '../home/home-redirect.service';
 import {NgForm} from '@angular/forms';
