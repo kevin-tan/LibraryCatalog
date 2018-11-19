@@ -91,7 +91,11 @@ export class CartComponent implements OnInit {
     this.http.post(url, body, options).subscribe(response => {
         this.getCartItems();
       }, error => {
-        this.errorMessage = "Invalid";
+      if(error.status == 400){
+        this.errorMessage = "You've exceeded the number of transactions"
+      }else{
+        this.errorMessage = "Invalid Authorization";
+      }
       })
   }
 

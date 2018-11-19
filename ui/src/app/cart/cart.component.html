@@ -28,36 +28,35 @@
     <h2 class="w3-text-light-grey">Cart</h2>
     <hr style="width:200px" class="w3-opacity">
 
-    <!-- Library Catalog Items -->
-    <h3 class="w3-padding-16 w3-text-light-grey">Loanable Items</h3>
-
-    <mat-radio-group [(ngModel)]="selectedItem" >
+    <mat-radio-group class="group" [(ngModel)]="selectedItem" >
+      <br>
       <mat-radio-button *ngFor="let item of this.loanableItems" [value]="item">
-        <p matLine> {{item.spec.title}} </p>
-        <p matLine>{{item.type}}</p>
+        <p matLine>Title: {{item.spec[item.type].title}}</p>
+        <p matLine>Type: {{item.type}}</p>
       </mat-radio-button>
     </mat-radio-group>
 
-    <form *ngIf="selectedItem != null">
-      <button class="w3-button w3-light-grey w3-padding-large" (click)="removeItemFromCart(selectedItem)">
+    <hr style="width:200px" class="w3-opacity">
+
+    <button class="w3-button w3-light-grey w3-padding-large" (click)="cancel()">
+      Cancel Loan
+    </button>
+    <div *ngIf="selectedItem != null">
+      <button id="remove" class="w3-button w3-light-grey w3-padding-large" (click)="removeItemFromCart(selectedItem)">
         Remove Item
       </button>
       <button class="w3-button w3-light-grey w3-padding-large" (click)="cancelRemove()">
         Cancel Remove
       </button>
-    </form>
+    </div>
 
     <form *ngIf="loanableItems?.length > 0 && selectedItem == null">
       <p>To confirm the transaction<span *ngIf="loanableItems.length > 1">s</span>, please seek a library admin to verify.</p>
-      <hr style="width:200px" class="w3-opacity">
       <p *ngIf="errorMessage != ''" class="error-message">{{errorMessage}}</p>
       <p><input class="w3-input w3-padding-16" type="text" placeholder="Username" required name="username" #username  username.value=''></p>
       <p><input class="w3-input w3-padding-16" type="password" placeholder="Password" required name="password" #password  password.value=''></p>
       <button class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="checkout(username.value, password.value)">
         Checkout
-      </button>
-      <button class="w3-button w3-light-grey w3-padding-large" (click)="cancel()">
-        Cancel Loan
       </button>
     </form>
     <!--Good-->
@@ -68,8 +67,6 @@
     <p class="w3-medium">Created by SOEN343 team#10</p>
     <!-- End footer -->
   </footer>
-
-  {{ this.loanableItems | json }}
 
   <!-- END PAGE CONTENT -->
 </div>
