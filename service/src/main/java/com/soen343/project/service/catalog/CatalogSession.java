@@ -1,6 +1,7 @@
 package com.soen343.project.service.catalog;
 
 import com.soen343.project.repository.concurrency.Scheduler;
+import com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
@@ -44,8 +45,12 @@ class CatalogSession {
     }
 
     void addEntry(ItemSpecification itemSpec) {
-        unitOfWork.registerOperation(
-                statement -> statement.executeUpdate(createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+        if (itemSpec.getTable().equals(MOVIE_TABLE)) {
+            unitOfWork.registerOperation(ItemSpecificationOperation.movieSaveOperation((Movie) itemSpec));
+        } else {
+            unitOfWork.registerOperation(
+                    statement -> statement.executeUpdate(createSaveQuery(itemSpec.getTableWithColumns(), itemSpec.toSQLValue())));
+        }
     }
 
     void removeEntry(Item item) {
