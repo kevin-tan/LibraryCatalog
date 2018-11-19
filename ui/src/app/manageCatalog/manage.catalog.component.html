@@ -240,8 +240,15 @@
         (click)="bookSelection.toggle(row)">
     </tr>
   </table>
-  <br>
 
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="deleteBookItem()">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="addBookItem()">
+    <i class="fa fa-plus"></i>
+  </button>
 
   <h2><i>Movies</i></h2>
   <hr>
@@ -406,6 +413,15 @@
   </table>
   <br>
 
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="addMovieItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
   <h2><i>Magazine</i></h2>
   <hr>
   <div>
@@ -535,6 +551,15 @@
   </table>
   <br>
 
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right w3-right"
+          (click)="addMagazineItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
   <h2><i>Music</i></h2>
   <hr>
   <div>
@@ -662,8 +687,18 @@
         (click)="musicSelection.toggle(row)">
     </tr>
   </table>
+  <br>
 
   <hr style="width:100%" class="w3-opacity">
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-right w3-right"
+          (click)="editBook(mng_book_title.value, mng_book_author.value, mng_book_publisher.value, mng_book_pubDate.value, mng_book_language.value, mng_book_format.value, mng_book_isbn10.value, mng_book_isbn13.value, mng_book_pages.value, bookForm)">
+    <i class="fa fa-minus"></i>
+  </button>
+  <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-right w3-right"
+          (click)="addMusicItem()">
+    <i class="fa fa-plus"></i>
+  </button>
+
   <button class="w3-bar-item w3-button w3-grey w3-round"
           (click)="saveAll()">
     <b>Save Changes </b><i class="fa fa-check-circle"></i>

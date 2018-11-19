@@ -361,4 +361,226 @@ export class ManageCatalogComponent implements OnInit {
       console.log(error);
     });
   }
+
+  addBookItem() {
+    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Book': {
+          'id': this.bookSelectedRow.id,
+          'title': this.bookSelectedRow.title,
+          'author': this.bookSelectedRow.author,
+          'publisher': this.bookSelectedRow.publisher,
+          'pubDate': this.bookSelectedRow.pubDate,
+          'language': this.bookSelectedRow.language,
+          'format': this.bookSelectedRow.format,
+          'isbn10': this.bookSelectedRow.isbn10,
+          'isbn13': this.bookSelectedRow.isbn13,
+          'pages': this.bookSelectedRow.pages
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
+        for (let i = 0; i < this.bookList.length; i++) {
+          if (this.bookList[i].id === this.bookSelectedRow.id) {
+            this.bookList[i] = {'id': this.bookSelectedRow.id, 'title': this.bookSelectedRow.title, 'author': this.bookSelectedRow.author,
+              'publisher': this.bookSelectedRow.publisher, 'pubDate': this.bookSelectedRow.pubDate, 'language': this.bookSelectedRow.language,
+              'format': this.bookSelectedRow.format, 'isbn10': this.bookSelectedRow.isbn10, 'isbn13': this.bookSelectedRow.isbn13,
+              'pages': +this.bookSelectedRow.pages, 'quantity': ++this.bookSelectedRow.quantity};
+            break;
+          }
+        }
+        this.matBookList = new MatTableDataSource(this.bookList);
+        this.matBookList.sort = this.bookSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.bookSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
+
+  deleteBookItem() {
+    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Book': {
+          'id': this.bookSelectedRow.id,
+          'title': this.bookSelectedRow.title,
+          'author': this.bookSelectedRow.author,
+          'publisher': this.bookSelectedRow.publisher,
+          'pubDate': this.bookSelectedRow.pubDate,
+          'language': this.bookSelectedRow.language,
+          'format': this.bookSelectedRow.format,
+          'isbn10': this.bookSelectedRow.isbn10,
+          'isbn13': this.bookSelectedRow.isbn13,
+          'pages': this.bookSelectedRow.pages
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
+        for (let i = 0; i < this.bookList.length; i++) {
+          if (this.bookList[i].id === this.bookSelectedRow.id) {
+            this.bookList[i] = {'id': this.bookSelectedRow.id, 'title': this.bookSelectedRow.title, 'author': this.bookSelectedRow.author,
+              'publisher': this.bookSelectedRow.publisher, 'pubDate': this.bookSelectedRow.pubDate, 'language': this.bookSelectedRow.language,
+              'format': this.bookSelectedRow.format, 'isbn10': this.bookSelectedRow.isbn10, 'isbn13': this.bookSelectedRow.isbn13,
+              'pages': +this.bookSelectedRow.pages, 'quantity': --this.bookSelectedRow.quantity};
+            break;
+          }
+        }
+        this.matBookList = new MatTableDataSource(this.bookList);
+        this.matBookList.sort = this.bookSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.bookSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
+
+  addMovieItem() {
+    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Movie': {
+          'id': this.movieSelectedRow.id,
+          'title': this.movieSelectedRow.title,
+          'director': this.movieSelectedRow.director,
+          'releaseDate': this.movieSelectedRow.releaseDate,
+          'language': this.movieSelectedRow.language,
+          'subtitles': this.movieSelectedRow.subtitles,
+          'dubbed': this.movieSelectedRow.dubbed,
+          'actors': this.movieSelectedRow.actors,
+          'producers': this.movieSelectedRow.producers,
+          'runTime': this.movieSelectedRow.runTime
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
+        for (let i = 0; i < this.movieList.length; i++) {
+          if (this.movieList[i].id === this.movieSelectedRow.id) {
+            this.movieList[i] = {'id': this.movieSelectedRow.id, 'title': this.movieSelectedRow.title, 'director': this.movieSelectedRow.director,
+              'releaseDate': this.movieSelectedRow.releaseDate, 'language': this.movieSelectedRow.language, 'subtitles': this.movieSelectedRow.subtitles,
+              'dubbed': this.movieSelectedRow.dubbed, 'actors': this.movieSelectedRow.actors, 'producers': this.movieSelectedRow.producers,
+              'runTime': this.movieSelectedRow.runTime, 'quantity': ++this.movieSelectedRow.quantity};
+            break;
+          }
+        }
+        this.matMovieList = new MatTableDataSource(this.movieList);
+        this.matMovieList.sort = this.movieSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.movieSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
+
+  addMagazineItem() {
+    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Magazine': {
+          'id': this.magazineSelectedRow.id,
+          'title': this.magazineSelectedRow.title,
+          'publisher': this.magazineSelectedRow.publisher,
+          'pubDate': this.magazineSelectedRow.pubDate,
+          'language': this.magazineSelectedRow.language,
+          'isbn10': this.magazineSelectedRow.isbn10,
+          'isbn13': this.magazineSelectedRow.isbn13
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
+        for (let i = 0; i < this.magazineList.length; i++) {
+          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
+            this.magazineList[i] = {'id': this.magazineSelectedRow.id, 'title': this.magazineSelectedRow.title, 'publisher': this.magazineSelectedRow.publisher,
+              'pubDate': this.magazineSelectedRow.pubDate, 'language': this.magazineSelectedRow.language, 'isbn10': this.magazineSelectedRow.isbn10,
+              'isbn13': this.magazineSelectedRow.isbn13, 'quantity': ++this.magazineSelectedRow.quantity};
+            break;
+          }
+        }
+        this.matMagazineList = new MatTableDataSource(this.magazineList);
+        this.matMagazineList.sort = this.magazineSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.magazineSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
+
+  addMusicItem() {
+    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null) {
+      let body = JSON.stringify({
+        'Music': {
+          'id': this.musicSelectedRow.id,
+          'title': this.musicSelectedRow.title,
+          'artist': this.musicSelectedRow.artist,
+          'type': this.musicSelectedRow.type,
+          'releaseDate': this.musicSelectedRow.releaseDate,
+          'label': this.musicSelectedRow.label,
+          'asin': this.musicSelectedRow.asin
+        }
+      });
+
+      let headers = new HttpHeaders({'Content-Type': 'application/json'});
+      let options = {headers: headers, withCredentials: true};
+
+      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
+        for (let i = 0; i < this.musicList.length; i++) {
+          if (this.musicList[i].id === this.musicSelectedRow.id) {
+            this.musicList[i] = {'id': this.musicSelectedRow.id, 'title': this.musicSelectedRow.title, 'artist': this.musicSelectedRow.artist,
+              'type': this.musicSelectedRow.type, 'releaseDate': this.musicSelectedRow.releaseDate, 'label': this.musicSelectedRow.label,
+              'asin': this.musicSelectedRow.asin, 'quantity': ++this.musicSelectedRow.quantity};
+            break;
+          }
+        }
+        this.matMusicList = new MatTableDataSource(this.musicList);
+        this.matMusicList.sort = this.musicSort;
+        this.snackBar.open('Item inventory changed successfully!', 'OK', {
+          duration: 2000,
+        });
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.musicSelection.clear();
+      this.snackBar.open('Please select a valid row first', 'OK', {
+        duration: 2000,
+      });
+    }
+  }
 }

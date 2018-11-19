@@ -1,5 +1,6 @@
 package com.soen343.project.repository.dao.catalog.itemspec.operation;
 
+import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.connection.operation.DatabaseBatchOperation;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
@@ -52,6 +53,7 @@ public final class ItemSpecificationOperation {
             statement.executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId().toString()));
             statement.executeUpdate(
                     createDeleteQuery(ITEM_TABLE, ITEMSPECID, movie.getId().toString(), TYPE, movie.getClass().getSimpleName()));
+            statement.execute(createDeleteQuery(LOANABLEITEM_TABLE, movie.getId()));
         };
     }
 
@@ -67,27 +69,19 @@ public final class ItemSpecificationOperation {
         };
     }
 
-    public static DatabaseBatchOperation magazineDeleteOperation(Magazine magazine) {
+    public static DatabaseBatchOperation deleteItemSpecOperation(DatabaseEntity databaseEntity) {
+        return statement -> {
+            statement.executeUpdate(createDeleteQuery(databaseEntity.getTable(), databaseEntity.getId()));
+            statement.executeUpdate(
+                    createDeleteQuery(ITEM_TABLE, ITEMSPECID, databaseEntity.getId().toString(), TYPE, databaseEntity.getTable()));
+            statement.execute(createDeleteQuery(LOANABLEITEM_TABLE, databaseEntity.getId()));
+        };
+    }
+
+    public static DatabaseBatchOperation deleteMagazine(Magazine magazine) {
         return statement -> {
             statement.executeUpdate(createDeleteQuery(magazine.getTable(), magazine.getId()));
-            statement.executeUpdate(
-                    createDeleteQuery(ITEM_TABLE, ITEMSPECID, magazine.getId().toString(), TYPE, magazine.getClass().getSimpleName()));
-        };
-    }
-
-    public static DatabaseBatchOperation musicDeleteOperation(Music music) {
-        return statement -> {
-            statement.executeUpdate(createDeleteQuery(music.getTable(), music.getId()));
-            statement.executeUpdate(
-                    createDeleteQuery(ITEM_TABLE, ITEMSPECID, music.getId().toString(), TYPE, music.getClass().getSimpleName()));
-        };
-    }
-
-    public static DatabaseBatchOperation bookDeleteOperation(Book book) {
-        return statement -> {
-            statement.executeUpdate(createDeleteQuery(book.getTable(), book.getId()));
-            statement.executeUpdate(
-                    createDeleteQuery(ITEM_TABLE, ITEMSPECID, book.getId().toString(), TYPE, book.getClass().getSimpleName()));
+            statement.executeUpdate(createDeleteQuery(ITEM_TABLE, ITEMSPECID, magazine.getId().toString(), TYPE, magazine.getTable()));
         };
     }
 
@@ -106,7 +100,7 @@ public final class ItemSpecificationOperation {
         if (rs.next()) {
             itemSpecification.setId(rs.getLong(ID));
         } else {
-            executeUpdate(createSaveQuery(itemSpecification.getTableWithColumns(), itemSpecification.toSQLValue()));
+            statement.executeUpdate(createSaveQuery(itemSpecification.getTableWithColumns(), itemSpecification.toSQLValue()));
         }
     }
 

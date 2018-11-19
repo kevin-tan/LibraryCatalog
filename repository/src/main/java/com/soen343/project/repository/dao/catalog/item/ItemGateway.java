@@ -106,6 +106,25 @@ public class ItemGateway implements Gateway<Item> {
         return list;
     }
 
+    public Item findFirstByItemSpecId(String itemType, Long itemSpecId) {
+        scheduler.reader_p();
+        DatabaseEntity item = executeQuery(
+                "SELECT * ALL FROM " + ITEM_TABLE + " WHERE " + TYPE + " = '" + itemType + "' and " + ITEMSPECID + " = " + itemSpecId +
+                " LIMIT 1", (rs, statement) -> {
+                    rs.next(); // Move to query result
+                    String itemSpecType = rs.getString(TYPE);
+                    Long itemId = rs.getLong(ID);
+
+                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
+                    rs.next(); // Move to query result
+                    ItemSpecification itemSpecification = getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId);
+                    return new Item(itemId, itemSpecification);
+                });
+        scheduler.reader_v();
+        return (Item) item;
+    }
+
+
     public List<?> findByItemSpec(String itemType) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(ITEM_TABLE, TYPE, itemType), databaseQueryOperation());
@@ -124,7 +143,8 @@ public class ItemGateway implements Gateway<Item> {
                 if (itemTempInfo.get(itemType) == null) {
                     itemTempInfo.put(itemType, LinkedHashMultimap.create());
                 }
-                itemTempInfo.get(itemType).put(rs.getLong(ITEMSPECID), item);
+                itemTempInfo.get(itemType)
+                        .put(rs.getLong(ITEMSPECID), item);
             }
 
             for (String itemType : itemTempInfo.keySet()) {

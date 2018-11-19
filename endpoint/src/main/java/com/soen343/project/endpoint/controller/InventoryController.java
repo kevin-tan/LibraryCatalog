@@ -30,9 +30,9 @@ public class InventoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/catalog/{sessionID}/delete/{itemID}")
-    public ResponseEntity<?> deleteItem(@PathVariable String sessionID, @PathVariable Long itemID){
-        catalog.deleteCatalogItem(sessionID, itemID);
+    @PostMapping("/catalog/{sessionID}/delete")
+    public ResponseEntity<?> deleteItem(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpecification){
+        catalog.deleteCatalogItem(sessionID, itemSpecification);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -43,9 +43,8 @@ public class InventoryController {
     }
 
     @PostMapping("/catalog/{sessionID}/deleteSpec")
-    public ResponseEntity<?> deleteItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec){
-        catalog.deleteItemSpec(sessionID, itemSpec);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> deleteItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec) {
+        return catalog.deleteItemSpec(sessionID, itemSpec);
     }
 
     @PostMapping("/catalog/{sessionID}/modifySpec")
