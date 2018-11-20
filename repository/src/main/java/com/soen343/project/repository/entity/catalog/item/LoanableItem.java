@@ -21,6 +21,12 @@ public class LoanableItem extends Item {
         this.client = client;
     }
 
+    public LoanableItem(ItemSpecification spec) {
+        super(0L, spec);
+        this.available = true;
+        this.client = null;
+    }
+
     @Override
     public String sqlUpdateValues() {
         String columnValues = USERID + " = " + (client == null ? null : client.getId()) + ", ";
