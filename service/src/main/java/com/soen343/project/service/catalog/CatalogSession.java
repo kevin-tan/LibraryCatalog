@@ -11,13 +11,15 @@ import com.soen343.project.repository.uow.UnitOfWork;
 import lombok.Data;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.*;
 import static com.soen343.project.repository.entity.EntityConstants.*;
-import static com.soen343.project.repository.entity.EntityConstants.ITEMSPECID;
 
 @Data
 class CatalogSession {
@@ -25,11 +27,15 @@ class CatalogSession {
     private final String id;
     private UnitOfWork unitOfWork;
     private final Scheduler scheduler;
+    private final AtomicLong specId;
+    private final Map<Long, ItemSpecification> map;
 
     CatalogSession(String sessionID, Scheduler scheduler) {
         this.id = sessionID;
         this.scheduler = scheduler;
         this.unitOfWork = new UnitOfWork();
+        this.specId = new AtomicLong();
+        this.map = new HashMap<>();
     }
 
     void updateEntry(ItemSpecification itemSpec) {
@@ -42,6 +48,9 @@ class CatalogSession {
     }
 
     void addEntry(Item item) {
+
+        // If item.getSpec().getId() == null then we must search for that item spec id and then do the create saveQuery
+
         if (item.getSpec().getTable().equals(MAGAZINE_TABLE)) {
             unitOfWork.registerOperation(
                     statement -> statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue())));

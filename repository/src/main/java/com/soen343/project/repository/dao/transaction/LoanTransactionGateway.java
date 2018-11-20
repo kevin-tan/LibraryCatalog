@@ -29,7 +29,6 @@ import static com.soen343.project.repository.dao.transaction.com.DateConverter.c
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-@SuppressWarnings("unchecked")
 public class LoanTransactionGateway implements TransactionGateway<LoanTransaction> {
 
     private final Scheduler scheduler;
@@ -91,8 +90,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     @Override
     public LoanTransaction findById(Long id) {
         scheduler.reader_p();
-        LoanTransaction loanTransaction =
-                (LoanTransaction) executeForeignKeyTableQuery(createFindByIdQuery(LOANTRANSACTION_TABLE, id), (rs, statement) -> {
+        LoanTransaction loanTransaction = executeForeignKeyTableQuery(createFindByIdQuery(LOANTRANSACTION_TABLE, id), (rs, statement) -> {
                     rs.next();// Move to query result
                     Long transactionId = rs.getLong(ID);
                     Long itemId = rs.getLong(ITEMID);
@@ -134,8 +132,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     @Override
     public List<LoanTransaction> findAll() {
         scheduler.reader_p();
-        List<LoanTransaction> list =
-                (List<LoanTransaction>) executeQueryExpectMultiple(createFindAllQuery(LOANTRANSACTION_TABLE), findAllTransaction());
+        List<LoanTransaction> list = executeQueryExpectMultiple(createFindAllQuery(LOANTRANSACTION_TABLE), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
@@ -167,8 +164,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     @Override
     public List<?> findByItemType(String itemType) {
         scheduler.reader_p();
-        List loanTransactions =
-                executeQueryExpectMultiple(createDoubleTableQuery(LOANTRANSACTION_TABLE, ITEM_TABLE, ITEMID, TYPE, itemType),
+        List loanTransactions = executeQueryExpectMultiple(createDoubleTableQuery(LOANTRANSACTION_TABLE, ITEM_TABLE, ITEMID, TYPE, itemType),
                         findAllTransaction());
         scheduler.reader_v();
         return loanTransactions;

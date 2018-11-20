@@ -19,7 +19,6 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-@SuppressWarnings("ALL")
 public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
 
     private final Scheduler scheduler;
@@ -57,7 +56,7 @@ public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
     @Override
     public Magazine findById(Long id) {
         scheduler.reader_p();
-        Magazine magazine = (Magazine) executeQuery(createFindByIdQuery(MAGAZINE_TABLE, id), (rs, statement) -> {
+        Magazine magazine = executeQuery(createFindByIdQuery(MAGAZINE_TABLE, id), (rs, statement) -> {
             if (rs.next()) {
                 return Magazine.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
                         .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
@@ -74,7 +73,7 @@ public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
     @Override
     public List<Magazine> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributesQuery(MAGAZINE_TABLE, attributeValue), databaseQueryOperation());
+        List<Magazine> list = executeQueryExpectMultiple(createSearchByAttributesQuery(MAGAZINE_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -83,7 +82,7 @@ public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
     @SuppressWarnings("unchecked")
     public List<Magazine> findAll() {
         scheduler.reader_p();
-        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createFindAllQuery(MAGAZINE_TABLE), databaseQueryOperation());
+        List<Magazine> list = executeQueryExpectMultiple(createFindAllQuery(MAGAZINE_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -111,7 +110,7 @@ public class MagazineGateway implements ItemSpecificationGateway<Magazine> {
     @Override
     public List<Magazine> findByTitle(String title) {
         scheduler.reader_p();
-        List<Magazine> list = (List<Magazine>) executeQueryExpectMultiple(createSearchByAttributeQuery(MAGAZINE_TABLE, TITLE, title), databaseQueryOperation());
+        List<Magazine> list = executeQueryExpectMultiple(createSearchByAttributeQuery(MAGAZINE_TABLE, TITLE, title), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }

@@ -57,8 +57,9 @@ public class Catalog {
 
     @SuppressWarnings("unchecked")
     public ResponseEntity<?> deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
-        List<LoanableItem> loanedItems = (List<LoanableItem>) executeQueryExpectMultiple(
-                queryLoanableAndItemByItemspecType(itemSpec) + " and LoanableItem.available = 0;", findAllLoanables());
+        List<LoanableItem> loanedItems =
+                executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemSpec) + " and LoanableItem.available = 0;",
+                        findAllLoanables());
         if (loanedItems.isEmpty()) {
             CatalogSession session = getSession(sessionID);
             session.removeEntry(itemSpec);

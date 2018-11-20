@@ -73,8 +73,7 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     @Override
     public ReturnTransaction findById(Long id) {
         scheduler.reader_p();
-        ReturnTransaction loanTransaction =
-                (ReturnTransaction) executeForeignKeyTableQuery(createFindByIdQuery(RETURNTRANSACTION_TABLE, id), (rs, statement) -> {
+        ReturnTransaction loanTransaction = executeForeignKeyTableQuery(createFindByIdQuery(RETURNTRANSACTION_TABLE, id), (rs, statement) -> {
                     rs.next();// Move to query result
                     Long transactionId = rs.getLong(ID);
                     Long itemId = rs.getLong(ITEMID);
@@ -112,11 +111,9 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<ReturnTransaction> findAll() {
         scheduler.reader_p();
-        List<ReturnTransaction> list =
-                (List<ReturnTransaction>) executeQueryExpectMultiple(createFindAllQuery(RETURNTRANSACTION_TABLE), findAllTransaction());
+        List<ReturnTransaction> list = executeQueryExpectMultiple(createFindAllQuery(RETURNTRANSACTION_TABLE), findAllTransaction());
         scheduler.reader_v();
         return list;
     }

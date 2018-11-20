@@ -20,7 +20,6 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-@SuppressWarnings("ALL")
 public class MovieGateway implements ItemSpecificationGateway<Movie> {
 
     private final Scheduler scheduler;
@@ -58,7 +57,7 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
     @Override
     public Movie findById(Long id) {
         scheduler.reader_p();
-        Movie movie = (Movie) exectuteBatchQuery(statement -> {
+        Movie movie = exectuteBatchQuery(statement -> {
             // Get Movie Id
             ResultSet rs = statement.executeQuery(createFindByIdQuery(MOVIE_TABLE, id));
 
@@ -84,8 +83,7 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
     @Override
     public List<Movie> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createSearchByAttributesQuery(MOVIE_TABLE, attributeValue),
-                databaseQueryOperation());
+        List<Movie> list = executeQueryExpectMultiple(createSearchByAttributesQuery(MOVIE_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -93,7 +91,7 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
     @Override
     public List<Movie> findAll() {
         scheduler.reader_p();
-        List<Movie> list = (List<Movie>) executeQueryExpectMultiple(createFindAllQuery(MOVIE_TABLE), databaseQueryOperation());
+        List<Movie> list = executeQueryExpectMultiple(createFindAllQuery(MOVIE_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -108,8 +106,7 @@ public class MovieGateway implements ItemSpecificationGateway<Movie> {
     @Override
     public List<Movie> findByTitle(String title) {
         scheduler.reader_p();
-        List<Movie> list =
-                (List<Movie>) executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, TITLE, title), databaseQueryOperation());
+        List<Movie> list = executeQueryExpectMultiple(createSearchByAttributeQuery(MOVIE_TABLE, TITLE, title), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }

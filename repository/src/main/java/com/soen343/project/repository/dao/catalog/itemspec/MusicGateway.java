@@ -19,7 +19,6 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-@SuppressWarnings("ALL")
 public class MusicGateway implements ItemSpecificationGateway<Music> {
 
     private final Scheduler scheduler;
@@ -57,7 +56,7 @@ public class MusicGateway implements ItemSpecificationGateway<Music> {
     @Override
     public Music findById(Long id) {
         scheduler.reader_p();
-        Music music = (Music) executeQuery(createFindByIdQuery(MUSIC_TABLE, id), (rs, statement) -> {
+        Music music = executeQuery(createFindByIdQuery(MUSIC_TABLE, id), (rs, statement) -> {
             if (rs.next()) {
                 return Music.builder().id(rs.getLong(ID)).date(rs.getString(RELEASEDATE)).title(rs.getString(TITLE))
                         .artist(rs.getString(ARTIST)).asin(rs.getString(ASIN)).label(rs.getString(LABEL)).type(rs.getString(TYPE)).build();
@@ -72,7 +71,7 @@ public class MusicGateway implements ItemSpecificationGateway<Music> {
     @Override
     public List<Music> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Music> list = (List<Music>) executeQueryExpectMultiple(createSearchByAttributesQuery(MUSIC_TABLE, attributeValue), databaseQueryOperation());
+        List<Music> list = executeQueryExpectMultiple(createSearchByAttributesQuery(MUSIC_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -81,7 +80,7 @@ public class MusicGateway implements ItemSpecificationGateway<Music> {
     @SuppressWarnings("unchecked")
     public List<Music> findAll() {
         scheduler.reader_p();
-        List<Music> list = (List<Music>) executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), databaseQueryOperation());
+        List<Music> list = executeQueryExpectMultiple(createFindAllQuery(MUSIC_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -108,7 +107,7 @@ public class MusicGateway implements ItemSpecificationGateway<Music> {
     @Override
     public List<Music> findByTitle(String title) {
         scheduler.reader_p();
-        List<Music> list = (List<Music>) executeQueryExpectMultiple(createSearchByAttributeQuery(MUSIC_TABLE, TITLE, title), databaseQueryOperation());
+        List<Music> list = executeQueryExpectMultiple(createSearchByAttributeQuery(MUSIC_TABLE, TITLE, title), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }

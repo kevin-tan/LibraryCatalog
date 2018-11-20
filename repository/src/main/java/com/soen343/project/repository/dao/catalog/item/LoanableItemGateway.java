@@ -62,8 +62,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @Override
     public LoanableItem findById(Long id) {
         scheduler.reader_p();
-        LoanableItem loanableItem =
-                (LoanableItem) executeForeignKeyTableQuery(createFindByIdQuery(LOANABLEITEM_TABLE, id), findSingleLoanable());
+        LoanableItem loanableItem = executeForeignKeyTableQuery(createFindByIdQuery(LOANABLEITEM_TABLE, id), findSingleLoanable());
         scheduler.reader_v();
         return loanableItem;
     }
@@ -77,8 +76,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
     @SuppressWarnings("unchecked")
     public List<LoanableItem> findAll() {
         scheduler.reader_p();
-        List<LoanableItem> list =
-                (List<LoanableItem>) executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), findAllLoanables());
+        List<LoanableItem> list = executeQueryExpectMultiple(createFindAllQuery(LOANABLEITEM_TABLE), findAllLoanables());
         scheduler.reader_v();
         return list;
     }
@@ -134,7 +132,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         return (LoanableItem) loanableItem;
     }
 
-    private DatabaseQueryOperation findSingleLoanable(){
+    private DatabaseQueryOperation<LoanableItem> findSingleLoanable(){
         return (rs, statement) -> {
             rs.next();// Move to query result
             Long loanableItemId = rs.getLong(ID);

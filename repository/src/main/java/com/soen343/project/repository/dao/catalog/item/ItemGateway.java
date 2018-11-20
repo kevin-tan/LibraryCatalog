@@ -60,7 +60,7 @@ public class ItemGateway implements Gateway<Item> {
     @Override
     public Item findById(Long id) {
         scheduler.reader_p();
-        Item item = (Item) executeForeignKeyTableQuery(createFindByIdQuery(ITEM_TABLE, id), (rs, statement) -> {
+        Item item = executeForeignKeyTableQuery(createFindByIdQuery(ITEM_TABLE, id), (rs, statement) -> {
             rs.next(); // Move to query result
             Long itemSpecId = rs.getLong(ITEMSPECID);
             String itemSpecType = rs.getString(TYPE);
@@ -85,7 +85,7 @@ public class ItemGateway implements Gateway<Item> {
     @SuppressWarnings("unchecked")
     public List<Item> findAll() {
         scheduler.reader_p();
-        List<Item> list = (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), databaseQueryOperation());
+        List<Item> list = executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
