@@ -59,7 +59,6 @@ public class Catalog {
         return session.addEntry(itemSpec);
     }
 
-    @SuppressWarnings("unchecked")
     public ResponseEntity<?> deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
         List<LoanableItem> loanedItems =
                 executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemSpec) + " and LoanableItem.available = 0;",
