@@ -22,6 +22,7 @@ import static com.soen343.project.database.connection.DatabaseConnector.executeQ
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.findAllLoanables;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
 import static com.soen343.project.repository.entity.EntityConstants.ID;
+import static com.soen343.project.repository.entity.user.types.UserType.ADMIN;
 
 @Service
 public class Catalog {
@@ -86,7 +87,9 @@ public class Catalog {
             (emailUser != null && emailUser.getId() != user.getId())) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } else {
-            user.setPassword(encoder.encode(user.getPassword()));
+            if (user.getPassword() != null) {
+                user.setPassword(encoder.encode(user.getPassword()));
+            }
             session.editUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -94,11 +97,16 @@ public class Catalog {
 
     public ResponseEntity<?> deleteUser(String sessionID, Long userId) {
         CatalogSession session = getSession(sessionID);
-        if (library.getAllAdmins().size() > 1) {
+        if (library.getUserByID(userId).getUserType().equals(ADMIN)) {
+            if (library.getAllAdmins().size() > 1) {
+                session.deleteUser(userId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            }
+        } else {
             session.deleteUser(userId);
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
