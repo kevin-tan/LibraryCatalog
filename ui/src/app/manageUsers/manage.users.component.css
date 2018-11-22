@@ -38,3 +38,9 @@ Textarea {
   padding: 5px;
   float: left;
 }
+
+input {
+  float: right;
+  width: 399px;
+  height: 28px;
+}

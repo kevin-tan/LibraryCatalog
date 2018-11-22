@@ -68,7 +68,7 @@ export class ManageUsersComponent implements OnInit {
             break;
           }
         }
-        this.snackBar.open('User deleted successfully!', 'OK', {duration: 2000});
+        this.snackBar.open('User modified successfully!', 'OK', {duration: 2000});
 
         this.matUserList = new MatTableDataSource(this.userList);
         this.matUserList.sort = this.userSort;
