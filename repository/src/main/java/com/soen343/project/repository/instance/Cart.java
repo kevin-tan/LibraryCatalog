@@ -5,6 +5,9 @@ import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.valid4j.Assertive.*;
+
+
 public class Cart {
 
     private List<LoanableItem> loanableItems;
@@ -14,6 +17,7 @@ public class Cart {
     }
 
     public void addItemToCart(LoanableItem loanableItem) {
+
         this.loanableItems.add(loanableItem);
     }
 

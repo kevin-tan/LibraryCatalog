@@ -19,15 +19,12 @@ import static org.junit.Assert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class UserRegistryTest {
 
-    private Library library;
-
     private UserRegistry userRegistry;
     private List<ActiveUser> expectedActiveUsers;
 
     @Before
     public void setup() {
-        library = Mockito.mock(Library.class);
-        userRegistry = new UserRegistry(library);
+        userRegistry = new UserRegistry();
         expectedActiveUsers = new LinkedList<>();
         for (long i = 1; i < 6; ++i){
             ActiveUser activeUser = new ActiveUser(i);
