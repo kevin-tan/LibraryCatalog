@@ -16,16 +16,20 @@ import {NgForm} from '@angular/forms';
 
 export class HomeComponent implements OnInit {
 
-  displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language'];
+  displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language', 'quantity'];
+  bookList: Book[];
   matBookList: MatTableDataSource<Book>;
 
-  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime'];
+  displayMovieColumns: string[] = ['title', 'language', 'producers', 'actors', 'dubbed', 'subtitles', 'releaseDate' ,'runTime', 'quantity'];
+  movieList: Movie[];
   matMovieList: MatTableDataSource<Movie>;
 
-  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13'];
+  displayMagazineColumns: string[] = ['title', 'publisher', 'pubDate', 'language', 'isbn10', 'isbn13', 'quantity'];
+  magazineList: Magazine[];
   matMagazineList: MatTableDataSource<Magazine>;
 
-  displayMusicColumns: string[] = ['title', 'artist', 'label', 'type', 'asin', 'releaseDate'];
+  displayMusicColumns: string[] = ['title', 'artist', 'label', 'type', 'asin', 'releaseDate', 'quantity'];
+  musicList: Music[];
   matMusicList: MatTableDataSource<Music>;
 
   @ViewChild('bookSort') bookSort: MatSort;
@@ -48,13 +52,22 @@ export class HomeComponent implements OnInit {
     this.http.get('http://localhost:8080/user/catalog/findByTitle/' + searchTitle, {withCredentials: true}).subscribe(response => {
       this.homeForm.resetForm();
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
+      this.bookList = response['book'] as Array<Book>;
       this.matBookList.sort = this.bookSort;
+
       this.matMagazineList = new MatTableDataSource(response['magazine'] as Array<Magazine>);
+      this.magazineList = response['magazine'] as Array<Magazine>;
       this.matMagazineList.sort = this.magazineSort;
+
       this.matMovieList = new MatTableDataSource(response['movie'] as Array<Movie>);
+      this.movieList = response['movie'] as Array<Movie>;
       this.matMovieList.sort = this.movieSort;
+
       this.matMusicList = new MatTableDataSource(response['music'] as Array<Music>);
+      this.musicList = response['music'] as Array<Music>;
       this.matMusicList.sort = this.musicSort;
+
+      this.getAllInventory();
     }, error => {
       console.log(error);
     });
@@ -64,13 +77,41 @@ export class HomeComponent implements OnInit {
     this.http.get('http://localhost:8080/user/catalog/searchAll', {withCredentials: true}).subscribe(response => {
       this.homeForm.resetForm();
       this.matBookList = new MatTableDataSource(response['book'] as Array<Book>);
+      this.bookList = response['book'] as Array<Book>;
       this.matBookList.sort = this.bookSort;
+
       this.matMagazineList = new MatTableDataSource(response['magazine'] as Array<Magazine>);
+      this.magazineList = response['magazine'] as Array<Magazine>;
       this.matMagazineList.sort = this.magazineSort;
+
       this.matMovieList = new MatTableDataSource(response['movie'] as Array<Movie>);
+      this.movieList = response['movie'] as Array<Movie>;
       this.matMovieList.sort = this.movieSort;
+
       this.matMusicList = new MatTableDataSource(response['music'] as Array<Music>);
+      this.musicList = response['music'] as Array<Music>;
       this.matMusicList.sort = this.musicSort;
+
+      this.getAllInventory();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  getAllInventory() {
+    this.http.get('http://localhost:8080/user/catalog/getAll/itemSpec/quantity', {withCredentials: true}).subscribe(response => {
+      for (let book of this.bookList) {
+        book.quantity = response['Book'][book.id] >= 0 ? response['Book'][book.id] : 0;
+      }
+      for (let movie of this.movieList) {
+        movie.quantity = response['Movie'][movie.id] >= 0 ? response['Movie'][movie.id] : 0;
+      }
+      for (let magazine of this.magazineList) {
+        magazine.quantity = response['Magazine'][magazine.id] >= 0 ? response['Magazine'][magazine.id] : 0;
+      }
+      for (let music of this.musicList) {
+        music.quantity = response['Music'][music.id] >= 0 ? response['Music'][music.id] : 0;
+      }
     }, error => {
       console.log(error);
     });
