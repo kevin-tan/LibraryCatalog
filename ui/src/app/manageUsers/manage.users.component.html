@@ -49,7 +49,7 @@
           <th>
             <label class="formLabel">Address</label>
             <div>
-              <textarea rows="1" cols="47" id="Address" #Address Address.value="" name="clear" ngModel required></textarea>
+              <textarea rows="1" cols="47" id="address" #address address.value="" name="clear" ngModel required></textarea>
             </div>
           </th>
           <th>
@@ -70,7 +70,7 @@
           <th>
             <label class="formLabel">Password</label>
             <div>
-              <textarea rows="1" cols="47" id="password" #password password.value="" name="clear" ngModel required></textarea>
+              <textarea rows="1" cols="47" id="password" #password password.value="" name="clear" ngModel></textarea>
             </div>
           </th>
         </tr>
@@ -83,7 +83,7 @@
               <i class="fa fa-minus"></i><b> Delete User</b>
             </button>
             <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
-                    (click)="editUser()">
+                    (click)="editUser(firstName.value, lastName.value, address.value, email.value, phoneNumber.value, password.value)">
               <i class="fa fa-wrench"></i><b> Edit User</b>
             </button>
           </td>
@@ -92,6 +92,64 @@
     </form>
   </div>
 
+  <br>
+  <table mat-table #userSort="matSort" [dataSource]="matUserList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox [checked]="userSelection.hasValue()"
+                      [indeterminate]="userSelection.hasValue()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); userRowSelected(row)"
+                      (change)="$event ? userSelection.toggle(row) : null"
+                      [checked]="userSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header=""> User Type</th>
+      <td mat-cell *matCellDef="let element"> {{element.userType}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name</th>
+      <td mat-cell *matCellDef="let element"> {{element.firstName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name</th>
+      <td mat-cell *matCellDef="let element"> {{element.lastName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Address</th>
+      <td mat-cell *matCellDef="let element"> {{element.physicalAddress}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Mail</th>
+      <td mat-cell *matCellDef="let element"> {{element.email}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="phoneNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone Number</th>
+      <td mat-cell *matCellDef="let element"> {{element.phoneNumber}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayUserColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayUserColumns;"
+        (click)="userSelection.toggle(row)">
+    </tr>
+  </table>
+
+  <hr style="width:100%" class="w3-opacity">
+  <button class="w3-bar-item w3-button w3-grey w3-round"
+          (click)="saveAll()">
+    <b>Save Changes </b><i class="fa fa-check-circle"></i>
+  </button>
 
   <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
