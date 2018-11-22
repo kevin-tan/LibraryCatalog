@@ -27,7 +27,7 @@ public class Library {
 
     private final GatewayMapper gatewayMapper;
     private final ItemGateway itemGateway;
-    private final UserGateway userRepository;
+    private final UserGateway userGateway;
     private final LoanableItemGateway loanableItemGateway;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -37,33 +37,41 @@ public class Library {
     private static final String MUSIC = "music";
 
     @Autowired
-    public Library(GatewayMapper gatewayMapper, ItemGateway itemGateway, UserGateway userRepository,
-                   LoanableItemGateway loanableItemGateway, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public Library(GatewayMapper gatewayMapper, ItemGateway itemGateway, UserGateway userGateway, LoanableItemGateway loanableItemGateway,
+                   BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.gatewayMapper = gatewayMapper;
         this.itemGateway = itemGateway;
-        this.userRepository = userRepository;
+        this.userGateway = userGateway;
         this.loanableItemGateway = loanableItemGateway;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public List<User> register(User userToRegister) {
-        List<User> registeredUsers = userRepository.findAll();
+        List<User> registeredUsers = userGateway.findAll();
 
         if (userToRegister.isUniqueFrom(registeredUsers)) {
             String password = userToRegister.getPassword();
             userToRegister.setPassword(bCryptPasswordEncoder.encode(password));
-            userRepository.save(userToRegister);
+            userGateway.save(userToRegister);
         }
 
-        return userRepository.findAll();
+        return userGateway.findAll();
+    }
+
+    public List<User> getAllUser() {
+        return userGateway.findAll();
+    }
+
+    public List<User> getAllAdmins(){
+        return userGateway.findAllAdmins();
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userGateway.findByEmail(email);
     }
 
     public User getUserByID(Long id) {
-        return userRepository.findById(id);
+        return userGateway.findById(id);
     }
 
     public Item createItem(ItemSpecification itemSpec) {
@@ -120,8 +128,8 @@ public class Library {
             String itemType = item.getType();
             if (item.getAvailable()) {
                 fillMap(map, itemType, item);
-            }else{
-                if(map.get(itemType) == null){
+            } else {
+                if (map.get(itemType) == null) {
                     // We know the item spec id does not exist
                     Map<Long, Integer> temp = new HashMap<>();
                     temp.put(item.getSpec().getId(), 0);
@@ -147,4 +155,7 @@ public class Library {
         }
     }
 
+    public User getUserByPhoneNumber(String phoneNumber) {
+        return userGateway.findByPhoneNumber(phoneNumber);
+    }
 }
