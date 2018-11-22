@@ -60,7 +60,8 @@ public final class LoanableItemOperation {
 
             while (rs.next()) {
                 Client client = (rs.getLong(USERID) == 0) ? null : new Client(rs.getLong(USERID));
-                loanableItems.add(new LoanableItem(rs.getLong(ID), null, rs.getString(AVAILABLE).equals(BOOL_VAL_TRUE), client));
+                loanableItems.add(new LoanableItem(rs.getLong(ID), null, rs.getString(AVAILABLE)
+                        .equals(BOOL_VAL_TRUE), client));
             }
 
             for (LoanableItem loanableItem : loanableItems) {
@@ -68,7 +69,7 @@ public final class LoanableItemOperation {
                 String itemSpecType = null;
 
                 ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItem.getId()));
-                while (itemRS.next()) {
+                if(itemRS.next()) {
                     itemSpecId = itemRS.getLong(ITEMSPECID);
                     itemSpecType = itemRS.getString(TYPE);
                 }
@@ -79,7 +80,8 @@ public final class LoanableItemOperation {
                 }
 
                 if (loanableItem.getClient() != null) {
-                    ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient().getId()));
+                    ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient()
+                            .getId()));
                     while (clientRS.next()) {
                         loanableItem.setClient(
                                 new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
@@ -87,8 +89,7 @@ public final class LoanableItemOperation {
                                         clientRS.getString(PASSWORD)));
                     }
                 }
-            }
-            return loanableItems;
+            } return loanableItems;
         };
     }
 }

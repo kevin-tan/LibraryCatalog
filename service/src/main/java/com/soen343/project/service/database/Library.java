@@ -117,9 +117,16 @@ public class Library {
 
     private void fillMapForLoanable(List<LoanableItem> items, Map<String, Map<Long, Integer>> map) {
         items.forEach(item -> {
+            String itemType = item.getType();
             if (item.getAvailable()) {
-                String itemType = item.getType();
                 fillMap(map, itemType, item);
+            }else{
+                if(map.get(itemType) == null){
+                    // We know the item spec id does not exist
+                    Map<Long, Integer> temp = new HashMap<>();
+                    temp.put(item.getSpec().getId(), 0);
+                    map.put(itemType, temp);
+                }
             }
         });
     }

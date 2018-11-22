@@ -10,10 +10,12 @@ import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.uow.UnitOfWork;
+import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -94,9 +96,8 @@ public class LoanableItemGateway implements ItemsGateway<LoanableItem> {
 
     public List<LoanableItem> findByUserIdAndIsLoaned(Long userId) {
         scheduler.reader_p();
-        List list = executeQueryExpectMultiple(
-                createSearchByAttributesQuery(LOANABLEITEM_TABLE, ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")),
-                findAllLoanables());
+        List list =
+                executeQueryExpectMultiple("SELECT * FROM LoanableItem WHERE userId = " + userId + " and available = 0;", findAllLoanables());
         scheduler.reader_v();
         return list;
     }
@@ -107,9 +108,8 @@ public class LoanableItemGateway implements ItemsGateway<LoanableItem> {
         List list = executeQueryExpectMultiple((statement) -> {
             List<LoanableItem> tempList = new LinkedList<>();
             for (LoanableItem loanableItem : loanableItems) {
-                ResultSet rs = statement.executeQuery(
-                        queryLoanableAndItemByItemspecType(loanableItem.getType(), loanableItem.getSpec().getId()) +
-                        " and LoanableItem.available = 1 LIMIT 1;");
+                ResultSet rs = statement.executeQuery(queryLoanableAndItemByItemspecType(loanableItem.getType(), loanableItem.getSpec()
+                        .getId()) + " and LoanableItem.available = 1 LIMIT 1;");
                 if (!rs.next()) tempList.add(loanableItem);
             }
             return tempList;
@@ -127,19 +127,21 @@ public class LoanableItemGateway implements ItemsGateway<LoanableItem> {
     }
 
     @Override
-    public LoanableItem findFirstByItemSpecId(String itemType, Long itemSpecId){
+    public LoanableItem findFirstByItemSpecId(String itemType, Long itemSpecId) {
         scheduler.reader_p();
-        DatabaseEntity loanableItem = executeQuery(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + " LIMIT 1;", findSingleLoanable());
+        DatabaseEntity loanableItem =
+                executeQuery(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + " LIMIT 1;", findSingleLoanable());
         scheduler.reader_v();
         return (LoanableItem) loanableItem;
     }
 
-    private DatabaseQueryOperation<LoanableItem> findSingleLoanable(){
+    private DatabaseQueryOperation<LoanableItem> findSingleLoanable() {
         return (rs, statement) -> {
             rs.next();// Move to query result
             Long loanableItemId = rs.getLong(ID);
             Long userId = rs.getLong(USERID);
-            Boolean available = rs.getString(AVAILABLE).equals(BOOL_VAL_TRUE);
+            Boolean available = rs.getString(AVAILABLE)
+                    .equals(BOOL_VAL_TRUE);
 
             ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItemId));
             itemRS.next();
@@ -152,9 +154,8 @@ public class LoanableItemGateway implements ItemsGateway<LoanableItem> {
             ResultSet userRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, userId));
             Client client = null;
             if (userRS.next()) {
-                client = new Client(userId, userRS.getString(FIRST_NAME), userRS.getString(LAST_NAME),
-                        userRS.getString(PHYSICAL_ADDRESS), userRS.getString(EMAIL), userRS.getString(PHONE_NUMBER),
-                        userRS.getString(PASSWORD));
+                client = new Client(userId, userRS.getString(FIRST_NAME), userRS.getString(LAST_NAME), userRS.getString(PHYSICAL_ADDRESS),
+                        userRS.getString(EMAIL), userRS.getString(PHONE_NUMBER), userRS.getString(PASSWORD));
             }
 
             return new LoanableItem(loanableItemId, itemSpecification, available, client);
