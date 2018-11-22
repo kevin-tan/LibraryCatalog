@@ -20,6 +20,9 @@ import {EditInventoryService} from './edit.inventory.service';
 
 export class ManageCatalogComponent implements OnInit {
 
+  values = ['PAPERBACK', 'HARDCOVER'];
+  selectedOption = this.values[0];
+
   displayBookColumns: string[] = ['select', 'title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language', 'quantity'];
   bookList: Book[];
   matBookList: MatTableDataSource<Book>;
@@ -122,9 +125,9 @@ export class ManageCatalogComponent implements OnInit {
   }
 
   //ADD SPEC
-  addBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
+  addBook(title: string, author: string, publisher: string, pubDate: string, language: string, isbn10: string,
           isbn13: string, pages: string, form: NgForm) {
-    this.addItemSpec.addBookSpec(title, author, publisher, pubDate, language, format, isbn10, isbn13, pages, form, this.bookList, this.snackBar, this.bookSort).then(value => {
+    this.addItemSpec.addBookSpec(title, author, publisher, pubDate, language, this.selectedOption, isbn10, isbn13, pages, form, this.bookList, this.snackBar, this.bookSort).then(value => {
       this.matBookList = value;
     });
   }
@@ -190,9 +193,9 @@ export class ManageCatalogComponent implements OnInit {
   }
 
   //EDIT SPEC
-  editBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
+  editBook(title: string, author: string, publisher: string, pubDate: string, language: string, isbn10: string,
            isbn13: string, pages: string, form: NgForm) {
-    this.editItemSpec.editBookSpec(title, author, publisher, pubDate, language, format, isbn10, isbn13, pages, form, this.bookList, this.snackBar,
+    this.editItemSpec.editBookSpec(title, author, publisher, pubDate, language, this.selectedOption, isbn10, isbn13, pages, form, this.bookList, this.snackBar,
       this.bookSort, this.bookSelection, this.bookSelectedRow).then(value => {
       this.matBookList = value;
     });
@@ -279,7 +282,7 @@ export class ManageCatalogComponent implements OnInit {
       (<HTMLInputElement>document.getElementById('mng_book_publisher')).value = row.publisher;
       (<HTMLInputElement>document.getElementById('mng_book_pubDate')).value = row.pubDate;
       (<HTMLInputElement>document.getElementById('mng_book_language')).value = row.language;
-      (<HTMLInputElement>document.getElementById('mng_book_format')).value = row.format;
+      this.selectedOption = row.format;
       (<HTMLInputElement>document.getElementById('mng_book_isbn10')).value = row.isbn10;
       (<HTMLInputElement>document.getElementById('mng_book_isbn13')).value = row.isbn13;
       (<HTMLInputElement>document.getElementById('mng_book_pages')).value = row.pages.toString();

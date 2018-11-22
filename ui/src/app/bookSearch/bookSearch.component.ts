@@ -12,6 +12,8 @@ import {Router} from "@angular/router";
 })
 export class bookSearchComponent implements OnInit {
 
+  values = ['PAPERBACK', 'HARDCOVER'];
+  selectedOption = this.values[0];
   displayBookColumns: string[] = ['title', 'author', 'pages', 'format', 'publisher', 'isbn10', 'isbn13', 'pubDate', 'language', 'quantity'];
   bookList: Book[];
   matBookList: MatTableDataSource<Book>;
@@ -42,7 +44,6 @@ export class bookSearchComponent implements OnInit {
               publisher: string,
               pubDate: string,
               language: string,
-              format: string,
               isbn10: string,
               isbn13: string) {
 
@@ -52,7 +53,7 @@ export class bookSearchComponent implements OnInit {
       "publisher": publisher,
       "pubDate": pubDate,
       "language": language,
-      "format": format,
+      "format": this.selectedOption === null ? "" : this.selectedOption,
       "isbn10": isbn10,
       "isbn13": isbn13
     });
