@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.catalog.item.com.ItemsGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
@@ -25,7 +25,7 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class LoanableItemGateway implements Gateway<LoanableItem> {
+public class LoanableItemGateway implements ItemsGateway<LoanableItem> {
 
     private final Scheduler scheduler;
 
@@ -92,7 +92,7 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         scheduler.writer_v();
     }
 
-    public List<?> findByUserIdAndIsLoaned(Long userId) {
+    public List<LoanableItem> findByUserIdAndIsLoaned(Long userId) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(
                 createSearchByAttributesQuery(LOANABLEITEM_TABLE, ImmutableMap.of(USERID, userId.toString(), AVAILABLE, "0")),
@@ -118,13 +118,15 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
         return list;
     }
 
-    public List<?> findByItemSpecId(String itemType, Long itemSpecId) {
+    @Override
+    public List<LoanableItem> findByItemSpecId(String itemType, Long itemSpecId) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + ";", findAllLoanables());
         scheduler.reader_v();
         return list;
     }
 
+    @Override
     public LoanableItem findFirstByItemSpecId(String itemType, Long itemSpecId){
         scheduler.reader_p();
         DatabaseEntity loanableItem = executeQuery(queryLoanableAndItemByItemspecType(itemType, itemSpecId) + " LIMIT 1;", findSingleLoanable());
@@ -158,6 +160,5 @@ public class LoanableItemGateway implements Gateway<LoanableItem> {
             return new LoanableItem(loanableItemId, itemSpecification, available, client);
         };
     }
-
 }
 
