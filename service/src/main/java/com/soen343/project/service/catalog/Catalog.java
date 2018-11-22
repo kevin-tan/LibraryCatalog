@@ -105,6 +105,7 @@ public class Catalog {
                 return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
             }
         } else {
+            session.deleteUser(userId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
