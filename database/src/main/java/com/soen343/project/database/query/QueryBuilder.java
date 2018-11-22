@@ -1,6 +1,5 @@
 package com.soen343.project.database.query;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -79,10 +78,6 @@ public class QueryBuilder {
     }
 
     public static String createSearchByAttributeQuery(String table, String attribute, String value) {
-        return SELECT + ALL + FROM + table + WHERE + attribute + LIKE + QUOTE + PERCENTAGE + value + PERCENTAGE + QUOTE + END_QUERY;
-    }
-
-    public static String createSearchByAttributeQuery(String table, String attribute, Date value) {
         return SELECT + ALL + FROM + table + WHERE + attribute + LIKE + QUOTE + PERCENTAGE + value + PERCENTAGE + QUOTE + END_QUERY;
     }
 

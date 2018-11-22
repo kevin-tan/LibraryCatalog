@@ -11,6 +11,8 @@ import com.soen343.project.repository.uow.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ public class UserGateway implements Gateway<User> {
     private final Scheduler scheduler;
 
     @Autowired
-    public UserGateway(Scheduler scheduler){
+    public UserGateway(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -85,8 +87,7 @@ public class UserGateway implements Gateway<User> {
                     tempList.add(Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
                             .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
                             .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build());
-                }
-                else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
+                } else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
                     tempList.add(Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
                             .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
                             .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build());
@@ -98,9 +99,16 @@ public class UserGateway implements Gateway<User> {
         return list;
     }
 
+    public List<User> findAllAdmins() {
+        scheduler.reader_p();
+        List<User> user = executeQuery(createSearchByAttributeQuery(USER_TABLE, USER_TYPE, ADMIN), extractAllUser());
+        scheduler.reader_v();
+        return user;
+    }
+
     public User findByEmail(String email) {
         scheduler.reader_p();
-        User user = executeQuery(createFindByAttributeQuery(USER_TABLE, EMAIL, email), extractUser());
+        User user = executeQuery(createSearchByAttributeQuery(USER_TABLE, EMAIL, email), extractUser());
         scheduler.reader_v();
         return user;
     }
@@ -112,22 +120,41 @@ public class UserGateway implements Gateway<User> {
         scheduler.writer_v();
     }
 
-    private DatabaseQueryOperation<User> extractUser(){
-        return (rs,statement) -> {
-            while (rs.next()) {
-                if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
-                    return Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
-                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
-                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
-                }
-                else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
-                    return Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
-                            .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER))
-                            .physicalAddress(rs.getString(PHYSICAL_ADDRESS)).build();
-                }
+    private DatabaseQueryOperation<User> extractUser() {
+        return (rs, statement) -> {
+            if (rs.next()) {
+                return getUser(rs);
             }
             //Should never be reached
             return null;
         };
+    }
+
+    private User getUser(ResultSet rs) throws SQLException {
+        if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
+            return Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                    .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER)).physicalAddress(rs.getString(PHYSICAL_ADDRESS))
+                    .build();
+        } else if (rs.getString(USER_TYPE).equalsIgnoreCase(CLIENT)) {
+            return Client.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
+                    .email(rs.getString(EMAIL)).phoneNumber(rs.getString(PHONE_NUMBER)).physicalAddress(rs.getString(PHYSICAL_ADDRESS))
+                    .build();
+        }
+        return null;
+    }
+
+    private DatabaseQueryOperation<List<User>> extractAllUser() {
+        return (rs, statement) -> {
+            List<User> tempList = new ArrayList<>();
+            tempList.add(getUser(rs));
+            return tempList;
+        };
+    }
+
+    public User findByPhoneNumber(String phoneNumber) {
+        scheduler.reader_p();
+        User user = executeQuery(createSearchByAttributeQuery(USER_TABLE, PHONE_NUMBER, phoneNumber), extractUser());
+        scheduler.reader_v();
+        return user;
     }
 }

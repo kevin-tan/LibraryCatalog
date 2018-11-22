@@ -57,7 +57,7 @@ public class TransactionRegistry {
             loanTransactionGateway.saveAll(Iterables.toArray(transactions, LoanTransaction.class));
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(failedLoanedItems, HttpStatus.PRECONDITION_FAILED);
         }
     }
 

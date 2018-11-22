@@ -7,6 +7,7 @@ import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.catalog.itemspec.media.Movie;
 import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
+import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.uow.UnitOfWork;
 import lombok.Data;
 
@@ -16,9 +17,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.soen343.project.database.query.QueryBuilder.*;
-import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.loanableSaveOperation;
-import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
-import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.saveQuery;
+import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.*;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -124,6 +123,15 @@ class CatalogSession {
                 unitOfWork.registerOperation(movieDeleteOperation((Movie) itemSpec));
             }
         }
+    }
+
+    void editUser(User user) {
+        unitOfWork.registerOperation(
+                statement -> statement.executeUpdate(createUpdateQuery(user.getTable(), user.sqlUpdateValues(), user.getId())));
+    }
+
+    void deleteUser(Long userId) {
+        unitOfWork.registerOperation(statement -> statement.executeUpdate(createDeleteQuery(USER_TABLE, userId)));
     }
 
     void endSession() {
