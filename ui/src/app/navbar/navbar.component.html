@@ -31,6 +31,10 @@
         <i class="fa fa-bars w3-xxlarge"></i>
         <p>MANAGE CATALOG</p>
       </a>
+      <a href="/manageUsers" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('manageUsers')">
+        <i class="fa fa-bars w3-xxlarge"></i>
+        <p>MANAGE USERS</p>
+      </a>
     </div>
     <a href="/transactionHistory" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('transactionHistory')">
       <i class="fa fa-history w3-xxlarge"></i>
@@ -66,6 +70,7 @@
     <div *ngIf="userType == 'Admin'">
       <a href="/activeUsers" class="w3-bar-item w3-button" style="width:25% !important">ACTIVEUSERS</a>
       <a href="/manageCatalog" class="w3-bar-item w3-button" style="width:25% !important">MANAGE CATALOG</a>
+      <a href="/manageUsers" class="w3-bar-item w3-button" style="width:25% !important">MANAGE USERS</a>
       <a href="/transactionHistory" class="w3-bar-item w3-button" style="width:25% !important">TRANSACTION HISTORY</a>
     </div>
     <div *ngIf="userType == 'Client'">

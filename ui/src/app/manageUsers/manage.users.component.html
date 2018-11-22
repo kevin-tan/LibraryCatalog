@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+<title>Library Catalog</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+<body class="w3-black">
+
+<app-navbar></app-navbar>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <h3 class="w3-jumbo">Manage Users</h3> <br>
+    <hr style="width:100%" class="w3-opacity">
+    <h5>On this page you may do any of the following:<br><br>- Add items by filling out the fields and hitting add<br>- Edit an item by selecting it and changing any of its fields<br>- Delete an item if it is removable by selecting it and pressing delete<br>- Add/remove inventory by selecting an item and hitting the + or -<br><br>Once you're done, hit save changes at the bottom</h5>
+    <hr style="width:100%" class="w3-opacity">
+  </header>
+
+  <h2><i>Users</i></h2>
+  <hr>
+  <div>
+    <form ngNativeValidate #userForm="ngForm">
+      <table width="65%">
+        <tr>
+          <th>
+            <label class="formLabel">First Name</label>
+            <div>
+              <textarea rows="1" cols="47" id="firstName" #firstName firstName.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Last Name</label>
+            <div>
+              <textarea rows="1" cols="47" id="lastName" #lastName lastName.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Address</label>
+            <div>
+              <textarea rows="1" cols="47" id="Address" #Address Address.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">E-Mail</label>
+            <div>
+              <textarea rows="1" cols="47" id="email" #email email.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Phone Number</label>
+            <div>
+              <textarea rows="1" cols="47" id="phoneNumber" #phoneNumber phoneNumber.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Password</label>
+            <div>
+              <textarea rows="1" cols="47" id="password" #password password.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right"
+                    (click)="deleteUser()">
+              <i class="fa fa-minus"></i><b> Delete User</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="editUser()">
+              <i class="fa fa-wrench"></i><b> Edit User</b>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+
+
+  <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <p class="w3-medium">Created by SOEN343 team#10</p>
+    <!-- End footer -->
+  </footer>
+
+  <!-- END PAGE CONTENT -->
+</div>
+</body>
+</html>
