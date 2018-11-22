@@ -1,21 +1,22 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Book} from '../catalog/dto/item-specification/book';
 import {Magazine} from '../catalog/dto/item-specification/magazine';
 import {Movie} from '../catalog/dto/item-specification/movie';
 import {Music} from '../catalog/dto/item-specification/music';
 import {MatSnackBar, MatSort, MatTableDataSource} from '@angular/material';
-import {HomeRedirectService} from '../home/home-redirect.service';
 import {NgForm} from '@angular/forms';
 import {SelectionModel} from '@angular/cdk/collections';
+import {AddItemSpecService} from './add.item.spec.service';
+import {DeleteItemSpecService} from './delete.item.spec.service';
+import {EditItemSpecService} from './edit.item.spec.service';
+import {EditInventoryService} from './edit.inventory.service';
 
 @Component({
   selector: 'manage-catalog',
   templateUrl: './manage.catalog.component.html',
   styleUrls: ['./manage.catalog.component.css']
 })
-
-//TODO MASSIVE REFACTOR
 
 export class ManageCatalogComponent implements OnInit {
 
@@ -55,13 +56,18 @@ export class ManageCatalogComponent implements OnInit {
 
   ngOnInit() {
     this.startSession();
-    //Gets all itemSpecs at beginning
     this.getAllCatalog();
     this.getAllInventory();
   }
 
-  constructor(private http: HttpClient, private homeRedirectService: HomeRedirectService, public snackBar: MatSnackBar) {
+  constructor(private http: HttpClient, private addItemSpec: AddItemSpecService, private deleteItemSpec: DeleteItemSpecService,
+              private editItemSpec: EditItemSpecService, private editInventory: EditInventoryService, public snackBar: MatSnackBar) {
+  }
 
+  startSession() {
+    this.http.post<string>('http://localhost:8080/admin/catalog/edit', null, {withCredentials: true}).subscribe(response => {
+      sessionStorage.setItem('sessionId', response['sessionId']);
+    });
   }
 
   getAllCatalog() {
@@ -83,138 +89,6 @@ export class ManageCatalogComponent implements OnInit {
       this.matMusicList.sort = this.musicSort;
 
       this.getAllInventory();
-    }, error => {
-      console.log(error);
-    });
-  }
-
-  startSession() {
-    this.http.post<string>('http://localhost:8080/admin/catalog/edit', null, {withCredentials: true}).subscribe(response => {
-      sessionStorage.setItem('sessionId', response['sessionId']);
-    });
-  }
-
-  addBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
-          isbn13: string, pages: string, form: NgForm) {
-
-    let body = JSON.stringify({
-      'Book': {
-        'title': title,
-        'author': author,
-        'publisher': publisher,
-        'pubDate': pubDate,
-        'language': language,
-        'format': format,
-        'isbn10': isbn10,
-        'isbn13': isbn13,
-        'pages': +pages
-      }
-    });
-
-    let headers = new HttpHeaders({'Content-Type': 'application/json'});
-    let options = {headers: headers, withCredentials: true};
-
-    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
-      form.resetForm();
-      this.bookList.push({
-        'id': null, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
-        'format': format, 'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages, 'quantity': 0
-      });
-      this.matBookList = new MatTableDataSource(this.bookList);
-      this.matBookList.sort = this.bookSort;
-      this.snackBar.open('Item added successfully!', 'OK', {
-        duration: 2000,
-      });
-    }, error => {
-      console.log(error);
-    });
-  }
-
-  addMovie(title: string, director: string, releaseDate: string, language: string, subtitles: string, dubbed: string, actors: string,
-           producers: string, runTime: string, form: NgForm) {
-
-    let body = JSON.stringify({
-      'Movie': {
-        'title': title,
-        'director': director,
-        'releaseDate': releaseDate,
-        'language': language,
-        'subtitles': subtitles,
-        'dubbed': dubbed.split(', '),
-        'actors': actors.split(', '),
-        'producers': producers.split(', '),
-        'runTime': +runTime
-      }
-    });
-
-    let headers = new HttpHeaders({'Content-Type': 'application/json'});
-    let options = {headers: headers, withCredentials: true};
-
-    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
-      form.resetForm();
-      this.movieList.push({
-        'id': null, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
-        'subtitles': subtitles, 'dubbed': dubbed.split(', '), 'actors': actors.split(', '),
-        'producers': producers.split(', '), 'runTime': +runTime, 'quantity': 0
-      });
-      this.matMovieList = new MatTableDataSource(this.movieList);
-      this.matMovieList.sort = this.movieSort;
-    }, error => {
-      console.log(error);
-    });
-  }
-
-  addMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
-    let body = JSON.stringify({
-      'Magazine': {
-        'title': title,
-        'publisher': publisher,
-        'pubDate': pubDate,
-        'language': language,
-        'isbn10': isbn10,
-        'isbn13': isbn13
-      }
-    });
-
-    let headers = new HttpHeaders({'Content-Type': 'application/json'});
-    let options = {headers: headers, withCredentials: true};
-
-    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
-      form.resetForm();
-      this.magazineList.push({
-        'id': null, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
-        'isbn10': isbn10, 'isbn13': isbn13, 'quantity': 0
-      });
-      this.matMagazineList = new MatTableDataSource(this.magazineList);
-      this.matMagazineList.sort = this.magazineSort;
-    }, error => {
-      console.log(error);
-    });
-  }
-
-  addMusic(title: string, artist: string, type: string, releaseDate: string, label: string, asin: string, form: NgForm) {
-    let body = JSON.stringify({
-      'Music': {
-        'title': title,
-        'artist': artist,
-        'type': type,
-        'releaseDate': releaseDate,
-        'label': label,
-        'asin': asin
-      }
-    });
-
-    let headers = new HttpHeaders({'Content-Type': 'application/json'});
-    let options = {headers: headers, withCredentials: true};
-
-    this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, options).subscribe(response => {
-      form.resetForm();
-      this.musicList.push({
-        'id': null, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label,
-        'asin': asin, 'quantity': 0
-      });
-      this.matMusicList = new MatTableDataSource(this.musicList);
-      this.matMusicList.sort = this.musicSort;
     }, error => {
       console.log(error);
     });
@@ -243,9 +117,156 @@ export class ManageCatalogComponent implements OnInit {
     this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/save', null, {withCredentials: true}).subscribe(response => {
       this.getAllCatalog();
       this.startSession();
-      this.snackBar.open('Changes saved successfully', 'OK', {
-        duration: 2000,
-      });
+      this.snackBar.open('Changes saved successfully', 'OK', {duration: 2000});
+    });
+  }
+
+  //ADD SPEC
+  addBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
+          isbn13: string, pages: string, form: NgForm) {
+    this.addItemSpec.addBookSpec(title, author, publisher, pubDate, language, format, isbn10, isbn13, pages, form, this.bookList, this.snackBar, this.bookSort).then(value => {
+      this.matBookList = value;
+    });
+  }
+
+  addMovie(title: string, director: string, releaseDate: string, language: string, subtitles: string, dubbed: string, actors: string,
+           producers: string, runTime: string, form: NgForm) {
+    this.addItemSpec.addMovieSpec(title, director, releaseDate, language, subtitles, dubbed, actors, producers, runTime, form, this.movieList, this.snackBar, this.movieSort).then(value => {
+      this.matMovieList = value;
+    });
+  }
+
+  addMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
+    this.addItemSpec.addMagazineSpec(title, publisher, pubDate, language, isbn10, isbn13, form, this.magazineList, this.snackBar, this.magazineSort).then(value => {
+      this.matMagazineList = value;
+    });
+  }
+
+  addMusic(title: string, artist: string, type: string, releaseDate: string, label: string, asin: string, form: NgForm) {
+    this.addItemSpec.addMusicSpec(title, artist, type, releaseDate, label, asin, form, this.musicList, this.snackBar, this.musicSort).then(value => {
+      this.matMusicList = value;
+    });
+  }
+
+  //DELETE SPEC
+  deleteBook() {
+    this.deleteItemSpec.deleteBookSpec(this.bookSelection, this.bookSelectedRow, this.bookForm, this.bookList, this.bookSort, this.snackBar).then(value => {
+      this.matBookList = value;
+    }).catch(error => {
+      this.bookSelection.clear();
+      this.bookForm.resetForm();
+      this.snackBar.open('An item of this type is out on loan!', 'OK', {duration: 2000});
+    });
+  }
+
+  deleteMovie() {
+    this.deleteItemSpec.deleteMovieSpec(this.movieSelection, this.movieSelectedRow, this.movieForm, this.movieList, this.movieSort, this.snackBar).then(value => {
+      this.matMovieList = value;
+    }).catch(error => {
+      this.movieSelection.clear();
+      this.movieForm.resetForm();
+      this.snackBar.open('An item of this type is out on loan!', 'OK', {duration: 2000});
+    });
+  }
+
+  deleteMagazine() {
+    this.deleteItemSpec.deleteMagazineSpec(this.magazineSelection, this.magazineSelectedRow, this.magazineForm, this.magazineList, this.magazineSort, this.snackBar).then(value => {
+      this.matMagazineList = value;
+    }).catch(error => {
+      this.magazineSelection.clear();
+      this.magazineForm.resetForm();
+      this.snackBar.open('An item of this type is out on loan!', 'OK', {duration: 2000});
+    });
+  }
+
+  deleteMusic() {
+    this.deleteItemSpec.deleteMusicSpec(this.musicSelection, this.musicSelectedRow, this.musicForm, this.musicList, this.musicSort, this.snackBar).then(value => {
+      this.matMusicList = value;
+    }).catch(error => {
+      this.musicSelection.clear();
+      this.musicForm.resetForm();
+      this.snackBar.open('An item of this type is out on loan!', 'OK', {duration: 2000});
+    });
+  }
+
+  //EDIT SPEC
+  editBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
+           isbn13: string, pages: string, form: NgForm) {
+    this.editItemSpec.editBookSpec(title, author, publisher, pubDate, language, format, isbn10, isbn13, pages, form, this.bookList, this.snackBar,
+      this.bookSort, this.bookSelection, this.bookSelectedRow).then(value => {
+      this.matBookList = value;
+    });
+  }
+
+  editMovie(title: string, director: string, releaseDate: string, language: string, subtitles: string, dubbed: string, actors: string,
+            producers: string, runTime: string, form: NgForm) {
+    this.editItemSpec.editMovieSpec(title, director, releaseDate, language, subtitles, dubbed, actors, producers, runTime, form, this.movieList,
+      this.snackBar, this.movieSort, this.movieSelection, this.movieSelectedRow).then(value => {
+      this.matMovieList = value;
+    });
+  }
+
+  editMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
+    this.editItemSpec.editMagazineSpec(title, publisher, pubDate, language, isbn10, isbn13, form, this.magazineList, this.snackBar,
+      this.magazineSort, this.magazineSelection, this.magazineSelectedRow).then(value => {
+      this.matMagazineList = value;
+    });
+  }
+
+  editMusic(title: string, artist: string, type: string, releaseDate: string, label: string, asin: string, form: NgForm) {
+    this.editItemSpec.editMusicSpec(title, artist, type, releaseDate, label, asin, form, this.musicList, this.snackBar, this.musicSort,
+      this.musicSelection, this.musicSelectedRow).then(value => {
+      this.matMusicList = value;
+    });
+  }
+
+  //ADD ITEM
+  addBookItem() {
+    this.editInventory.addBookItem(this.bookSelection, this.bookSelectedRow, this.bookForm, this.bookList, this.bookSort, this.snackBar).then(value => {
+      this.matBookList = value;
+    });
+  }
+
+  addMovieItem() {
+    this.editInventory.addMovieItem(this.movieSelection, this.movieSelectedRow, this.movieForm, this.movieList, this.movieSort, this.snackBar).then(value => {
+      this.matMovieList = value;
+    });
+  }
+
+  addMagazineItem() {
+    this.editInventory.addMagazineItem(this.magazineSelection, this.magazineSelectedRow, this.magazineForm, this.magazineList, this.magazineSort, this.snackBar).then(value => {
+      this.matMagazineList = value;
+    });
+  }
+
+  addMusicItem() {
+    this.editInventory.addMusicItem(this.musicSelection, this.musicSelectedRow, this.musicForm, this.musicList, this.musicSort, this.snackBar).then(value => {
+      this.matMusicList = value;
+    });
+  }
+
+  //DELETE ITEM
+  deleteBookItem() {
+    this.editInventory.deleteBookItem(this.bookSelection, this.bookSelectedRow, this.bookForm, this.bookList, this.bookSort, this.snackBar).then(value => {
+      this.matBookList = value;
+    });
+  }
+
+  deleteMovieItem() {
+    this.editInventory.deleteMovieItem(this.movieSelection, this.movieSelectedRow, this.movieForm, this.movieList, this.movieSort, this.snackBar).then(value => {
+      this.matMovieList = value;
+    });
+  }
+
+  deleteMagazineItem() {
+    this.editInventory.deleteMagazineItem(this.magazineSelection, this.magazineSelectedRow, this.magazineForm, this.magazineList, this.magazineSort, this.snackBar).then(value => {
+      this.matMagazineList = value;
+    });
+  }
+
+  deleteMusicItem() {
+    this.editInventory.deleteMusicItem(this.musicSelection, this.musicSelectedRow, this.musicForm, this.musicList, this.musicSort, this.snackBar).then(value => {
+      this.matMusicList = value;
     });
   }
 
@@ -312,852 +333,6 @@ export class ManageCatalogComponent implements OnInit {
       (<HTMLInputElement>document.getElementById('mng_music_asin')).value = row.asin;
     } else {
       this.musicForm.resetForm();
-    }
-  }
-
-  deleteBook() {
-    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null && this.bookSelectedRow.quantity === 0) {
-      let body = JSON.stringify({
-        'Book': {
-          'id': this.bookSelectedRow.id,
-          'title': this.bookSelectedRow.title,
-          'author': this.bookSelectedRow.author,
-          'publisher': this.bookSelectedRow.publisher,
-          'pubDate': this.bookSelectedRow.pubDate,
-          'language': this.bookSelectedRow.language,
-          'format': this.bookSelectedRow.format,
-          'isbn10': this.bookSelectedRow.isbn10,
-          'isbn13': this.bookSelectedRow.isbn13,
-          'pages': this.bookSelectedRow.pages
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
-
-        this.bookForm.resetForm();
-
-        for (let i = 0; i < this.bookList.length; i++) {
-          if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList.splice(i, 1);
-            break;
-          }
-        }
-        this.matBookList = new MatTableDataSource(this.bookList);
-        this.matBookList.sort = this.bookSort;
-        this.snackBar.open('Item deleted successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        this.bookSelection.clear();
-        this.snackBar.open('An item of this type is out on loan!', 'OK', {
-          duration: 2000,
-        });
-      });
-
-    } else {
-      if (this.bookSelectedRow.quantity > 0) {
-        this.bookSelection.clear();
-        this.snackBar.open('That item still has inventory!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.bookSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  editBook(title: string, author: string, publisher: string, pubDate: string, language: string, format: string, isbn10: string,
-           isbn13: string, pages: string, form: NgForm) {
-    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Book': {
-          'id': this.bookSelectedRow.id,
-          'title': title,
-          'author': author,
-          'publisher': publisher,
-          'pubDate': pubDate,
-          'language': language,
-          'format': format,
-          'isbn10': isbn10,
-          'isbn13': isbn13,
-          'pages': pages
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
-        form.resetForm();
-
-        for (let i = 0; i < this.bookList.length; i++) {
-          if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList[i] = {
-              'id': this.bookSelectedRow.id,
-              'title': title,
-              'author': author,
-              'publisher': publisher,
-              'pubDate': pubDate,
-              'language': language,
-              'format': format,
-              'isbn10': isbn10,
-              'isbn13': isbn13,
-              'pages': +pages,
-              'quantity': this.bookSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matBookList = new MatTableDataSource(this.bookList);
-        this.matBookList.sort = this.bookSort;
-        this.snackBar.open('Item modified successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.bookSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  addBookItem() {
-    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Book': {
-          'id': this.bookSelectedRow.id,
-          'title': this.bookSelectedRow.title,
-          'author': this.bookSelectedRow.author,
-          'publisher': this.bookSelectedRow.publisher,
-          'pubDate': this.bookSelectedRow.pubDate,
-          'language': this.bookSelectedRow.language,
-          'format': this.bookSelectedRow.format,
-          'isbn10': this.bookSelectedRow.isbn10,
-          'isbn13': this.bookSelectedRow.isbn13,
-          'pages': this.bookSelectedRow.pages
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
-        for (let i = 0; i < this.bookList.length; i++) {
-          if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList[i] = {
-              'id': this.bookSelectedRow.id,
-              'title': this.bookSelectedRow.title,
-              'author': this.bookSelectedRow.author,
-              'publisher': this.bookSelectedRow.publisher,
-              'pubDate': this.bookSelectedRow.pubDate,
-              'language': this.bookSelectedRow.language,
-              'format': this.bookSelectedRow.format,
-              'isbn10': this.bookSelectedRow.isbn10,
-              'isbn13': this.bookSelectedRow.isbn13,
-              'pages': +this.bookSelectedRow.pages,
-              'quantity': ++this.bookSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matBookList = new MatTableDataSource(this.bookList);
-        this.matBookList.sort = this.bookSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.bookSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  deleteBookItem() {
-    if (this.bookSelection.isSelected(this.bookSelectedRow) && this.bookSelectedRow.id !== null && this.bookSelectedRow.quantity > 0) {
-      let body = JSON.stringify({
-        'Book': {
-          'id': this.bookSelectedRow.id,
-          'title': this.bookSelectedRow.title,
-          'author': this.bookSelectedRow.author,
-          'publisher': this.bookSelectedRow.publisher,
-          'pubDate': this.bookSelectedRow.pubDate,
-          'language': this.bookSelectedRow.language,
-          'format': this.bookSelectedRow.format,
-          'isbn10': this.bookSelectedRow.isbn10,
-          'isbn13': this.bookSelectedRow.isbn13,
-          'pages': this.bookSelectedRow.pages
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
-        for (let i = 0; i < this.bookList.length; i++) {
-          if (this.bookList[i].id === this.bookSelectedRow.id) {
-            this.bookList[i] = {
-              'id': this.bookSelectedRow.id,
-              'title': this.bookSelectedRow.title,
-              'author': this.bookSelectedRow.author,
-              'publisher': this.bookSelectedRow.publisher,
-              'pubDate': this.bookSelectedRow.pubDate,
-              'language': this.bookSelectedRow.language,
-              'format': this.bookSelectedRow.format,
-              'isbn10': this.bookSelectedRow.isbn10,
-              'isbn13': this.bookSelectedRow.isbn13,
-              'pages': +this.bookSelectedRow.pages,
-              'quantity': --this.bookSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matBookList = new MatTableDataSource(this.bookList);
-        this.matBookList.sort = this.bookSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      if (this.bookSelectedRow.quantity === 0) {
-        this.movieSelection.clear();
-        this.snackBar.open('No items to delete!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.movieSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  deleteMovie() {
-    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null && this.movieSelectedRow.quantity === 0) {
-      let body = JSON.stringify({
-        'Movie': {
-          'id': this.movieSelectedRow.id,
-          'title': this.movieSelectedRow.title,
-          'director': this.movieSelectedRow.director,
-          'releaseDate': this.movieSelectedRow.releaseDate,
-          'language': this.movieSelectedRow.language,
-          'subtitles': this.movieSelectedRow.subtitles,
-          'dubbed': this.movieSelectedRow.dubbed,
-          'actors': this.movieSelectedRow.actors,
-          'producers': this.movieSelectedRow.producers,
-          'runTime': this.movieSelectedRow.runTime
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
-        this.movieForm.resetForm();
-        for (let i = 0; i < this.movieList.length; i++) {
-          if (this.movieList[i].id === this.movieSelectedRow.id) {
-            this.movieList.splice(i, 1);
-            break;
-          }
-        }
-        this.matMovieList = new MatTableDataSource(this.movieList);
-        this.matMovieList.sort = this.movieSort;
-        this.snackBar.open('Item deleted succesfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        this.movieSelection.clear();
-        this.snackBar.open('An item of this type is out on loan!', 'OK', {
-          duration: 2000,
-        });
-      });
-    } else {
-      if (this.movieSelectedRow.quantity > 0) {
-        this.movieSelection.clear();
-        this.snackBar.open('That item still has inventory!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.movieSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  editMovie(title: string, director: string, releaseDate: string, language: string, subtitles: string, dubbed: string, actors: string,
-            producers: string, runTime: string, form: NgForm) {
-    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Movie': {
-          'id': this.movieSelectedRow.id,
-          'title': title,
-          'director': director,
-          'releaseDate': releaseDate,
-          'language': language,
-          'subtitles': subtitles,
-          'dubbed': dubbed.split(', '),
-          'actors': actors.split(', '),
-          'producers': producers.split(', '),
-          'runTime': +runTime
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
-        form.resetForm();
-
-        for (let i = 0; i < this.movieList.length; i++) {
-          if (this.movieList[i].id === this.movieSelectedRow.id) {
-            this.movieList[i] = {
-              'id': this.movieSelectedRow.id, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
-              'subtitles': subtitles, 'dubbed': dubbed.split(', '), 'actors': actors.split(', '), 'producers': producers.split(', '),
-              'runTime': +runTime, 'quantity': this.movieSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMovieList = new MatTableDataSource(this.movieList);
-        this.matMovieList.sort = this.movieSort;
-        this.snackBar.open('Item modified successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.movieSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  addMovieItem() {
-    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Movie': {
-          'id': this.movieSelectedRow.id,
-          'title': this.movieSelectedRow.title,
-          'director': this.movieSelectedRow.director,
-          'releaseDate': this.movieSelectedRow.releaseDate,
-          'language': this.movieSelectedRow.language,
-          'subtitles': this.movieSelectedRow.subtitles,
-          'dubbed': this.movieSelectedRow.dubbed,
-          'actors': this.movieSelectedRow.actors,
-          'producers': this.movieSelectedRow.producers,
-          'runTime': this.movieSelectedRow.runTime
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
-        for (let i = 0; i < this.movieList.length; i++) {
-          if (this.movieList[i].id === this.movieSelectedRow.id) {
-            this.movieList[i] = {
-              'id': this.movieSelectedRow.id,
-              'title': this.movieSelectedRow.title,
-              'director': this.movieSelectedRow.director,
-              'releaseDate': this.movieSelectedRow.releaseDate,
-              'language': this.movieSelectedRow.language,
-              'subtitles': this.movieSelectedRow.subtitles,
-              'dubbed': this.movieSelectedRow.dubbed,
-              'actors': this.movieSelectedRow.actors,
-              'producers': this.movieSelectedRow.producers,
-              'runTime': this.movieSelectedRow.runTime,
-              'quantity': ++this.movieSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMovieList = new MatTableDataSource(this.movieList);
-        this.matMovieList.sort = this.movieSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.movieSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  deleteMovieItem() {
-    if (this.movieSelection.isSelected(this.movieSelectedRow) && this.movieSelectedRow.id !== null && this.movieSelectedRow.quantity > 0) {
-      let body = JSON.stringify({
-        'Movie': {
-          'id': this.movieSelectedRow.id,
-          'title': this.movieSelectedRow.title,
-          'director': this.movieSelectedRow.director,
-          'releaseDate': this.movieSelectedRow.releaseDate,
-          'language': this.movieSelectedRow.language,
-          'subtitles': this.movieSelectedRow.subtitles,
-          'dubbed': this.movieSelectedRow.dubbed,
-          'actors': this.movieSelectedRow.actors,
-          'producers': this.movieSelectedRow.producers,
-          'runTime': this.movieSelectedRow.runTime
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
-        for (let i = 0; i < this.movieList.length; i++) {
-          if (this.movieList[i].id === this.movieSelectedRow.id) {
-            this.movieList[i] = {
-              'id': this.movieSelectedRow.id,
-              'title': this.movieSelectedRow.title,
-              'director': this.movieSelectedRow.director,
-              'releaseDate': this.movieSelectedRow.releaseDate,
-              'language': this.movieSelectedRow.language,
-              'subtitles': this.movieSelectedRow.subtitles,
-              'dubbed': this.movieSelectedRow.dubbed,
-              'actors': this.movieSelectedRow.actors,
-              'producers': this.movieSelectedRow.producers,
-              'runTime': this.movieSelectedRow.runTime,
-              'quantity': --this.movieSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMovieList = new MatTableDataSource(this.movieList);
-        this.matMovieList.sort = this.movieSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      if (this.movieSelectedRow.quantity === 0) {
-        this.movieSelection.clear();
-        this.snackBar.open('No items to delete!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.movieSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  deleteMagazine() {
-    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null && this.magazineSelectedRow.quantity === 0) {
-      let body = JSON.stringify({
-        'Magazine': {
-          'id': this.magazineSelectedRow.id,
-          'title': this.magazineSelectedRow.title,
-          'publisher': this.magazineSelectedRow.publisher,
-          'pubDate': this.magazineSelectedRow.pubDate,
-          'language': this.magazineSelectedRow.language,
-          'isbn10': this.magazineSelectedRow.isbn10,
-          'isbn13': this.magazineSelectedRow.isbn13
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
-        this.magazineForm.resetForm();
-
-        for (let i = 0; i < this.magazineList.length; i++) {
-          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
-            this.magazineList.splice(i, 1);
-            break;
-          }
-        }
-        this.matMagazineList = new MatTableDataSource(this.magazineList);
-        this.matMagazineList.sort = this.magazineSort;
-        this.snackBar.open('Item deleted successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        this.magazineSelection.clear();
-        this.snackBar.open('An item of this type is out on loan!', 'OK', {
-          duration: 2000,
-        });
-      });
-    } else {
-      if(this.magazineSelectedRow.quantity > 0) {
-        this.magazineSelection.clear();
-        this.snackBar.open('That item still has inventory!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.magazineSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  editMagazine(title: string, publisher: string, pubDate: string, language: string, isbn10: string, isbn13: string, form: NgForm) {
-    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Magazine': {
-          'id': this.magazineSelectedRow.id,
-          'title': title,
-          'publisher': publisher,
-          'pubDate': pubDate,
-          'language': language,
-          'isbn10': isbn10,
-          'isbn13': isbn13
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
-        form.resetForm();
-
-        for (let i = 0; i < this.magazineList.length; i++) {
-          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
-            this.magazineList[i] = {
-              'id': this.magazineSelectedRow.id, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
-              'isbn10': isbn10, 'isbn13': isbn13, 'quantity': this.magazineSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMagazineList = new MatTableDataSource(this.magazineList);
-        this.matMagazineList.sort = this.magazineSort;
-        this.snackBar.open('Item modified successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.magazineSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  addMagazineItem() {
-    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Magazine': {
-          'id': this.magazineSelectedRow.id,
-          'title': this.magazineSelectedRow.title,
-          'publisher': this.magazineSelectedRow.publisher,
-          'pubDate': this.magazineSelectedRow.pubDate,
-          'language': this.magazineSelectedRow.language,
-          'isbn10': this.magazineSelectedRow.isbn10,
-          'isbn13': this.magazineSelectedRow.isbn13
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
-        for (let i = 0; i < this.magazineList.length; i++) {
-          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
-            this.magazineList[i] = {
-              'id': this.magazineSelectedRow.id,
-              'title': this.magazineSelectedRow.title,
-              'publisher': this.magazineSelectedRow.publisher,
-              'pubDate': this.magazineSelectedRow.pubDate,
-              'language': this.magazineSelectedRow.language,
-              'isbn10': this.magazineSelectedRow.isbn10,
-              'isbn13': this.magazineSelectedRow.isbn13,
-              'quantity': ++this.magazineSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMagazineList = new MatTableDataSource(this.magazineList);
-        this.matMagazineList.sort = this.magazineSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.magazineSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  deleteMagazineItem() {
-    if (this.magazineSelection.isSelected(this.magazineSelectedRow) && this.magazineSelectedRow.id !== null && this.magazineSelectedRow.quantity > 0) {
-      let body = JSON.stringify({
-        'Magazine': {
-          'id': this.magazineSelectedRow.id,
-          'title': this.magazineSelectedRow.title,
-          'publisher': this.magazineSelectedRow.publisher,
-          'pubDate': this.magazineSelectedRow.pubDate,
-          'language': this.magazineSelectedRow.language,
-          'isbn10': this.magazineSelectedRow.isbn10,
-          'isbn13': this.magazineSelectedRow.isbn13
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
-        for (let i = 0; i < this.magazineList.length; i++) {
-          if (this.magazineList[i].id === this.magazineSelectedRow.id) {
-            this.magazineList[i] = {
-              'id': this.magazineSelectedRow.id,
-              'title': this.magazineSelectedRow.title,
-              'publisher': this.magazineSelectedRow.publisher,
-              'pubDate': this.magazineSelectedRow.pubDate,
-              'language': this.magazineSelectedRow.language,
-              'isbn10': this.magazineSelectedRow.isbn10,
-              'isbn13': this.magazineSelectedRow.isbn13,
-              'quantity': --this.magazineSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMagazineList = new MatTableDataSource(this.magazineList);
-        this.matMagazineList.sort = this.magazineSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      if (this.bookSelectedRow.quantity === 0) {
-        this.magazineSelection.clear();
-        this.snackBar.open('No items to delete!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.magazineSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  deleteMusic() {
-    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null && this.musicSelectedRow.quantity === 0) {
-      let body = JSON.stringify({
-        'Music': {
-          'id': this.musicSelectedRow.id,
-          'title': this.musicSelectedRow.title,
-          'artist': this.musicSelectedRow.artist,
-          'type': this.musicSelectedRow.type,
-          'releaseDate': this.musicSelectedRow.releaseDate,
-          'label': this.musicSelectedRow.label,
-          'asin': this.musicSelectedRow.asin
-        }
-      });
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/deleteSpec', body, options).subscribe(response => {
-        this.musicForm.resetForm();
-
-        for (let i = 0; i < this.musicList.length; i++) {
-          if (this.musicList[i].id === this.musicSelectedRow.id) {
-            this.musicList.splice(i, 1);
-            break;
-          }
-        }
-        this.matMusicList = new MatTableDataSource(this.musicList);
-        this.matMusicList.sort = this.musicSort;
-        this.snackBar.open('Item deleted successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        this.musicSelection.clear();
-        this.snackBar.open('An item of this type is out on loan!', 'OK', {
-          duration: 2000,
-        });
-      });
-    } else {
-      if(this.musicSelectedRow.quantity > 0) {
-        this.musicSelection.clear();
-        this.snackBar.open('That item still has inventory!', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.musicSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
-    }
-  }
-
-  editMusic(title: string, artist: string, type: string, releaseDate: string, label: string, asin: string, form: NgForm) {
-    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Music': {
-          'id': this.musicSelectedRow.id,
-          'title': title,
-          'artist': artist,
-          'type': type,
-          'releaseDate': releaseDate,
-          'label': label,
-          'asin': asin
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/modifySpec', body, options).subscribe(response => {
-        form.resetForm();
-
-        for (let i = 0; i < this.musicList.length; i++) {
-          if (this.musicList[i].id === this.musicSelectedRow.id) {
-            this.musicList[i] = {
-              'id': this.musicSelectedRow.id, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label,
-              'asin': asin, 'quantity': this.musicSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMusicList = new MatTableDataSource(this.musicList);
-        this.matMusicList.sort = this.musicSort;
-        this.snackBar.open('Item modified successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.musicSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  addMusicItem() {
-    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null) {
-      let body = JSON.stringify({
-        'Music': {
-          'id': this.musicSelectedRow.id,
-          'title': this.musicSelectedRow.title,
-          'artist': this.musicSelectedRow.artist,
-          'type': this.musicSelectedRow.type,
-          'releaseDate': this.musicSelectedRow.releaseDate,
-          'label': this.musicSelectedRow.label,
-          'asin': this.musicSelectedRow.asin
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/add', body, options).subscribe(response => {
-        for (let i = 0; i < this.musicList.length; i++) {
-          if (this.musicList[i].id === this.musicSelectedRow.id) {
-            this.musicList[i] = {
-              'id': this.musicSelectedRow.id, 'title': this.musicSelectedRow.title, 'artist': this.musicSelectedRow.artist,
-              'type': this.musicSelectedRow.type, 'releaseDate': this.musicSelectedRow.releaseDate, 'label': this.musicSelectedRow.label,
-              'asin': this.musicSelectedRow.asin, 'quantity': ++this.musicSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMusicList = new MatTableDataSource(this.musicList);
-        this.matMusicList.sort = this.musicSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      this.musicSelection.clear();
-      this.snackBar.open('Please select a valid row first', 'OK', {
-        duration: 2000,
-      });
-    }
-  }
-
-  deleteMusicItem() {
-    if (this.musicSelection.isSelected(this.musicSelectedRow) && this.musicSelectedRow.id !== null && this.musicSelectedRow.quantity > 0) {
-      let body = JSON.stringify({
-        'Music': {
-          'id': this.musicSelectedRow.id,
-          'title': this.musicSelectedRow.title,
-          'artist': this.musicSelectedRow.artist,
-          'type': this.musicSelectedRow.type,
-          'releaseDate': this.musicSelectedRow.releaseDate,
-          'label': this.musicSelectedRow.label,
-          'asin': this.musicSelectedRow.asin
-        }
-      });
-
-      let headers = new HttpHeaders({'Content-Type': 'application/json'});
-      let options = {headers: headers, withCredentials: true};
-
-      this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/delete', body, options).subscribe(response => {
-        for (let i = 0; i < this.musicList.length; i++) {
-          if (this.musicList[i].id === this.musicSelectedRow.id) {
-            this.musicList[i] = {
-              'id': this.musicSelectedRow.id, 'title': this.musicSelectedRow.title, 'artist': this.musicSelectedRow.artist,
-              'type': this.musicSelectedRow.type, 'releaseDate': this.musicSelectedRow.releaseDate, 'label': this.musicSelectedRow.label,
-              'asin': this.musicSelectedRow.asin, 'quantity': --this.musicSelectedRow.quantity
-            };
-            break;
-          }
-        }
-        this.matMusicList = new MatTableDataSource(this.musicList);
-        this.matMusicList.sort = this.musicSort;
-        this.snackBar.open('Item inventory changed successfully!', 'OK', {
-          duration: 2000,
-        });
-      }, error => {
-        console.log(error);
-      });
-    } else {
-      if (this.musicSelectedRow.quantity === 0) {
-        this.musicSelection.clear();
-        this.snackBar.open('No items to delete', 'OK', {
-          duration: 2000,
-        });
-      } else {
-        this.musicSelection.clear();
-        this.snackBar.open('Please select a valid row first', 'OK', {
-          duration: 2000,
-        });
-      }
     }
   }
 }
