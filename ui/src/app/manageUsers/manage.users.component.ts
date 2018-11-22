@@ -53,7 +53,7 @@ export class ManageUsersComponent implements OnInit {
       let body = JSON.stringify({
         [this.userSelectedRow.userType]: {
           'id': this.userSelectedRow.id, 'firstName': firstName, 'lastName': lastName, 'physicalAddress': address, 'email': email, 'phoneNumber': phoneNumber,
-          'password': password === '' ? '' : password
+          'password': password === '' ? null : password
         }
       });
 
