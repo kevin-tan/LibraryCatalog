@@ -47,9 +47,10 @@ public abstract class User implements DatabaseEntity {
         columnValues += LAST_NAME + " = '" + lastName + "', ";
         columnValues += PHYSICAL_ADDRESS + " = '" + physicalAddress + "', ";
         columnValues += EMAIL + " = '" + email + "', ";
-        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "', ";
-        columnValues += PASSWORD + " = '" + password + "'";
-
+        columnValues += PHONE_NUMBER + " = '" + phoneNumber + "'";
+        if(password != null){
+            columnValues += ", " + PASSWORD + " = '" + password + "'";
+        }
         return columnValues;
     }
 

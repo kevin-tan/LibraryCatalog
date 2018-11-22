@@ -86,7 +86,9 @@ public class Catalog {
             (emailUser != null && emailUser.getId() != user.getId())) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } else {
-            user.setPassword(encoder.encode(user.getPassword()));
+            if (user.getPassword() != null) {
+                user.setPassword(encoder.encode(user.getPassword()));
+            }
             session.editUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
