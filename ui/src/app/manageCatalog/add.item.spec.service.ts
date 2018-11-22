@@ -29,7 +29,7 @@ export class AddItemSpecService {
     return this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, this.options).toPromise().then(response => {
       form.resetForm();
       bookList.push({
-        'id': null, 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate, 'language': language, 'format': format,
+        'id': response['Book']['id'], 'title': title, 'author': author, 'publisher': publisher, 'pubDate': pubDate, 'language': language, 'format': format,
         'isbn10': isbn10, 'isbn13': isbn13, 'pages': +pages, 'quantity': 0
       });
 
@@ -54,7 +54,7 @@ export class AddItemSpecService {
     return this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, this.options).toPromise().then(response => {
       form.resetForm();
       movieList.push({
-        'id': null, 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
+        'id': response['Movie']['id'], 'title': title, 'director': director, 'releaseDate': releaseDate, 'language': language,
         'subtitles': subtitles, 'dubbed': dubbed.split(', '), 'actors': actors.split(', '),
         'producers': producers.split(', '), 'runTime': +runTime, 'quantity': 0
       });
@@ -76,7 +76,7 @@ export class AddItemSpecService {
     return this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, this.options).toPromise().then(response => {
       form.resetForm();
       magazineList.push({
-        'id': null, 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
+        'id': response['Magazine']['id'], 'title': title, 'publisher': publisher, 'pubDate': pubDate, 'language': language,
         'isbn10': isbn10, 'isbn13': isbn13, 'quantity': 0
       });
 
@@ -96,7 +96,7 @@ export class AddItemSpecService {
     return this.http.post('http://localhost:8080/admin/catalog/' + sessionStorage.getItem('sessionId') + '/addSpec', body, this.options).toPromise().then(response => {
       form.resetForm();
       musicList.push({
-        'id': null, 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label,
+        'id': response['Music']['id'], 'title': title, 'artist': artist, 'type': type, 'releaseDate': releaseDate, 'label': label,
         'asin': asin, 'quantity': 0
       });
 

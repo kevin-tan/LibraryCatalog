@@ -1,6 +1,5 @@
 package com.soen343.project.repository.dao.user;
 
-import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
@@ -16,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.soen343.project.database.connection.DatabaseConnector.executeQuery;
-import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
-import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
+import static com.soen343.project.database.connection.DatabaseConnector.*;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 import static com.soen343.project.repository.entity.user.types.UserType.ADMIN;
@@ -67,7 +64,7 @@ public class UserGateway implements Gateway<User> {
     @Override
     public User findById(Long id) {
         scheduler.reader_p();
-        User user = (User) executeQuery(createFindByIdQuery(USER_TABLE, id), extractUser());
+        User user = executeQuery(createFindByIdQuery(USER_TABLE, id), extractUser());
         scheduler.reader_v();
         return user;
     }
@@ -79,11 +76,10 @@ public class UserGateway implements Gateway<User> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<User> findAll() {
         scheduler.reader_p();
-        List<User> list = (List<User>) executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), (rs, statement) -> {
-            List<DatabaseEntity> tempList = new ArrayList<>();
+        List<User> list = executeQueryExpectMultiple(createFindAllQuery(USER_TABLE), (rs, statement) -> {
+            List<User> tempList = new ArrayList<>();
             while (rs.next()) {
                 if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {
                     tempList.add(Admin.builder().id(rs.getLong(ID)).firstName(rs.getString(FIRST_NAME)).lastName(rs.getString(LAST_NAME))
@@ -104,7 +100,7 @@ public class UserGateway implements Gateway<User> {
 
     public User findByEmail(String email) {
         scheduler.reader_p();
-        User user = (User) executeQuery(createFindByAttributeQuery(USER_TABLE, EMAIL, email), extractUser());
+        User user = executeQuery(createFindByAttributeQuery(USER_TABLE, EMAIL, email), extractUser());
         scheduler.reader_v();
         return user;
     }
@@ -116,7 +112,7 @@ public class UserGateway implements Gateway<User> {
         scheduler.writer_v();
     }
 
-    private DatabaseQueryOperation extractUser(){
+    private DatabaseQueryOperation<User> extractUser(){
         return (rs,statement) -> {
             while (rs.next()) {
                 if (rs.getString(USER_TYPE).equalsIgnoreCase(ADMIN)) {

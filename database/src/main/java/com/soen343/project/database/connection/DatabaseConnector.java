@@ -1,8 +1,10 @@
 package com.soen343.project.database.connection;
 
 import com.soen343.project.database.DatabaseConstants;
-import com.soen343.project.database.base.DatabaseEntity;
-import com.soen343.project.database.connection.operation.*;
+import com.soen343.project.database.connection.operation.DatabaseBatchOperation;
+import com.soen343.project.database.connection.operation.DatabaseBatchQueryOperation;
+import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
+import com.soen343.project.database.connection.operation.DatabaseScript;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,7 +51,7 @@ public class DatabaseConnector {
         });
     }
 
-    public static DatabaseEntity exectuteBatchQuery(DatabaseBatchQueryOperation<DatabaseEntity> batchQueryOp) {
+    public static <T> T exectuteBatchQuery(DatabaseBatchQueryOperation<T> batchQueryOp) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
             return batchQueryOp.execute(createStatement(connection));
         } catch (SQLException e) {
@@ -58,17 +60,7 @@ public class DatabaseConnector {
         return null;
     }
 
-    public static DatabaseEntity executeForeignKeyTableQuery(String query, DatabaseQueryOperation<DatabaseEntity> databaseQueryOperatio) {
-        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
-            Statement statement = createStatement(connection);
-            return databaseQueryOperatio.execute(statement.executeQuery(query), statement);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static DatabaseEntity executeQuery(String query, DatabaseQueryOperation<DatabaseEntity> databaseQueryOperation) {
+    public static <T> T executeForeignKeyTableQuery(String query, DatabaseQueryOperation<T> databaseQueryOperation) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
             Statement statement = createStatement(connection);
             return databaseQueryOperation.execute(statement.executeQuery(query), statement);
@@ -78,19 +70,29 @@ public class DatabaseConnector {
         return null;
     }
 
-    public static List<? extends DatabaseEntity> executeQueryExpectMultiple(String query, DatabaseQueryOperation databaseQueryOperation) {
+    public static <T> T executeQuery(String query, DatabaseQueryOperation<T> databaseQueryOperation) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
             Statement statement = createStatement(connection);
-            return (List<? extends DatabaseEntity>) databaseQueryOperation.execute(statement.executeQuery(query), statement);
+            return databaseQueryOperation.execute(statement.executeQuery(query), statement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static List executeQueryExpectMultiple(DatabaseBatchQueryOperation databaseQueryOperation) {
+    public static <T> List<T> executeQueryExpectMultiple(String query, DatabaseQueryOperation<List<T>> databaseQueryOperation) {
         try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
-            return (List) databaseQueryOperation.execute(createStatement(connection));
+            Statement statement = createStatement(connection);
+            return databaseQueryOperation.execute(statement.executeQuery(query), statement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T> List<T> executeQueryExpectMultiple(DatabaseBatchQueryOperation<List<T>> databaseQueryOperation) {
+        try (Connection connection = DriverManager.getConnection(DatabaseConstants.DATABASE_URL)) {
+            return databaseQueryOperation.execute(createStatement(connection));
         } catch (SQLException e) {
             e.printStackTrace();
         }

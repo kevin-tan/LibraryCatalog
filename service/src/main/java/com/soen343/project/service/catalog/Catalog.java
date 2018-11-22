@@ -15,12 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.soen343.project.database.connection.DatabaseConnector.executeQuery;
 import static com.soen343.project.database.connection.DatabaseConnector.executeQueryExpectMultiple;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.findAllLoanables;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
+import static com.soen343.project.repository.entity.EntityConstants.ID;
 
 @Service
 public class Catalog {
+
+    private final static String LATEST_ITEM_ID_QUERY = "SELECT id FROM LoanableItem ORDER BY id DESC LIMIT 1;";
 
     private final Library library;
     private final Scheduler scheduler;
@@ -35,7 +39,7 @@ public class Catalog {
 
     public String createNewSession() {
         String sessionID = UUID.randomUUID().toString();
-        catalogSessions.put(sessionID, new CatalogSession(sessionID, scheduler));
+        catalogSessions.put(sessionID, new CatalogSession(scheduler, executeQuery(LATEST_ITEM_ID_QUERY, (rs, statement) -> rs.getLong(ID))));
         return sessionID;
     }
 
@@ -50,15 +54,15 @@ public class Catalog {
         session.removeItem(itemSpecification);
     }
 
-    public void addItemSpec(String sessionID, ItemSpecification itemSpec) {
+    public ItemSpecification addItemSpec(String sessionID, ItemSpecification itemSpec) {
         CatalogSession session = getSession(sessionID);
-        session.addEntry(itemSpec);
+        return session.addEntry(itemSpec);
     }
 
-    @SuppressWarnings("unchecked")
     public ResponseEntity<?> deleteItemSpec(String sessionID, ItemSpecification itemSpec) {
-        List<LoanableItem> loanedItems = (List<LoanableItem>) executeQueryExpectMultiple(
-                queryLoanableAndItemByItemspecType(itemSpec) + " and LoanableItem.available = 0;", findAllLoanables());
+        List<LoanableItem> loanedItems =
+                executeQueryExpectMultiple(queryLoanableAndItemByItemspecType(itemSpec) + " and LoanableItem.available = 0;",
+                        findAllLoanables());
         if (loanedItems.isEmpty()) {
             CatalogSession session = getSession(sessionID);
             session.removeEntry(itemSpec);

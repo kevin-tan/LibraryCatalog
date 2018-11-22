@@ -38,8 +38,7 @@ public class InventoryController {
 
     @PostMapping("/catalog/{sessionID}/addSpec")
     public ResponseEntity<?> addItemSpecification(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpec) {
-        catalog.addItemSpec(sessionID, itemSpec);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(catalog.addItemSpec(sessionID, itemSpec), HttpStatus.OK);
     }
 
     @PostMapping("/catalog/{sessionID}/deleteSpec")

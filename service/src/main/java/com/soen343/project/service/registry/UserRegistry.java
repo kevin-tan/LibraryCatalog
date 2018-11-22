@@ -2,7 +2,6 @@ package com.soen343.project.service.registry;
 
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.instance.ActiveUser;
-import com.soen343.project.service.database.Library;
 import com.soen343.project.service.notification.Observer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +12,10 @@ import java.util.List;
 @Service
 public class UserRegistry implements Observer<User> {
 
-    private final Library library;
     List<ActiveUser> activeUsers;
 
     @Autowired
-    public UserRegistry(Library library) {
-        this.library = library;
+    public UserRegistry() {
         this.activeUsers = new LinkedList<>();
     }
 

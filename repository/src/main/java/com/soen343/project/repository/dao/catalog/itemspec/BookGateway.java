@@ -19,7 +19,6 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-@SuppressWarnings("ALL")
 public class BookGateway implements ItemSpecificationGateway<Book> {
 
     private final Scheduler scheduler;
@@ -57,7 +56,7 @@ public class BookGateway implements ItemSpecificationGateway<Book> {
     @Override
     public Book findById(Long id) {
         scheduler.reader_p();
-        Book book = (Book) executeQuery(createFindByIdQuery(BOOK_TABLE, id), (rs, statement) -> {
+        Book book = executeQuery(createFindByIdQuery(BOOK_TABLE, id), (rs, statement) -> {
             if (rs.next()) {
                 return Book.builder().id(rs.getLong(ID)).title(rs.getString(TITLE)).isbn10(rs.getString(ISBN10))
                         .isbn13(rs.getString(ISBN13)).lang(rs.getString(LANGUAGE)).pubDate(rs.getString(PUBDATE))
@@ -75,7 +74,7 @@ public class BookGateway implements ItemSpecificationGateway<Book> {
     @Override
     public List<Book> findByAttribute(Map<String, String> attributeValue) {
         scheduler.reader_p();
-        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributesQuery(BOOK_TABLE, attributeValue), databaseQueryOperation());
+        List<Book> list = executeQueryExpectMultiple(createSearchByAttributesQuery(BOOK_TABLE, attributeValue), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -84,7 +83,7 @@ public class BookGateway implements ItemSpecificationGateway<Book> {
     @SuppressWarnings("unchecked")
     public List<Book> findAll() {
         scheduler.reader_p();
-        List<Book> list = (List<Book>) executeQueryExpectMultiple(createFindAllQuery(BOOK_TABLE), databaseQueryOperation());
+        List<Book> list = executeQueryExpectMultiple(createFindAllQuery(BOOK_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -113,7 +112,7 @@ public class BookGateway implements ItemSpecificationGateway<Book> {
     @Override
     public List<Book> findByTitle(String title) {
         scheduler.reader_p();
-        List<Book> list = (List<Book>) executeQueryExpectMultiple(createSearchByAttributeQuery(BOOK_TABLE, TITLE, title), databaseQueryOperation());
+        List<Book> list = executeQueryExpectMultiple(createSearchByAttributeQuery(BOOK_TABLE, TITLE, title), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }

@@ -8,12 +8,12 @@ import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.entity.user.Client;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.soen343.project.database.query.QueryBuilder.createDeleteQuery;
-import static com.soen343.project.database.query.QueryBuilder.createFindByIdQuery;
-import static com.soen343.project.database.query.QueryBuilder.createSaveQuery;
+import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.dao.catalog.itemspec.operation.ItemSpecificationOperation.getItemSpec;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 import static com.soen343.project.repository.entity.EntityConstants.PASSWORD;
@@ -27,13 +27,15 @@ public final class LoanableItemOperation {
     private LoanableItemOperation() {}
 
     public static DatabaseBatchOperation saveQuery(LoanableItem entity) {
-        return statement -> {
-            Item item = new Item(entity.getSpec());
-            statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
-            ResultSet rs = statement.executeQuery("SELECT id FROM Item ORDER BY id DESC LIMIT 1");
-            if (rs.next()) entity.setId(rs.getLong(ID));
-            statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
-        };
+        return statement -> loanableSaveOperation(statement, entity);
+    }
+
+    public static void loanableSaveOperation(Statement statement, LoanableItem entity) throws SQLException {
+        Item item = new Item(entity.getSpec());
+        statement.executeUpdate(createSaveQuery(item.getTableWithColumns(), item.toSQLValue()));
+        ResultSet rs = statement.executeQuery(createFindIdOfLastAddedItem(ITEM_TABLE));
+        if (rs.next()) entity.setId(rs.getLong(ID));
+        statement.executeUpdate(createSaveQuery(entity.getTableWithColumns(), entity.toSQLValue()));
     }
 
     public static DatabaseBatchOperation deleteQuery(LoanableItem item) {

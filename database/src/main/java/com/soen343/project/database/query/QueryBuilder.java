@@ -28,6 +28,9 @@ public class QueryBuilder {
     private final static String INNER_JOIN = " INNER JOIN ";
     private final static String ON = " ON ";
     private final static String DOT = ".";
+    private static final String ORDER_BY_ID = " ORDER BY id";
+    private static final String DESC = " DESC";
+    private static final String LIMIT_1 = " LIMIT 1";
     public final static String GET_ID_MOST_RECENT = "SELECT LAST_INSERT_ROWID();";
     public final static int MOST_RECENT_ID_COL = 1;
 
@@ -35,6 +38,8 @@ public class QueryBuilder {
     private final static String QUOTE = "'";
     private final static String PERCENTAGE = "%";
     private final static String COMMA = ", ";
+
+
 
     private QueryBuilder() { }
 
@@ -122,4 +127,7 @@ public class QueryBuilder {
                QUOTE + END_QUERY;
     }
 
+    public static String createFindIdOfLastAddedItem(String table){
+        return SELECT + ID + FROM + table + ORDER_BY_ID + DESC + LIMIT_1 + END_QUERY;
+    }
 }

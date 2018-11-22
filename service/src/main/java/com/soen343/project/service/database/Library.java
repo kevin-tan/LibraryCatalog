@@ -3,10 +3,6 @@ package com.soen343.project.service.database;
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.dao.catalog.item.ItemGateway;
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.BookGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MagazineGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MovieGateway;
-import com.soen343.project.repository.dao.catalog.itemspec.MusicGateway;
 import com.soen343.project.repository.dao.mapper.GatewayMapper;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
@@ -21,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.soen343.project.repository.entity.EntityConstants.*;
+import static com.soen343.project.repository.entity.EntityConstants.MAGAZINE_TABLE;
 
 /**
  * Created by Kevin Tan 2018-09-25
@@ -30,10 +26,6 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public class Library {
 
     private final GatewayMapper gatewayMapper;
-    private final MovieGateway movieRepository;
-    private final BookGateway bookRepository;
-    private final MagazineGateway magazineRepository;
-    private final MusicGateway musicRepository;
     private final ItemGateway itemGateway;
     private final UserGateway userRepository;
     private final LoanableItemGateway loanableItemGateway;
@@ -45,14 +37,9 @@ public class Library {
     private static final String MUSIC = "music";
 
     @Autowired
-    public Library(GatewayMapper gatewayMapper, MovieGateway movieRepository, BookGateway bookRepository,
-                   MagazineGateway magazineRepository, MusicGateway musicRepository, ItemGateway itemGateway, UserGateway userRepository,
+    public Library(GatewayMapper gatewayMapper, ItemGateway itemGateway, UserGateway userRepository,
                    LoanableItemGateway loanableItemGateway, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.gatewayMapper = gatewayMapper;
-        this.movieRepository = movieRepository;
-        this.bookRepository = bookRepository;
-        this.magazineRepository = magazineRepository;
-        this.musicRepository = musicRepository;
         this.itemGateway = itemGateway;
         this.userRepository = userRepository;
         this.loanableItemGateway = loanableItemGateway;
@@ -87,14 +74,6 @@ public class Library {
         }
     }
 
-    public Item getItem(ItemSpecification itemSpecification) {
-        if(itemSpecification.getTable().equals(MAGAZINE_TABLE)){
-            return itemGateway.findFirstByItemSpecId(itemSpecification.getTable(), itemSpecification.getId());
-        }else{
-            return loanableItemGateway.findFirstByItemSpecId(itemSpecification.getTable(), itemSpecification.getId());
-        }
-    }
-
     public List<Item> findAllItems() {
         return itemGateway.findAll();
     }
@@ -104,13 +83,14 @@ public class Library {
     }
 
     public Map<String, List<?>> getAllItemSpecs() {
-        return ImmutableMap.of(MOVIE, movieRepository.findAll(), BOOK, bookRepository.findAll(), MUSIC, musicRepository.findAll(), MAGAZINE,
-                magazineRepository.findAll());
+        return ImmutableMap.of(MOVIE, gatewayMapper.getGateway(MOVIE).findAll(), BOOK, gatewayMapper.getGateway(BOOK).findAll(), MUSIC,
+                gatewayMapper.getGateway(MUSIC).findAll(), MAGAZINE, gatewayMapper.getGateway(MAGAZINE).findAll());
     }
 
     public Map<String, List<?>> searchAllItemSpecByTitle(String titleValue) {
-        return ImmutableMap.of(MOVIE, movieRepository.findByTitle(titleValue), BOOK, bookRepository.findByTitle(titleValue), MUSIC,
-                musicRepository.findByTitle(titleValue), MAGAZINE, magazineRepository.findByTitle(titleValue));
+        return ImmutableMap.of(MOVIE, gatewayMapper.getGateway(MOVIE).findByTitle(titleValue), BOOK,
+                gatewayMapper.getGateway(BOOK).findByTitle(titleValue), MUSIC, gatewayMapper.getGateway(MUSIC).findByTitle(titleValue),
+                MAGAZINE, gatewayMapper.getGateway(MAGAZINE).findByTitle(titleValue));
     }
 
     public List<?> getAllItemSpecOfType(String itemType) {
@@ -134,7 +114,6 @@ public class Library {
 
         return itemTypeMapping;
     }
-
 
     private void fillMapForLoanable(List<LoanableItem> items, Map<String, Map<Long, Integer>> map) {
         items.forEach(item -> {

@@ -1,6 +1,5 @@
 package com.soen343.project.repository.dao.transaction;
 
-import com.google.common.collect.ImmutableMap;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.dao.transaction.com.TransactionGateway;
@@ -29,7 +28,6 @@ import static com.soen343.project.repository.dao.transaction.com.DateConverter.c
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-@SuppressWarnings("unchecked")
 public class LoanTransactionGateway implements TransactionGateway<LoanTransaction> {
 
     private final Scheduler scheduler;
@@ -91,8 +89,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     @Override
     public LoanTransaction findById(Long id) {
         scheduler.reader_p();
-        LoanTransaction loanTransaction =
-                (LoanTransaction) executeForeignKeyTableQuery(createFindByIdQuery(LOANTRANSACTION_TABLE, id), (rs, statement) -> {
+        LoanTransaction loanTransaction = executeForeignKeyTableQuery(createFindByIdQuery(LOANTRANSACTION_TABLE, id), (rs, statement) -> {
                     rs.next();// Move to query result
                     Long transactionId = rs.getLong(ID);
                     Long itemId = rs.getLong(ITEMID);
@@ -134,8 +131,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     @Override
     public List<LoanTransaction> findAll() {
         scheduler.reader_p();
-        List<LoanTransaction> list =
-                (List<LoanTransaction>) executeQueryExpectMultiple(createFindAllQuery(LOANTRANSACTION_TABLE), findAllTransaction());
+        List<LoanTransaction> list = executeQueryExpectMultiple(createFindAllQuery(LOANTRANSACTION_TABLE), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
@@ -148,7 +144,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     }
 
     @Override
-    public List<?> findByTransactionDate(String transactionDate) {
+    public List<LoanTransaction> findByTransactionDate(String transactionDate) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, TRANSACTIONDATE, transactionDate),
                 findAllTransaction());
@@ -157,7 +153,7 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     }
 
     @Override
-    public List<?> findByUserId(Long userId) {
+    public List<LoanTransaction> findByUserId(Long userId) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, USERID, userId), findAllTransaction());
         scheduler.reader_v();
@@ -165,30 +161,20 @@ public class LoanTransactionGateway implements TransactionGateway<LoanTransactio
     }
 
     @Override
-    public List<?> findByItemType(String itemType) {
+    public List<LoanTransaction> findByItemType(String itemType) {
         scheduler.reader_p();
-        List loanTransactions =
-                executeQueryExpectMultiple(createDoubleTableQuery(LOANTRANSACTION_TABLE, ITEM_TABLE, ITEMID, TYPE, itemType),
+        List loanTransactions = executeQueryExpectMultiple(createDoubleTableQuery(LOANTRANSACTION_TABLE, ITEM_TABLE, ITEMID, TYPE, itemType),
                         findAllTransaction());
         scheduler.reader_v();
         return loanTransactions;
     }
 
-    public List<?> findByDueDate(String dueDate) {
+    public List<LoanTransaction> findByDueDate(String dueDate) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(LOANTRANSACTION_TABLE, DUEDATE, dueDate), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
-
-    public List<?> findByUserIdAndTransactionDate(Long userId, String transactionDate) {
-        scheduler.reader_p();
-        List list = executeQueryExpectMultiple(createSearchByAttributesQuery(LOANTRANSACTION_TABLE,
-                ImmutableMap.of(USERID, userId.toString(), TRANSACTIONDATE, transactionDate)), findAllTransaction());
-        scheduler.reader_v();
-        return list;
-    }
-
 
     private DatabaseQueryOperation findAllTransaction() {
         return (rs, statement) -> {

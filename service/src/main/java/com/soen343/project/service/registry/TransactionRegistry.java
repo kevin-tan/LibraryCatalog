@@ -69,11 +69,11 @@ public class TransactionRegistry {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public List<?> searchLoanTransactions() {
+    public List<LoanTransaction> searchLoanTransactions() {
         return loanTransactionGateway.findAll();
     }
 
-    public List<?> searchReturnTransactions() {
+    public List<ReturnTransaction> searchReturnTransactions() {
         return returnTransactionGateway.findAll();
     }
 
@@ -83,15 +83,15 @@ public class TransactionRegistry {
                         RETURN_TRANSACTION, returnTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText()));
     }
 
-    public List<?> searchLoanByTransactionDate(ObjectNode transactionDate) {
+    public List<LoanTransaction> searchLoanByTransactionDate(ObjectNode transactionDate) {
         return loanTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText());
     }
 
-    public List<?> searchLoanByDueDate(ObjectNode dueDate) {
+    public List<LoanTransaction> searchLoanByDueDate(ObjectNode dueDate) {
         return loanTransactionGateway.findByDueDate(dueDate.get(DUEDATE).asText());
     }
 
-    public List<?> searchReturnByTransactionDate(ObjectNode transactionDate) {
+    public List<ReturnTransaction> searchReturnByTransactionDate(ObjectNode transactionDate) {
         return returnTransactionGateway.findByTransactionDate(transactionDate.get(TRANSACTIONDATE).asText());
     }
 
@@ -100,11 +100,11 @@ public class TransactionRegistry {
                 returnTransactionGateway.findByUserId(userId));
     }
 
-    public List<?> searchLoanByUserId(Long userId) {
+    public List<LoanTransaction> searchLoanByUserId(Long userId) {
         return loanTransactionGateway.findByUserId(userId);
     }
 
-    public List<?> searchReturnByUserId(Long userId) {
+    public List<ReturnTransaction> searchReturnByUserId(Long userId) {
         return returnTransactionGateway.findByUserId(userId);
     }
 

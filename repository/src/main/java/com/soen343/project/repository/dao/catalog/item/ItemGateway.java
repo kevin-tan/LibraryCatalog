@@ -6,7 +6,7 @@ import com.soen343.project.database.base.DatabaseEntity;
 import com.soen343.project.database.connection.operation.DatabaseQueryOperation;
 import com.soen343.project.database.query.QueryBuilder;
 import com.soen343.project.repository.concurrency.Scheduler;
-import com.soen343.project.repository.dao.Gateway;
+import com.soen343.project.repository.dao.catalog.item.com.ItemsGateway;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
 import com.soen343.project.repository.uow.UnitOfWork;
@@ -22,7 +22,7 @@ import static com.soen343.project.repository.dao.catalog.itemspec.operation.Item
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
 @Component
-public class ItemGateway implements Gateway<Item> {
+public class ItemGateway implements ItemsGateway<Item> {
 
     private final Scheduler scheduler;
 
@@ -60,7 +60,7 @@ public class ItemGateway implements Gateway<Item> {
     @Override
     public Item findById(Long id) {
         scheduler.reader_p();
-        Item item = (Item) executeForeignKeyTableQuery(createFindByIdQuery(ITEM_TABLE, id), (rs, statement) -> {
+        Item item = executeForeignKeyTableQuery(createFindByIdQuery(ITEM_TABLE, id), (rs, statement) -> {
             rs.next(); // Move to query result
             Long itemSpecId = rs.getLong(ITEMSPECID);
             String itemSpecType = rs.getString(TYPE);
@@ -85,7 +85,7 @@ public class ItemGateway implements Gateway<Item> {
     @SuppressWarnings("unchecked")
     public List<Item> findAll() {
         scheduler.reader_p();
-        List<Item> list = (List<Item>) executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), databaseQueryOperation());
+        List<Item> list = executeQueryExpectMultiple(createFindAllQuery(ITEM_TABLE), databaseQueryOperation());
         scheduler.reader_v();
         return list;
     }
@@ -97,7 +97,8 @@ public class ItemGateway implements Gateway<Item> {
         scheduler.writer_v();
     }
 
-    public List<?> findByItemSpecId(String itemType, Long itemSpecId) {
+    @Override
+    public List<Item> findByItemSpecId(String itemType, Long itemSpecId) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(
                 createSearchByAttributesQuery(ITEM_TABLE, ImmutableMap.of(TYPE, itemType, ITEMSPECID, itemSpecId.toString())),
@@ -106,6 +107,7 @@ public class ItemGateway implements Gateway<Item> {
         return list;
     }
 
+    @Override
     public Item findFirstByItemSpecId(String itemType, Long itemSpecId) {
         scheduler.reader_p();
         DatabaseEntity item = executeQuery(

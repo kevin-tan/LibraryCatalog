@@ -73,8 +73,7 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     @Override
     public ReturnTransaction findById(Long id) {
         scheduler.reader_p();
-        ReturnTransaction loanTransaction =
-                (ReturnTransaction) executeForeignKeyTableQuery(createFindByIdQuery(RETURNTRANSACTION_TABLE, id), (rs, statement) -> {
+        ReturnTransaction loanTransaction = executeForeignKeyTableQuery(createFindByIdQuery(RETURNTRANSACTION_TABLE, id), (rs, statement) -> {
                     rs.next();// Move to query result
                     Long transactionId = rs.getLong(ID);
                     Long itemId = rs.getLong(ITEMID);
@@ -112,11 +111,9 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<ReturnTransaction> findAll() {
         scheduler.reader_p();
-        List<ReturnTransaction> list =
-                (List<ReturnTransaction>) executeQueryExpectMultiple(createFindAllQuery(RETURNTRANSACTION_TABLE), findAllTransaction());
+        List<ReturnTransaction> list = executeQueryExpectMultiple(createFindAllQuery(RETURNTRANSACTION_TABLE), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
@@ -129,16 +126,16 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     }
 
     @Override
-    public List<?> findByUserId(Long userId) {
+    public List<ReturnTransaction> findByUserId(Long userId) {
         scheduler.reader_p();
-        List<?> list =
+        List<ReturnTransaction> list =
                 executeQueryExpectMultiple(createSearchByAttributeQuery(RETURNTRANSACTION_TABLE, USERID, userId), findAllTransaction());
         scheduler.reader_v();
         return list;
     }
 
     @Override
-    public List<?> findByTransactionDate(String transactionDate) {
+    public List<ReturnTransaction> findByTransactionDate(String transactionDate) {
         scheduler.reader_p();
         List list = executeQueryExpectMultiple(createSearchByAttributeQuery(RETURNTRANSACTION_TABLE, TRANSACTIONDATE, transactionDate),
                 findAllTransaction());
@@ -147,7 +144,7 @@ public class ReturnTransactionGateway implements TransactionGateway<ReturnTransa
     }
 
     @Override
-    public List<?> findByItemType(String itemType) {
+    public List<ReturnTransaction> findByItemType(String itemType) {
         scheduler.reader_p();
         List transactions = executeQueryExpectMultiple(createDoubleTableQuery(RETURNTRANSACTION_TABLE, ITEM_TABLE, ITEMID, TYPE, itemType),
                 findAllTransaction());

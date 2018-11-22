@@ -61,7 +61,7 @@ public class ClientHandler {
         return transactionService.createReturnTransactions(client, loanableItems);
     }
 
-    public List<?> getLoanedItemsByUserID(Long clientId) {
+    public List<LoanableItem> getLoanedItemsByUserID(Long clientId) {
         return loanableItemGateway.findByUserIdAndIsLoaned(clientId);
     }
 
