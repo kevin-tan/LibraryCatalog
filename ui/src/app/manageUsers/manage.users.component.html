@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html>
+<title>Library Catalog</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+<body class="w3-black">
+
+<app-navbar></app-navbar>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+  <!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <h3 class="w3-jumbo">Manage Users</h3> <br>
+    <hr style="width:100%" class="w3-opacity">
+    <h5>On this page you may do any of the following:<br><br>- Edit a user by selecting it and changing any of its fields (email + phone number must be unique) (leave password field untouched to keep old password)<br>- Delete a user by selecting it and pressing delete (there must always be at least one admin in the system)<br><br>Once you're done, hit save changes at the bottom</h5>
+    <hr style="width:100%" class="w3-opacity">
+  </header>
+
+  <h2><i>Users</i></h2>
+  <hr>
+  <div>
+    <form ngNativeValidate #userForm="ngForm">
+      <table width="65%">
+        <tr>
+          <th>
+            <label class="formLabel">First Name</label>
+            <div>
+              <textarea rows="1" cols="47" id="firstName" #firstName firstName.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Last Name</label>
+            <div>
+              <textarea rows="1" cols="47" id="lastName" #lastName lastName.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Address</label>
+            <div>
+              <textarea rows="1" cols="47" id="address" #address address.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">E-Mail</label>
+            <div>
+              <textarea rows="1" cols="47" id="email" #email email.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            <label class="formLabel">Phone Number</label>
+            <div>
+              <textarea rows="1" cols="47" id="phoneNumber" #phoneNumber phoneNumber.value="" name="clear" ngModel required></textarea>
+            </div>
+          </th>
+          <th>
+            <label class="formLabel">Password</label>
+            <div>
+              <textarea rows="1" cols="47" id="password" #password password.value="" name="clear" ngModel></textarea>
+            </div>
+          </th>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td align="right">
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top w3-margin-right"
+                    (click)="deleteUser()">
+              <i class="fa fa-minus"></i><b> Delete User</b>
+            </button>
+            <button class="w3-bar-item w3-button w3-grey w3-round w3-margin-top"
+                    (click)="editUser(firstName.value, lastName.value, address.value, email.value, phoneNumber.value, password.value)">
+              <i class="fa fa-wrench"></i><b> Edit User</b>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+
+  <br>
+  <table mat-table #userSort="matSort" [dataSource]="matUserList" matSort class="mat-elevation-z8" width="100%">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox [checked]="userSelection.hasValue()"
+                      [indeterminate]="userSelection.hasValue()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation(); userRowSelected(row)"
+                      (change)="$event ? userSelection.toggle(row) : null"
+                      [checked]="userSelection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userType">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header=""> User Type</th>
+      <td mat-cell *matCellDef="let element"> {{element.userType}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name</th>
+      <td mat-cell *matCellDef="let element"> {{element.firstName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name</th>
+      <td mat-cell *matCellDef="let element"> {{element.lastName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Address</th>
+      <td mat-cell *matCellDef="let element"> {{element.physicalAddress}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Mail</th>
+      <td mat-cell *matCellDef="let element"> {{element.email}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="phoneNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone Number</th>
+      <td mat-cell *matCellDef="let element"> {{element.phoneNumber}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayUserColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayUserColumns;"
+        (click)="userSelection.toggle(row)">
+    </tr>
+  </table>
+
+  <hr style="width:100%" class="w3-opacity">
+  <button class="w3-bar-item w3-button w3-grey w3-round"
+          (click)="saveAll()">
+    <b>Save Changes </b><i class="fa fa-check-circle"></i>
+  </button>
+
+  <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <p class="w3-medium">Created by SOEN343 team#10</p>
+    <!-- End footer -->
+  </footer>
+
+  <!-- END PAGE CONTENT -->
+</div>
+</body>
+</html>

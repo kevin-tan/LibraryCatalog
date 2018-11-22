@@ -33,6 +33,7 @@ import {AddItemSpecService} from './manageCatalog/add.item.spec.service';
 import {DeleteItemSpecService} from './manageCatalog/delete.item.spec.service';
 import {EditItemSpecService} from './manageCatalog/edit.item.spec.service';
 import {EditInventoryService} from './manageCatalog/edit.inventory.service';
+import {ManageUsersComponent} from './manageUsers/manage.users.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {EditInventoryService} from './manageCatalog/edit.inventory.service';
     CartComponent,
     NavbarComponent,
     DetailsComponent,
-    ManageCatalogComponent
+    ManageCatalogComponent,
+    ManageUsersComponent
   ],
   imports: [
     BrowserModule,
