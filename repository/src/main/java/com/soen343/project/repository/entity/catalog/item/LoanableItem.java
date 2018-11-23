@@ -2,10 +2,12 @@ package com.soen343.project.repository.entity.catalog.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.catalog.itemspec.printed.Magazine;
 import com.soen343.project.repository.entity.user.Client;
 import lombok.Data;
 
 import static com.soen343.project.repository.entity.EntityConstants.*;
+import static org.valid4j.Assertive.*;
 
 @Data
 public class LoanableItem extends Item {
@@ -25,6 +27,9 @@ public class LoanableItem extends Item {
         super(0L, spec);
         this.available = true;
         this.client = null;
+
+        ensure(!this.type.equals(Magazine.class.getSimpleName()));
+        ensure(this.available == (client == null));
     }
 
     @Override
@@ -57,5 +62,3 @@ public class LoanableItem extends Item {
         return super.getId();
     }
 }
-
-

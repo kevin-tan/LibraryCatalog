@@ -27,15 +27,15 @@ public class LoanTransaction extends Transaction {
     public LoanTransaction(Long id, LoanableItem loanableItem, Client client, LocalDateTime transactionDate, LocalDateTime dueDate) {
         super(id, loanableItem, client, transactionDate);
         this.dueDate = dueDate;
-
-        ensure(this.loanableItem.getSpec() instanceof PrintedItem ? daysDifference(dueDate, transactionDate) == PrintedItem.DAYS_UNTIL_DUE : true);
-        ensure(this.loanableItem.getSpec() instanceof MediaItem ? daysDifference(dueDate, transactionDate) == PrintedItem.DAYS_UNTIL_DUE : true);
     }
 
     public LoanTransaction(LoanableItem loanableItem, Client client, LocalDateTime transactionDate) {
         super(loanableItem, client, transactionDate);
         this.loanableItem.setAvailable(false);
         this.dueDate = this.transactionDate.plusDays(LoanDays.DAYS_UNTIL_DUE.get(loanableItem.getType()));
+
+        ensure(this.loanableItem.getSpec() instanceof PrintedItem ? daysDifference(dueDate, transactionDate) == PrintedItem.DAYS_UNTIL_DUE : true);
+        ensure(this.loanableItem.getSpec() instanceof MediaItem ? daysDifference(dueDate, transactionDate) == MediaItem.DAYS_UNTIL_DUE : true);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class LoanTransaction extends Transaction {
     }
 
     private static long daysDifference(LocalDateTime d1, LocalDateTime d2) {
-        return ChronoUnit.DAYS.between(d1, d2);
+        return ChronoUnit.DAYS.between(d2, d1);
     }
 
 }

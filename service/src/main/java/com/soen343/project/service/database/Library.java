@@ -70,7 +70,7 @@ public class Library {
         if (itemSpec.getTable().equals(MAGAZINE_TABLE)) {
             return new Item(itemSpec);
         } else {
-            return new LoanableItem(0L, itemSpec, true, null);
+            return new LoanableItem(itemSpec);
         }
     }
 
