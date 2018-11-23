@@ -2,6 +2,7 @@ package com.soen343.project.service.user;
 
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
 import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
+import com.soen343.project.repository.dao.transaction.ReturnTransactionGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.user.Client;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.valid4j.Assertive.*;
 import static org.hamcrest.Matchers.*;
@@ -25,6 +27,7 @@ public class ClientHandler {
     private UserGateway userGateway;
     private LoanableItemGateway loanableItemGateway;
     private LoanTransactionGateway loanTransactionGateway;
+    private ReturnTransactionGateway returnTransactionGateway;
     private TransactionService transactionService;
     private Client client;
 
@@ -34,11 +37,13 @@ public class ClientHandler {
 
     @Autowired
     public ClientHandler(CartHandler cartHandler, UserGateway userGateway, LoanableItemGateway loanableItemGateway,
-                         TransactionService transactionService) {
+                         TransactionService transactionService, LoanTransactionGateway loanTransactionGateway, ReturnTransactionGateway returnTransactionGateway) {
         this.cartHandler = cartHandler;
         this.userGateway = userGateway;
         this.loanableItemGateway = loanableItemGateway;
         this.transactionService = transactionService;
+        this.loanTransactionGateway = loanTransactionGateway;
+        this.returnTransactionGateway = returnTransactionGateway;
     }
 
     public Cart cancelLoan(Long clientId) {
@@ -59,6 +64,7 @@ public class ClientHandler {
 
         setClient(clientId);
         List<LoanableItem> loanables = cartHandler.getLoanables(clientId);
+        int itemsBeingLoanedSize = loanables.size();
 
         long numberOfOwnedItems = getLoanedItemsByUserID(clientId).size();
         try {
@@ -72,7 +78,7 @@ public class ClientHandler {
         ResponseEntity<?> resp = transactionService.createLoanTransactions(client, loanables);
         cartHandler.clear(clientId);
 
-        ensure(this.loanTransactionGateway.findByUserId(clientId), hasSize(loanTransactionsPreSize + loanables.size()));
+        ensure(this.loanTransactionGateway.findByUserId(clientId), hasSize(loanTransactionsPreSize + itemsBeingLoanedSize));
         ensure(this.getLoanedItemsByUserID(clientId).stream()
                 .allMatch(l -> l.getClient().getId().equals(clientId) && !l.getAvailable()));
         ensure(this.cartHandler.getCartById(clientId).isEmpty());
@@ -80,8 +86,25 @@ public class ClientHandler {
     }
 
     public ResponseEntity<?> returnItems(Long clientId, List<LoanableItem> loanableItems) {
+        List<LoanableItem> cartItems = this.cartHandler.getLoanables(clientId);
+        require(loanableItems.stream().filter(loanableItem ->
+                cartItems.stream().anyMatch(l -> l.getId().equals(loanableItem.getId())))
+                .collect(Collectors.toList()).isEmpty());
+
+        int returnTransactionsPreSize = this.returnTransactionGateway.findByUserId(clientId).size();
+        int loanableItemsPreSize = this.getLoanedItemsByUserID(clientId).size();
+
+
         setClient(clientId);
-        return transactionService.createReturnTransactions(client, loanableItems);
+        ResponseEntity<?> resp =  transactionService.createReturnTransactions(client, loanableItems);
+
+        ensure(this.returnTransactionGateway.findByUserId(clientId), hasSize(returnTransactionsPreSize + loanableItems.size()));
+        List<LoanableItem> loanableItemsPost = this.getLoanedItemsByUserID(clientId);
+        ensure(loanableItemsPost, hasSize(loanableItemsPreSize - loanableItems.size()));
+        ensure(loanableItems.stream().filter(loanableItem ->
+                loanableItemsPost.stream().anyMatch(l -> l.getId().equals(loanableItem.getId())))
+                .collect(Collectors.toList()).isEmpty());
+        return resp;
     }
 
     public List<LoanableItem> getLoanedItemsByUserID(Long clientId) {
