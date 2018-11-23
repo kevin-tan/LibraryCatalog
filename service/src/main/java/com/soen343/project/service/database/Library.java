@@ -62,7 +62,7 @@ public class Library {
         return userGateway.findAll();
     }
 
-    public List<User> getAllAdmins(){
+    public List<User> getAllAdmins() {
         return userGateway.findAllAdmins();
     }
 
@@ -115,10 +115,17 @@ public class Library {
 
     public Map<String, ?> getAllItemSpecQuantities() {
         Map<String, Map<Long, Integer>> itemTypeMapping = new HashMap<>();
+        List<Item> magazines = (List<Item>) itemGateway.findByItemSpec(MAGAZINE_TABLE);
+        List<LoanableItem> loanables = loanableItemGateway.findAll();
 
-        // Map
-        fillMapForMagazine((List<Item>) itemGateway.findByItemSpec(MAGAZINE_TABLE), itemTypeMapping);
-        fillMapForLoanable(loanableItemGateway.findAll(), itemTypeMapping);
+        // Fill maps
+        if (magazines != null) {
+            fillMapForMagazine(magazines, itemTypeMapping);
+        }
+
+        if (loanables != null) {
+            fillMapForLoanable(loanables, itemTypeMapping);
+        }
 
         return itemTypeMapping;
     }

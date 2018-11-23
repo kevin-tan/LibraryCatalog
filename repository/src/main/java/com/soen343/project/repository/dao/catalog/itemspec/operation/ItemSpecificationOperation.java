@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.soen343.project.database.connection.DatabaseConnector.executeUpdate;
 import static com.soen343.project.database.query.QueryBuilder.*;
 import static com.soen343.project.repository.entity.EntityConstants.*;
 
@@ -35,11 +34,9 @@ public final class ItemSpecificationOperation {
                 movie.setProducers(findAllFromForeignKey(statement, movie.getProducersTable(), movie.getId()));
                 movie.setActors(findAllFromForeignKey(statement, movie.getActorsTable(), movie.getId()));
                 movie.setDubbed(findAllFromForeignKey(statement, movie.getDubbedTable(), movie.getId()));
-            }
-            else {
+            } else {
                 statement.executeUpdate(createSaveQuery(movie.getTableWithColumns(), movie.toSQLValue()));
-                movie.setId(statement.executeQuery(GET_ID_MOST_RECENT)
-                        .getInt(MOST_RECENT_ID_COL));
+                movie.setId(statement.executeQuery(GET_ID_MOST_RECENT).getInt(MOST_RECENT_ID_COL));
                 statement.executeUpdate(createSaveQuery(movie.getProducersTableWithColumns(), movie.getProducersSQLValues()));
                 statement.executeUpdate(createSaveQuery(movie.getActorsTableWithColumns(), movie.getActorsSQLValues()));
                 statement.executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
@@ -50,12 +47,9 @@ public final class ItemSpecificationOperation {
     public static DatabaseBatchOperation movieDeleteOperation(Movie movie) {
         return statement -> {
             statement.executeUpdate(createDeleteQuery(movie.getTable(), movie.getId()));
-            statement.executeUpdate(createDeleteQuery(movie.getProducersTable(), MOVIEID, movie.getId()
-                    .toString()));
-            statement.executeUpdate(createDeleteQuery(movie.getActorsTable(), MOVIEID, movie.getId()
-                    .toString()));
-            statement.executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId()
-                    .toString()));
+            statement.executeUpdate(createDeleteQuery(movie.getProducersTable(), MOVIEID, movie.getId().toString()));
+            statement.executeUpdate(createDeleteQuery(movie.getActorsTable(), MOVIEID, movie.getId().toString()));
+            statement.executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId().toString()));
             executeDeleteLoanable(statement, movie);
         };
     }
@@ -63,12 +57,9 @@ public final class ItemSpecificationOperation {
     public static DatabaseBatchOperation movieUpdateOperation(Movie movie) {
         return statement -> {
             statement.executeUpdate(createUpdateQuery(movie.getTable(), movie.sqlUpdateValues(), movie.getId()));
-            statement.executeUpdate(createDeleteQuery(movie.getProducersTable(), MOVIEID, movie.getId()
-                    .toString()));
-            statement.executeUpdate(createDeleteQuery(movie.getActorsTable(), MOVIEID, movie.getId()
-                    .toString()));
-            statement.executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId()
-                    .toString()));
+            statement.executeUpdate(createDeleteQuery(movie.getProducersTable(), MOVIEID, movie.getId().toString()));
+            statement.executeUpdate(createDeleteQuery(movie.getActorsTable(), MOVIEID, movie.getId().toString()));
+            statement.executeUpdate(createDeleteQuery(movie.getDubbedTable(), MOVIEID, movie.getId().toString()));
             statement.executeUpdate(createSaveQuery(movie.getProducersTableWithColumns(), movie.getProducersSQLValues()));
             statement.executeUpdate(createSaveQuery(movie.getActorsTableWithColumns(), movie.getActorsSQLValues()));
             statement.executeUpdate(createSaveQuery(movie.getDubbedTableWithColumns(), movie.getDubbedSQLValues()));
@@ -76,10 +67,12 @@ public final class ItemSpecificationOperation {
     }
 
     private static void executeDeleteLoanable(Statement statement, DatabaseEntity databaseEntity) throws SQLException {
-        statement.execute("DELETE FROM LoanableItem WHERE id = (SELECT id FROM Item WHERE itemSpecId = " + databaseEntity.getId() +
-                          " and Item.type = '" + databaseEntity.getTable() + "');");
-        statement.executeUpdate(createDeleteQuery(ITEM_TABLE, ITEMSPECID, databaseEntity.getId()
-                .toString(), TYPE, databaseEntity.getTable()));
+        String query = "DELETE FROM LoanableItem WHERE EXISTS (SELECT * FROM Item WHERE Item.id = LoanableItem.id and Item.itemSpecId = " +
+                       databaseEntity.getId() + " and Item.type = '" + databaseEntity.getTable() + "');";
+
+        statement.executeUpdate(query);
+        statement.executeUpdate(
+                createDeleteQuery(ITEM_TABLE, ITEMSPECID, databaseEntity.getId().toString(), TYPE, databaseEntity.getTable()));
     }
 
     public static DatabaseBatchOperation deleteItemSpecOperation(DatabaseEntity databaseEntity) {
@@ -92,8 +85,7 @@ public final class ItemSpecificationOperation {
     public static DatabaseBatchOperation deleteMagazine(Magazine magazine) {
         return statement -> {
             statement.executeUpdate(createDeleteQuery(magazine.getTable(), magazine.getId()));
-            statement.executeUpdate(createDeleteQuery(ITEM_TABLE, ITEMSPECID, magazine.getId()
-                    .toString(), TYPE, magazine.getTable()));
+            statement.executeUpdate(createDeleteQuery(ITEM_TABLE, ITEMSPECID, magazine.getId().toString(), TYPE, magazine.getTable()));
         };
     }
 
@@ -111,8 +103,7 @@ public final class ItemSpecificationOperation {
         ResultSet rs = statement.executeQuery(createFindByAttributeQuery(itemSpecification.getTable(), attribute, value));
         if (rs.next()) {
             itemSpecification.setId(rs.getLong(ID));
-        }
-        else {
+        } else {
             statement.executeUpdate(createSaveQuery(itemSpecification.getTableWithColumns(), itemSpecification.toSQLValue()));
         }
     }
@@ -120,14 +111,11 @@ public final class ItemSpecificationOperation {
     public static ItemSpecification getItemSpec(String type, ResultSet rs, Statement statement, Long id) throws SQLException {
         if (type.equalsIgnoreCase(Music.class.getSimpleName())) {
             return Music.buildMusic(rs);
-        }
-        else if (type.equalsIgnoreCase(Magazine.class.getSimpleName())) {
+        } else if (type.equalsIgnoreCase(Magazine.class.getSimpleName())) {
             return Magazine.buildMagazine(rs);
-        }
-        else if (type.equalsIgnoreCase(Book.class.getSimpleName())) {
+        } else if (type.equalsIgnoreCase(Book.class.getSimpleName())) {
             return Book.buildBook(rs);
-        }
-        else if (type.equalsIgnoreCase(Movie.class.getSimpleName())) {
+        } else if (type.equalsIgnoreCase(Movie.class.getSimpleName())) {
             Movie movie = Movie.buildMovie(rs, null, null, null);
             movie.setProducers(findAllFromForeignKey(statement, PRODUCERS_TABLE, id));
             movie.setActors(findAllFromForeignKey(statement, ACTORS_TABLE, id));

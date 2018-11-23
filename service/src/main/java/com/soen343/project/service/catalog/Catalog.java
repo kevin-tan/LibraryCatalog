@@ -44,8 +44,13 @@ public class Catalog {
 
     public String createNewSession() {
         String sessionID = UUID.randomUUID().toString();
-        catalogSessions
-                .put(sessionID, new CatalogSession(scheduler, executeQuery(LATEST_ITEM_ID_QUERY, (rs, statement) -> rs.getLong(ID))));
+        catalogSessions.put(sessionID, new CatalogSession(scheduler, executeQuery(LATEST_ITEM_ID_QUERY, (rs, statement) -> {
+            if (rs.next()) {
+                return rs.getLong(ID);
+            } else {
+                return 0L;
+            }
+        })));
         return sessionID;
     }
 

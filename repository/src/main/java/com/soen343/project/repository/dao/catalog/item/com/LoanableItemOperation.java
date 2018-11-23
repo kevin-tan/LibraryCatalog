@@ -65,28 +65,26 @@ public final class LoanableItemOperation {
             }
 
             for (LoanableItem loanableItem : loanableItems) {
-                Long itemSpecId = null;
-                String itemSpecType = null;
 
                 ResultSet itemRS = statement.executeQuery(createFindByIdQuery(ITEM_TABLE, loanableItem.getId()));
                 if(itemRS.next()) {
-                    itemSpecId = itemRS.getLong(ITEMSPECID);
-                    itemSpecType = itemRS.getString(TYPE);
-                }
+                    Long itemSpecId = itemRS.getLong(ITEMSPECID);
+                    String itemSpecType = itemRS.getString(TYPE);
 
-                ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
-                while (itemSpecRS.next()) {
-                    loanableItem.setSpec(getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId));
-                }
+                    ResultSet itemSpecRS = statement.executeQuery(createFindByIdQuery(itemSpecType, itemSpecId));
+                    while (itemSpecRS.next()) {
+                        loanableItem.setSpec(getItemSpec(itemSpecType, itemSpecRS, statement, itemSpecId));
+                    }
 
-                if (loanableItem.getClient() != null) {
-                    ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient()
-                            .getId()));
-                    while (clientRS.next()) {
-                        loanableItem.setClient(
-                                new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
-                                        clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL), clientRS.getString(PHONE_NUMBER),
-                                        clientRS.getString(PASSWORD)));
+                    if (loanableItem.getClient() != null) {
+                        ResultSet clientRS = statement.executeQuery(createFindByIdQuery(USER_TABLE, loanableItem.getClient()
+                                .getId()));
+                        while (clientRS.next()) {
+                            loanableItem.setClient(
+                                    new Client(clientRS.getLong(ID), clientRS.getString(FIRST_NAME), clientRS.getString(LAST_NAME),
+                                            clientRS.getString(PHYSICAL_ADDRESS), clientRS.getString(EMAIL), clientRS.getString(PHONE_NUMBER),
+                                            clientRS.getString(PASSWORD)));
+                        }
                     }
                 }
             } return loanableItems;
