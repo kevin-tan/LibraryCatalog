@@ -36,5 +36,9 @@
             <groupId>org.valid4j</groupId>
             <artifactId>valid4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
     </dependencies>
 </project>

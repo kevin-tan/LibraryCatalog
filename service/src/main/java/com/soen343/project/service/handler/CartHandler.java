@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.valid4j.Assertive.*;
-
 @Service
 public class CartHandler implements Observer<User> {
 
@@ -32,12 +30,12 @@ public class CartHandler implements Observer<User> {
 
     @Override
     public void update(User user, boolean userIsLoggingIn) {
-        require(user.getUserType().equals(Client.class.getSimpleName()));
-
-        if (userIsLoggingIn) {
-            carts.put(user.getId(), new Cart());
-        } else {
-            carts.remove(user.getId());
+        if ((user instanceof Client)) {
+            if (userIsLoggingIn) {
+                carts.put(user.getId(), new Cart());
+            } else {
+                carts.remove(user.getId());
+            }
         }
     }
 

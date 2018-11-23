@@ -1,6 +1,7 @@
 package com.soen343.project.service.user;
 
 import com.soen343.project.repository.dao.catalog.item.LoanableItemGateway;
+import com.soen343.project.repository.dao.transaction.LoanTransactionGateway;
 import com.soen343.project.repository.dao.user.UserGateway;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.user.Client;
@@ -14,16 +15,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.valid4j.Assertive.*;
+import static org.hamcrest.Matchers.*;
+
 @Service
 public class ClientHandler {
 
     private CartHandler cartHandler;
     private UserGateway userGateway;
     private LoanableItemGateway loanableItemGateway;
+    private LoanTransactionGateway loanTransactionGateway;
     private TransactionService transactionService;
     private Client client;
 
     private final long MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN = 3;
+
+
 
     @Autowired
     public ClientHandler(CartHandler cartHandler, UserGateway userGateway, LoanableItemGateway loanableItemGateway,
@@ -35,24 +42,40 @@ public class ClientHandler {
     }
 
     public Cart cancelLoan(Long clientId) {
-        return cartHandler.clear(clientId);
+        require(!this.cartHandler.getCartById(clientId).isEmpty());
+
+        Cart cart = cartHandler.clear(clientId);
+
+        ensure(cart.isEmpty());
+        return cart;
     }
 
     public ResponseEntity<?> loanItems(Long clientId) {
+        try {
+            require(!this.cartHandler.getCartById(clientId).isEmpty());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         setClient(clientId);
         List<LoanableItem> loanables = cartHandler.getLoanables(clientId);
 
         long numberOfOwnedItems = getLoanedItemsByUserID(clientId).size();
-
-        if (numberOfOwnedItems + loanables.size() > MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN) {
+        try {
+            require(numberOfOwnedItems + loanables.size() <= MAX_NUMBER_OF_ITEMS_CLIENT_CAN_LOAN);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        ResponseEntity<?> resp = transactionService.createLoanTransactions(client, loanables);
+        int loanTransactionsPreSize = this.loanTransactionGateway.findByUserId(clientId).size();
 
-        // Clear
+        ResponseEntity<?> resp = transactionService.createLoanTransactions(client, loanables);
         cartHandler.clear(clientId);
 
+        ensure(this.loanTransactionGateway.findByUserId(clientId), hasSize(loanTransactionsPreSize + loanables.size()));
+        ensure(this.getLoanedItemsByUserID(clientId).stream()
+                .allMatch(l -> l.getClient().getId().equals(clientId) && !l.getAvailable()));
+        ensure(this.cartHandler.getCartById(clientId).isEmpty());
         return resp;
     }
 
