@@ -38,7 +38,7 @@
 
     <hr style="width:200px" class="w3-opacity">
 
-    <button class="w3-button w3-light-grey w3-padding-large" (click)="cancel()">
+    <button *ngIf="loanableItems == null" class="w3-button w3-light-grey w3-padding-large" (click)="cancel()">
       Cancel Loan
     </button>
     <div *ngIf="selectedItem != null">

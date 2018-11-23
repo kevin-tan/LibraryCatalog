@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static com.soen343.project.repository.entity.EntityConstants.DUEDATE;
 import static com.soen343.project.repository.entity.EntityConstants.TRANSACTIONDATE;
+import static org.valid4j.Assertive.*;
 
 @Service
 public class TransactionRegistry {
@@ -39,6 +40,8 @@ public class TransactionRegistry {
         this.loanTransactionGateway = loanTransactionGateway;
         this.loanableItemGateway = loanableItemGateway;
         this.returnTransactionGateway = returnTransactionGateway;
+
+        ensure(differenceOfNumberOfLoanAndReturnTransactions() >= 0);
     }
 
     public Map<String, List<?>> getAllTransactions() {
@@ -49,16 +52,21 @@ public class TransactionRegistry {
         // Check for if the loanables are available
         List<LoanableItem> failedLoanedItems = loanableItemGateway.findIfLoanablesAreAvailable(loanables);
 
+        ResponseEntity<?> resp;
         if (failedLoanedItems.isEmpty()) {
             // Create loan transaction
             List<LoanTransaction> transactions = new LinkedList<>();
             loanables.forEach(loanableItem -> transactions.add(new LoanTransaction(loanableItem, client, LocalDateTime.now())));
             // Check + create the loan transaction
             loanTransactionGateway.saveAll(Iterables.toArray(transactions, LoanTransaction.class));
-            return new ResponseEntity<>(HttpStatus.OK);
+
+            resp = new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
+            resp = new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
         }
+
+        ensure(differenceOfNumberOfLoanAndReturnTransactions() >= 0);
+        return resp;
     }
 
     public ResponseEntity<?> addReturnTransactions(Client client, List<LoanableItem> loanables) {
@@ -66,6 +74,8 @@ public class TransactionRegistry {
         List<ReturnTransaction> transactions = new LinkedList<>();
         loanables.forEach(loanableItem -> transactions.add(new ReturnTransaction(loanableItem, client, transactionDate)));
         returnTransactionGateway.saveAll(transactions.toArray(new ReturnTransaction[]{}));
+
+        ensure(differenceOfNumberOfLoanAndReturnTransactions() >= 0);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -111,5 +121,15 @@ public class TransactionRegistry {
     public Map<String, List<?>> searchTransactionByItemType(String itemType) {
         return ImmutableMap.of(LOAN_TRANSACTION, loanTransactionGateway.findByItemType(itemType), RETURN_TRANSACTION,
                 returnTransactionGateway.findByItemType(itemType));
+    }
+
+    private int differenceOfNumberOfLoanAndReturnTransactions() {
+        List allLoanTransactions = this.loanTransactionGateway.findAll();
+        List allReturnTransactions = this.returnTransactionGateway.findAll();
+
+        int numberOfLoanTransactions = allLoanTransactions == null ? 0 : allLoanTransactions.size();
+        int numberOfReturnTransactions = allReturnTransactions == null ? 0 : allReturnTransactions.size();
+
+        return numberOfLoanTransactions - numberOfReturnTransactions;
     }
 }
