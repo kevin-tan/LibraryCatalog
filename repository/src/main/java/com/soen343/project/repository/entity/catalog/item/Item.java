@@ -15,7 +15,7 @@ import static com.soen343.project.repository.entity.EntityConstants.*;
 public class Item implements DatabaseEntity {
     private Long id;
     private ItemSpecification spec;
-    private String type;
+    protected String type;
 
     public Item(){}
 

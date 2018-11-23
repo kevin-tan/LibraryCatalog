@@ -57,7 +57,7 @@ public class CartHandler implements Observer<User> {
         return cart;
     }
 
-    public List<LoanableItem> getLoanables(Long clientId){
+    public List<LoanableItem> getLoanables(Long clientId) {
         Cart cart = carts.get(clientId);
         return cart.getAll();
     }

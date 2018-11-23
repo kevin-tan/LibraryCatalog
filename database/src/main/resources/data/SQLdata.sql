@@ -100,16 +100,16 @@ INSERT INTO LoanableItem (id, available)
 SELECT id, TRUE FROM Item
 WHERE Item.type != 'Magazine';
 
-UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 1;
-UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 11;
-UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 16;
-
-INSERT INTO LoanTransaction (itemId, userId, transactionDate, dueDate) VALUES
-(1,2, DateTime('now','localtime'),DateTime('now','localtime')),
-(11,2, DateTime('now','localtime'),DateTime('now','localtime')),
-(16,2, DateTime('now','localtime'),DateTime('now','localtime'));
-
-INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
-(1,2, DateTime('now')),
-(11,2, DateTime('now')),
-(16,2, DateTime('now'));
+-- UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 1;
+-- UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 11;
+-- UPDATE LoanableItem SET userId = 2 , available = FALSE WHERE id = 16;
+--
+-- INSERT INTO LoanTransaction (itemId, userId, transactionDate, dueDate) VALUES
+-- (1,2, DateTime('now','localtime'),DateTime('now','localtime')),
+-- (11,2, DateTime('now','localtime'),DateTime('now','localtime')),
+-- (16,2, DateTime('now','localtime'),DateTime('now','localtime'));
+--
+-- INSERT INTO ReturnTransaction (itemId, userId, transactionDate) VALUES
+-- (1,2, DateTime('now')),
+-- (11,2, DateTime('now')),
+-- (16,2, DateTime('now'));
