@@ -29,6 +29,11 @@ import { DetailsComponent } from './details/details.component';
 import {Location} from "@angular/common";
 
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {AddItemSpecService} from './manageCatalog/add.item.spec.service';
+import {DeleteItemSpecService} from './manageCatalog/delete.item.spec.service';
+import {EditItemSpecService} from './manageCatalog/edit.item.spec.service';
+import {EditInventoryService} from './manageCatalog/edit.inventory.service';
+import {ManageUsersComponent} from './manageUsers/manage.users.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +52,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     CartComponent,
     NavbarComponent,
     DetailsComponent,
-    ManageCatalogComponent
+    ManageCatalogComponent,
+    ManageUsersComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +68,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatCheckboxModule,
     BrowserAnimationsModule
   ],
-  providers: [LoginRedirectService, HomeRedirectService, Location],
+  providers: [LoginRedirectService, HomeRedirectService, Location, AddItemSpecService, DeleteItemSpecService, EditItemSpecService, EditInventoryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -4,10 +4,12 @@ import com.soen343.project.repository.concurrency.Scheduler;
 import com.soen343.project.repository.entity.catalog.item.Item;
 import com.soen343.project.repository.entity.catalog.item.LoanableItem;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.service.database.Library;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import static com.soen343.project.database.connection.DatabaseConnector.executeQ
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.findAllLoanables;
 import static com.soen343.project.repository.dao.catalog.item.com.LoanableItemOperation.queryLoanableAndItemByItemspecType;
 import static com.soen343.project.repository.entity.EntityConstants.ID;
+import static com.soen343.project.repository.entity.user.types.UserType.ADMIN;
 
 @Service
 public class Catalog {
@@ -28,18 +31,21 @@ public class Catalog {
 
     private final Library library;
     private final Scheduler scheduler;
+    private final BCryptPasswordEncoder encoder;
     private Map<String, CatalogSession> catalogSessions;
 
     @Autowired
-    public Catalog(Library library, Scheduler scheduler) {
+    public Catalog(Library library, Scheduler scheduler, BCryptPasswordEncoder encoder) {
         this.library = library;
         this.scheduler = scheduler;
+        this.encoder = encoder;
         this.catalogSessions = new HashMap<>();
     }
 
     public String createNewSession() {
         String sessionID = UUID.randomUUID().toString();
-        catalogSessions.put(sessionID, new CatalogSession(scheduler, executeQuery(LATEST_ITEM_ID_QUERY, (rs, statement) -> rs.getLong(ID))));
+        catalogSessions
+                .put(sessionID, new CatalogSession(scheduler, executeQuery(LATEST_ITEM_ID_QUERY, (rs, statement) -> rs.getLong(ID))));
         return sessionID;
     }
 
@@ -68,7 +74,39 @@ public class Catalog {
             session.removeEntry(itemSpec);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+    }
+
+    public ResponseEntity<?> editUser(String sessionID, User user) {
+        CatalogSession session = getSession(sessionID);
+        User phoneNumberUser = library.getUserByPhoneNumber(user.getPhoneNumber());
+        User emailUser = library.getUserByEmail(user.getEmail());
+
+        if ((phoneNumberUser != null && phoneNumberUser.getId() != user.getId()) ||
+            (emailUser != null && emailUser.getId() != user.getId())) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        } else {
+            if (user.getPassword() != null) {
+                user.setPassword(encoder.encode(user.getPassword()));
+            }
+            session.editUser(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    public ResponseEntity<?> deleteUser(String sessionID, Long userId) {
+        CatalogSession session = getSession(sessionID);
+        if (library.getUserByID(userId).getUserType().equals(ADMIN)) {
+            if (library.getAllAdmins().size() > 1) {
+                session.deleteUser(userId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            }
+        } else {
+            session.deleteUser(userId);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
@@ -90,5 +128,9 @@ public class Catalog {
 
     private CatalogSession getSession(String sessionID) {
         return catalogSessions.get(sessionID);
+    }
+
+    public List<User> getAllUsers() {
+        return library.getAllUser();
     }
 }

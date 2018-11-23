@@ -39,8 +39,8 @@ Textarea {
   float: left;
 }
 
-select {
-  width: 398px;
-  height: 28px;
+input {
   float: right;
+  width: 399px;
+  height: 28px;
 }

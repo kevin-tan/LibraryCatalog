@@ -3,11 +3,9 @@ package com.soen343.project.service.registry;
 import com.soen343.project.repository.entity.user.Client;
 import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.repository.instance.ActiveUser;
-import com.soen343.project.service.database.Library;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.LinkedList;

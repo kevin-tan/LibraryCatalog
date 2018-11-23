@@ -75,7 +75,9 @@
                 <input id="toggleFormat" type="checkbox">
                 <label for="toggleFormat">Format</label>
                 <div id="expandFormat">
-                  <textarea rows="1" cols="47" #format format.value="" name="clear" ngModel></textarea>
+                  <select [(ngModel)]="selectedOption" name="selectFormat">
+                    <option *ngFor="let value of values" [ngValue]="value">{{value}}</option>
+                  </select>
                 </div>
               </th>
             </tr>
@@ -97,7 +99,7 @@
               </th>
             </tr>
           </table>
-          <button class="w3-bar-item w3-button" (click)="searchBooks(title.value, author.value, publisher.value, pubDate.value, language.value, format.value, isbn10.value, isbn13.value)">
+          <button class="w3-bar-item w3-button" (click)="searchBooks(title.value, author.value, publisher.value, pubDate.value, language.value, isbn10.value, isbn13.value)">
             Search <i class="fa fa-search"></i>
           </button>
         </form>

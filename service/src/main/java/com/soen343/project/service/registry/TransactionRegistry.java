@@ -62,7 +62,7 @@ public class TransactionRegistry {
 
             resp = new ResponseEntity<>(HttpStatus.OK);
         } else {
-            resp = new ResponseEntity<>(failedLoanedItems, HttpStatus.CONFLICT);
+            resp =  new ResponseEntity<>(failedLoanedItems, HttpStatus.PRECONDITION_FAILED);
         }
 
         ensure(differenceOfNumberOfLoanAndReturnTransactions() >= 0);

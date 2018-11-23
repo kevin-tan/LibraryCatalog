@@ -15,6 +15,7 @@ import {CartComponent} from "./cart/cart.component";
 import {ReturnComponent} from "./return/return.component";
 import {DetailsComponent} from "./details/details.component";
 import {ManageCatalogComponent} from './manageCatalog/manage.catalog.component';
+import {ManageUsersComponent} from './manageUsers/manage.users.component';
 
 
 const routes: Routes = [
@@ -33,7 +34,8 @@ const routes: Routes = [
   { path:'cart', component: CartComponent},
   { path:'detail', component: DetailsComponent},
   { path:'detail/:type/:id', component: DetailsComponent},
-  { path:'manageCatalog', component: ManageCatalogComponent}
+  { path:'manageCatalog', component: ManageCatalogComponent},
+  { path:'manageUsers', component: ManageUsersComponent}
 ];
 
 @NgModule({

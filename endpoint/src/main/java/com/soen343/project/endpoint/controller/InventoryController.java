@@ -2,6 +2,7 @@ package com.soen343.project.endpoint.controller;
 
 import com.google.common.collect.ImmutableMap;
 import com.soen343.project.repository.entity.catalog.itemspec.ItemSpecification;
+import com.soen343.project.repository.entity.user.User;
 import com.soen343.project.service.catalog.Catalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class InventoryController {
     }
 
     @PostMapping("/catalog/edit")
-    public ResponseEntity<?> editCatalog(){
+    public ResponseEntity<?> editCatalog() {
         return new ResponseEntity<>(ImmutableMap.of("sessionId", catalog.createNewSession()), HttpStatus.OK);
     }
 
@@ -31,7 +32,7 @@ public class InventoryController {
     }
 
     @PostMapping("/catalog/{sessionID}/delete")
-    public ResponseEntity<?> deleteItem(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpecification){
+    public ResponseEntity<?> deleteItem(@PathVariable String sessionID, @RequestBody ItemSpecification itemSpecification) {
         catalog.deleteCatalogItem(sessionID, itemSpecification);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -55,5 +56,20 @@ public class InventoryController {
     @PostMapping("/catalog/{sessionID}/save")
     public ResponseEntity<?> save(@PathVariable String sessionID) {
         return new ResponseEntity<>(catalog.endSession(sessionID), HttpStatus.OK);
+    }
+
+    @GetMapping("/catalog/getAllUsers")
+    public ResponseEntity<?> getAllUsers() {
+        return new ResponseEntity<>(catalog.getAllUsers(), HttpStatus.OK);
+    }
+
+    @PostMapping("/catalog/{sessionID}/editUser")
+    public ResponseEntity<?> editUser(@PathVariable String sessionID, @RequestBody User user) {
+        return catalog.editUser(sessionID, user);
+    }
+
+    @PostMapping("/catalog/{sessionID}/deleteUser/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String sessionID, @PathVariable Long userId) {
+        return catalog.deleteUser(sessionID, userId);
     }
 }
