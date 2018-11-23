@@ -21,9 +21,6 @@ export class CartComponent implements OnInit {
 
   getCartItems(){
     this.http.get<LoanableItem[]>('http://localhost:8080/client/cart/' + sessionStorage.getItem('user_id') + "/items", {withCredentials: true}).subscribe(response => {
-      for (let item of response) {
-        console.log(item);
-      }
       this.loanableItems = response;
 
       this.errorMessage = "";

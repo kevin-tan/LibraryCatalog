@@ -25,10 +25,14 @@ export class DetailsComponent implements OnInit {
   magazines: ItemSpecification[];
   availableCounter: number = 0;
 
+  userType: string;
+
   ngOnInit() {
     this.type = this.route.snapshot.paramMap.get('type');
     this.specID = parseInt(this.route.snapshot.paramMap.get('id'));
     this.getAllItems();
+
+    this.userType = sessionStorage.getItem("userType");
   }
 
   getAllItems(){

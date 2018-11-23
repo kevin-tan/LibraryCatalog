@@ -237,7 +237,7 @@
 
   <div>
     <p>Number of available loanable copies: {{this.availableCounter}}</p>
-    <button *ngIf="availableCounter >= 1" class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="addItemToCart(this.loanables[0])">
+    <button *ngIf="userType == 'Client' && availableCounter >= 1" class="w3-button w3-light-grey w3-padding-large" type="submit" (click)="addItemToCart(this.loanables[0])">
       Add Item
     </button>
   </div>
