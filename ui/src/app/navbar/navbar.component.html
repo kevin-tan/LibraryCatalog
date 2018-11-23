@@ -25,7 +25,7 @@
     <div *ngIf="userType == 'Admin'">
       <a href="/activeUsers" id="activeUsers" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('activeUsers')">
         <i class="fa fa-users w3-xxlarge"></i>
-        <p>ACTIVEUSERS</p>
+        <p>ACTIVE USERS</p>
       </a>
       <a href="/manageCatalog" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('manageCatalog')">
         <i class="fa fa-bars w3-xxlarge"></i>
@@ -35,11 +35,11 @@
         <i class="fa fa-bars w3-xxlarge"></i>
         <p>MANAGE USERS</p>
       </a>
+      <a href="/transactionHistory" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('transactionHistory')">
+        <i class="fa fa-history w3-xxlarge"></i>
+        <p>TRANSACTION HISTORY</p>
+      </a>
     </div>
-    <a href="/transactionHistory" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('transactionHistory')">
-      <i class="fa fa-history w3-xxlarge"></i>
-      <p>TRANSACTION HISTORY</p>
-    </a>
     <!--For Clients Only-->
     <div *ngIf="userType == 'Client'">
       <a href="/loanedItems" id="loanedItems" class="w3-bar-item w3-button w3-padding-large" [ngClass]="isPath('loanedItems')">

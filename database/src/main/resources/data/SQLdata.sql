@@ -31,25 +31,19 @@ INSERT INTO Movie (title, releaseDate, director, "language", subtitles, runtime)
 ('Guardians of the Galaxy', '2014-07-21', 'James Gunn', 'English', 'English', '122 minutes'),
 ('Inception', '2010-07-08', 'Christopher Nolan', 'English', 'English', '148 minutes'),
 ('Titanic', '1997-11-01', 'James Cameron', 'English', 'Japanese', '195 minutes'),
-('Star Wars', '1977-05-25', 'George Lucas', 'English', 'French', '121 minutes'),
-('The Lord of the Rings: The Fellowship of the Ring', '2001-12-19', 'Peter Jackson', 'English', 'English', '178 minutes');
+('Star Wars', '1977-05-25', 'George Lucas', 'English', 'French', '121 minutes');
 
 INSERT INTO Producers (movieId, producer) VALUES
 ('1', 'Kevin Feige'),
 ('2', 'Emma Thomas'),
 ('3', 'Jon Landau'),
-('4', 'Gary Kurtz'),
-('5', 'Barrie M. Osborne'),
-('5', 'Peter Jackson'),
-('5', 'Fran Walsh'),
-('5', 'Tim Sanders');
+('4', 'Gary Kurtz');
 
 INSERT INTO Dubbed (movieId, dub) VALUES
 ('1', 'French'),
 ('2', 'German'),
 ('3', 'French'),
-('4', 'Chinese'),
-('5', 'French');
+('4', 'Chinese');
 
 INSERT INTO Actors (movieId, actor) VALUES
 ('1', 'Chris Pratt'),
@@ -68,18 +62,13 @@ INSERT INTO Actors (movieId, actor) VALUES
 ('4', 'Mark Hamill'),
 ('4', 'Harrison Ford'),
 ('4', 'Carrie Fisher'),
-('4', 'Peter Cushing'),
-('5', 'Ian McKellen'),
-('5', 'Viggo Mortensen'),
-('5', 'Liv Tyler'),
-('5', 'Elijah Wood');
+('4', 'Peter Cushing');
 
 INSERT INTO Item (itemSpecId, type) VALUES
 (1, 'Movie'),
 (2, 'Movie'),
 (3, 'Movie'),
 (4, 'Movie'),
-(5, 'Movie'),
 (1, 'Magazine'),
 (2, 'Magazine'),
 (3, 'Magazine'),
